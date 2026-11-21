@@ -1,0 +1,168 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://studio_intro/studio_intro.gd" id="1_intro"]
+[ext_resource type="Script" path="res://studio_intro/fx/starfield.gd" id="2_stars"]
+[ext_resource type="Script" path="res://studio_intro/logo/moon_logo.gd" id="3_moon"]
+[ext_resource type="Script" path="res://studio_intro/title/intro_title.gd" id="4_title"]
+[ext_resource type="FontFile" path="res://studio_intro/assets/fonts/kenpixel_high_square.ttf" id="5_font"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/rise.wav" id="6_rise"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/chime.wav" id="7_chime"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/blip.wav" id="8_blip"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/whoosh.wav" id="9_whoosh"]
+[ext_resource type="Script" path="res://studio_intro/fx/moon_glade.gd" id="10_glade"]
+[ext_resource type="Script" path="res://studio_intro/logo/moon_eye.gd" id="11_eye"]
+[ext_resource type="Texture2D" path="res://studio_intro/assets/landscape.png" id="12_land"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/thrum.wav" id="13_thrum"]
+[ext_resource type="AudioStream" path="res://studio_intro/assets/intro_theme.wav" id="14_theme"]
+
+[sub_resource type="Gradient" id="glow_gradient"]
+colors = PackedColorArray(0.85, 0.78, 0.95, 0.32, 0.54, 0.36, 0.78, 0)
+
+[sub_resource type="GradientTexture2D" id="glow_texture"]
+gradient = SubResource("glow_gradient")
+width = 240
+height = 240
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="StudioIntro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_intro")
+next_scene = "res://demo/after_intro.tscn"
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.067, 0.051, 0.086, 1)
+
+[node name="Center" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Stars" type="Node2D" parent="Center"]
+unique_name_in_owner = true
+script = ExtResource("2_stars")
+area = Rect2(-340, -190, 680, 270)
+keep_clear = Rect2(-190, -2, 380, 64)
+
+[node name="SfxWhoosh" type="AudioStreamPlayer" parent="Center/Stars"]
+stream = ExtResource("9_whoosh")
+volume_db = -12.0
+
+[node name="Landscape" type="Sprite2D" parent="Center"]
+position = Vector2(-380, 66)
+texture = ExtResource("12_land")
+centered = false
+
+[node name="Glade" type="Node2D" parent="Center"]
+unique_name_in_owner = true
+position = Vector2(0, 101)
+script = ExtResource("10_glade")
+
+[node name="Moon" type="Node2D" parent="Center"]
+unique_name_in_owner = true
+position = Vector2(0, -58)
+script = ExtResource("3_moon")
+
+[node name="Glow" type="Sprite2D" parent="Center/Moon"]
+texture = SubResource("glow_texture")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="Center/Moon"]
+scale = Vector2(2, 2)
+
+[node name="Eye" type="AnimatedSprite2D" parent="Center/Moon"]
+scale = Vector2(2, 2)
+script = ExtResource("11_eye")
+
+[node name="SfxThrum" type="AudioStreamPlayer" parent="Center/Moon/Eye"]
+stream = ExtResource("13_thrum")
+volume_db = -3.0
+
+[node name="SfxRise" type="AudioStreamPlayer" parent="Center/Moon"]
+stream = ExtResource("6_rise")
+volume_db = -18.0
+
+[node name="SfxChime" type="AudioStreamPlayer" parent="Center/Moon"]
+stream = ExtResource("7_chime")
+volume_db = -8.0
+
+[node name="Title" type="Control" parent="Center"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("4_title")
+
+[node name="NameLabel" type="Label" parent="Center/Title"]
+layout_mode = 0
+offset_left = -300.0
+offset_top = 2.0
+offset_right = 300.0
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.96, 0.9, 0.77, 1)
+theme_override_colors/font_shadow_color = Color(0.11, 0.08, 0.13, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 32
+text = "BIAGIO SCAGLIA"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="SubtitleLabel" type="Label" parent="Center/Title"]
+layout_mode = 0
+offset_left = -150.0
+offset_top = 42.0
+offset_right = 150.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.96, 0.9, 0.77, 1)
+theme_override_colors/font_shadow_color = Color(0.11, 0.08, 0.13, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("5_font")
+theme_override_font_sizes/font_size = 16
+text = "presenta"
+horizontal_alignment = 1
+vertical_alignment = 1
+uppercase = true
+
+[node name="SfxBlip" type="AudioStreamPlayer" parent="Center/Title"]
+stream = ExtResource("8_blip")
+volume_db = -14.0
+max_polyphony = 3
+
+[node name="Black" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("14_theme")
+volume_db = -4.0
