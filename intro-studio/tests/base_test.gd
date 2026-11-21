@@ -53,7 +53,8 @@ func add_scene(path: String, setup := Callable()) -> Node:
 ## Aspetta `sig` al massimo `timeout` secondi reali. True se è arrivato.
 func wait_signal(sig: Signal, timeout: float) -> bool:
 	var state := {"done": false}
-	sig.connect(func(): state["done"] = true, CONNECT_ONE_SHOT)
+	# Accetta segnali con 0-3 argomenti.
+	sig.connect(func(_a = null, _b = null, _c = null): state["done"] = true, CONNECT_ONE_SHOT)
 	var deadline := Time.get_ticks_msec() + int(timeout * 1000)
 	while not state["done"] and Time.get_ticks_msec() < deadline:
 		await tree.process_frame
