@@ -9,6 +9,9 @@ CLAUDE.md
 export_presets.cfg
 builds/
 
+# Allegati del vault (foto, immagini): restano solo in locale
+**/99 Allegati/
+
 # Obsidian: stato dell'interfaccia, cambia a ogni apertura
 **/.obsidian/workspace*.json
 **/.obsidian/cache
