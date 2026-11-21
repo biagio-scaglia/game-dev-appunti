@@ -1,0 +1,24 @@
+# Strumenti locali, non fanno parte del progetto
+.claude/
+skills-lock.json
+CLAUDE.md
+
+# Godot: cache e file rigenerati all'import
+.godot/
+*.translation
+export_presets.cfg
+builds/
+
+# Obsidian: stato dell'interfaccia, cambia a ogni apertura
+**/.obsidian/workspace*.json
+**/.obsidian/cache
+.trash/
+
+# Python
+__pycache__/
+*.pyc
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
