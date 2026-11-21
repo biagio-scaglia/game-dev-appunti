@@ -12,6 +12,9 @@ builds/
 # Allegati del vault (foto, immagini): restano solo in locale
 **/99 Allegati/
 
+# Sprite della protagonista: derivano dalla sagoma di Eris Esra (non ridistribuibile)
+stanza/characters/protagonista/sprites/
+
 # Obsidian: stato dell'interfaccia, cambia a ogni apertura
 **/.obsidian/workspace*.json
 **/.obsidian/cache
