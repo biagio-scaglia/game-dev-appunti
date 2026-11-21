@@ -1,0 +1,297 @@
+{
+  "tile": 32,
+  "tiles": {
+    "floor": {
+      "atlas": [
+        0,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "floor_b": {
+      "atlas": [
+        1,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "wall": {
+      "atlas": [
+        4,
+        3
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "wall_poster": {
+      "atlas": [
+        5,
+        3
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "window": {
+      "atlas": [
+        0,
+        3
+      ],
+      "size": [
+        2,
+        2
+      ],
+      "layer": "wall",
+      "solid": true,
+      "light": {
+        "offset": [
+          32,
+          30
+        ],
+        "color": [
+          0.7,
+          0.78,
+          1.0
+        ],
+        "energy": 0.55,
+        "radius": 110
+      }
+    },
+    "door": {
+      "atlas": [
+        6,
+        3
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "wall_top": {
+      "atlas": [
+        2,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "bed": {
+      "atlas": [
+        0,
+        0
+      ],
+      "size": [
+        2,
+        3
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          38,
+          26
+        ],
+        "color": [
+          0.45,
+          0.85,
+          1.0
+        ],
+        "energy": 0.35,
+        "radius": 40
+      }
+    },
+    "desk_pc": {
+      "atlas": [
+        2,
+        0
+      ],
+      "size": [
+        3,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          48,
+          14
+        ],
+        "color": [
+          0.45,
+          0.85,
+          1.0
+        ],
+        "energy": 1.1,
+        "radius": 150
+      }
+    },
+    "chair": {
+      "atlas": [
+        3,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "shelf": {
+      "atlas": [
+        2,
+        3
+      ],
+      "size": [
+        2,
+        2
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "lamp": {
+      "atlas": [
+        7,
+        3
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          16,
+          12
+        ],
+        "color": [
+          1.0,
+          0.82,
+          0.55
+        ],
+        "energy": 0.8,
+        "radius": 110
+      }
+    },
+    "trash_bag": {
+      "atlas": [
+        4,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "noodle_cups": {
+      "atlas": [
+        5,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "cans": {
+      "atlas": [
+        6,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "pizza_box": {
+      "atlas": [
+        7,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "clothes": {
+      "atlas": [
+        0,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "books": {
+      "atlas": [
+        1,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "console": {
+      "atlas": [
+        2,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "rug": {
+      "atlas": [
+        5,
+        0
+      ],
+      "size": [
+        3,
+        2
+      ],
+      "layer": "decor",
+      "solid": false
+    }
+  }
+}
