@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://magic/projectile.gd" id="1_script"]
+
+[sub_resource type="CanvasItemMaterial" id="additive"]
+blend_mode = 1
+
+[sub_resource type="CircleShape2D" id="orb"]
+radius = 5.0
+
+[node name="Projectile" type="Area2D"]
+z_index = 5
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_script")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+material = SubResource("additive")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("orb")
