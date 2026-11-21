@@ -14,7 +14,8 @@ builds/
 **/.obsidian/cache
 .trash/
 
-# Python
+# Python: gli script restano solo in locale, mai nel repo
+*.py
 __pycache__/
 *.pyc
 
