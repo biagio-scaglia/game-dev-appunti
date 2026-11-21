@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://characters/protagonista/protagonista.gd" id="1_script"]
+
+[sub_resource type="CapsuleShape2D" id="feet"]
+radius = 6.0
+height = 18.0
+
+[node name="Protagonista" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+motion_mode = 1
+script = ExtResource("1_script")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+
+[node name="Feet" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+rotation = 1.5708
+shape = SubResource("feet")
