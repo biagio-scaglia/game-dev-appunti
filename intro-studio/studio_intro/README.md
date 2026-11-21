@@ -47,8 +47,7 @@ studio_intro/
 │   ├── skip_input.gd         quali input saltano l'intro
 │   ├── sheet_frames.gd       taglia i fogli di sprite in animazioni
 │   └── start_prompt.gd       "clicca per iniziare" (solo web: sblocca l'audio)
-└── assets/                   generati da tools/make_assets.py + font Kenney (CC0)
+└── assets/                   sprite, suoni e musica generati da zero + font Kenney (CC0)
 ```
 
-Gli asset (sprite, suoni e musica) sono generati da zero con `tools/make_assets.py`:
-per cambiare la palette, la luna o la melodia si modifica lo script e si rigenera.
+Gli asset sono generati da zero con script Python che restano in locale (non sono nel repo).
