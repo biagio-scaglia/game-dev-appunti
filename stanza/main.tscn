@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://main.gd" id="1_main"]
 [ext_resource type="Script" path="res://world/room.gd" id="2_room"]
 [ext_resource type="PackedScene" path="res://characters/protagonista/protagonista.tscn" id="3_hero"]
+[ext_resource type="AudioStream" path="res://audio/stanza_theme.wav" id="4_theme"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -20,6 +21,11 @@ script = ExtResource("2_room")
 
 [node name="Protagonista" parent="World" instance=ExtResource("3_hero")]
 unique_name_in_owner = true
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_theme")
+volume_db = -6.0
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
