@@ -27,11 +27,16 @@ $GODOT --path . -s res://tools/capture_frames.gd -- <cartella> - res://title/tit
 studio_intro/                    l'intro dello studio (copiata da ../intro-studio, sottotitolo "presents")
 title/
 ├── title_screen.gd / .tscn      il titolo: appare dal nero, menu Start / Quit, poi la stanza
-├── title_backdrop.gd            raggio di luna e pulviscolo dietro il titolo
-└── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse)
+├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
+├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
+├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
+└── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse), col suono del carillon
 ui/fonts/                        Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
-audio/stanza_theme.wav           l'OST: loop lo-fi di 25 s (dal generatore, senza stacchi)
+audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
+audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, valzer lento in Re minore
+                                 su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
+audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
 world/
 ├── room_tiles.png / .json       atlante dei tile e i suoi dati (dal generatore)
 ├── room_tileset.gd              costruisce il TileSet dal JSON, con le collisioni
