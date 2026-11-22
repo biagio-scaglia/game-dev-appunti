@@ -1,20 +1,26 @@
 extends CharacterBody2D
-## La protagonista: cammina in 8 direzioni, corre con Shift, lancia una magia con
-## Spazio (o J). Mentre lancia sta ferma: prima la carica sulle mani, poi a metà
-## attacco parte il proiettile verso dove guarda. L'origine del nodo è ai piedi.
+## La protagonista: cammina in 8 direzioni, corre con Shift, e attacca in due modi.
+## - Magia (Spazio o J): la verità. Prima la carica sulle mani, poi a metà attacco parte
+##   il proiettile verso dove guarda.
+## - Spada di vetro dello specchio (K): la bugia. La lama compare dalla mano e fende verso
+##   dove guarda; sword_stage (0 scheggia, 1 pugnale, 2 lama) cresce con le bugie.
+## Mentre attacca sta ferma. L'origine del nodo è ai piedi.
 
-signal cast_finished
+signal attack_finished(kind: StringName)
 
 const Frames := preload("protagonista_frames.gd")
 const Facing := preload("facing.gd")
 const InputSetup := preload("../../core/input_setup.gd")
 const PROJECTILE := preload("res://magic/projectile.tscn")
 const CHARGE := preload("res://magic/charge.tscn")
+const SWORD := preload("res://weapon/glass_sword.tscn")
 
 @export var walk_speed := 70.0
 @export var run_speed := 130.0
-## Fotogramma dell'attacco in cui parte il proiettile.
+## Fotogramma dell'attacco in cui parte il colpo (il proiettile o il fendente).
 @export var launch_frame := 3
+## Lo stadio della spada di vetro: cresce con le bugie (sistema del karma, da fare).
+@export_range(0, 2) var sword_stage := 0
 ## Dove sono le mani rispetto ai piedi: in alto e un po' avanti.
 const HAND_HEIGHT := 24.0
 const HAND_REACH := 14.0
@@ -22,7 +28,8 @@ const HAND_REACH := 14.0
 @onready var sprite: AnimatedSprite2D = $Sprite
 
 var facing := Vector2.DOWN
-var casting := false
+## L'attacco in corso: &"cast", &"slash" o vuoto.
+var attacking := &""
 var _launched := false
 
 
@@ -38,7 +45,11 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if Input.is_action_just_pressed(&"cast"):
 		cast()
-	if casting:
+	elif Input.is_action_just_pressed(&"slash"):
+		slash()
+	if OS.is_debug_build() and Input.is_action_just_pressed(&"sword_stage"):
+		sword_stage = (sword_stage + 1) % 3       # solo per provare gli stadi
+	if is_attacking():
 		velocity = Vector2.ZERO
 		return
 	var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
@@ -46,6 +57,10 @@ func _physics_process(_delta: float) -> void:
 	velocity = direction * (run_speed if running else walk_speed)
 	move_and_slide()
 	update_animation(direction, running)
+
+
+func is_attacking() -> bool:
+	return attacking != &""
 
 
 ## Sceglie l'animazione di movimento. Pubblica: la usano i test.
@@ -57,34 +72,53 @@ func update_animation(direction: Vector2, running: bool) -> void:
 		_play("run" if running else "walk")
 
 
-## Lancia la magia verso dove guarda. Ignorato se sta già lanciando.
+## Lancia la magia verso dove guarda. Ignorato se sta già attaccando.
 func cast() -> void:
-	if casting:
-		return
-	casting = true
-	_launched = false
-	_play("attack")
-	_spawn(CHARGE.instantiate(), hand_position())
+	if _start_attack(&"cast"):
+		_spawn(CHARGE.instantiate(), hand_position())
+
+
+## Fende con la spada di vetro verso dove guarda. Ignorato se sta già attaccando.
+func slash() -> void:
+	_start_attack(&"slash")
 
 
 func hand_position() -> Vector2:
 	return global_position + facing.normalized() * HAND_REACH + Vector2(0, -HAND_HEIGHT)
 
 
+func _start_attack(kind: StringName) -> bool:
+	if is_attacking():
+		return false
+	attacking = kind
+	_launched = false
+	_play("attack" if kind == &"cast" else "slash")   # slash: la stessa posa, con la scia di vetro
+	return true
+
+
 func _on_frame_changed() -> void:
-	if casting and not _launched and sprite.frame >= launch_frame:
-		_launched = true
-		var shot := PROJECTILE.instantiate()
-		shot.direction = facing.normalized()
-		_spawn(shot, hand_position())
+	if not is_attacking() or _launched or sprite.frame < launch_frame:
+		return
+	_launched = true
+	match attacking:
+		&"cast":
+			var shot := PROJECTILE.instantiate()
+			shot.direction = facing.normalized()
+			_spawn(shot, hand_position())
+		&"slash":
+			var sword := SWORD.instantiate()
+			sword.direction = facing.normalized()
+			sword.stage = sword_stage
+			_spawn(sword, hand_position())
 
 
 func _on_animation_finished() -> void:
-	if not casting:
+	if not is_attacking():
 		return
-	casting = false
+	var kind := attacking
+	attacking = &""
 	_play("idle")
-	cast_finished.emit()
+	attack_finished.emit(kind)
 
 
 func _spawn(node: Node2D, at: Vector2) -> void:
