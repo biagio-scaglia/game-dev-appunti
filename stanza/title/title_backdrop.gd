@@ -43,11 +43,18 @@ static func step_mote(pos: Vector2, speed: float, phase: float, time: float, del
 
 
 ## Il raggio: un trapezio dallo spiraglio in alto fino a terra, in diagonale.
-func beam_polygon() -> PackedVector2Array:
+## `spread` lo allarga (l'alone intorno al nucleo).
+func beam_polygon(spread := 0.0) -> PackedVector2Array:
 	return PackedVector2Array([
-		Vector2(size.x * 0.30, 0), Vector2(size.x * 0.34, 0),
-		Vector2(size.x * 0.62, size.y), Vector2(size.x * 0.44, size.y),
+		Vector2(size.x * (0.30 - spread * 0.3), 0), Vector2(size.x * (0.34 + spread * 0.3), 0),
+		Vector2(size.x * (0.62 + spread), size.y), Vector2(size.x * (0.44 - spread), size.y),
 	])
+
+
+## Le nuvole che passano davanti alla luna: il raggio cala e risale piano (0.55 - 1).
+static func cloud_light(time: float) -> float:
+	var v := 0.5 + 0.25 * sin(time * 0.31) + 0.25 * sin(time * 0.53 + 1.7)
+	return 0.55 + 0.45 * v
 
 
 ## Quanto brilla un granello ora (tremola), da 0 a 1.
@@ -56,7 +63,13 @@ static func twinkle(phase: float, time: float) -> float:
 
 
 func _draw() -> void:
-	draw_colored_polygon(beam_polygon(), beam_color)
+	var light := cloud_light(_time)
+	var halo := beam_color
+	halo.a *= 0.45 * light
+	draw_colored_polygon(beam_polygon(0.05), halo)
+	var core := beam_color
+	core.a *= light
+	draw_colored_polygon(beam_polygon(), core)
 	for m in motes:
 		var p: Vector2 = (m["pos"] / pixel).floor() * pixel
 		var c := mote_color
