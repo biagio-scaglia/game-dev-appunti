@@ -95,9 +95,69 @@
       "layer": "wall",
       "solid": true
     },
-    "wall_top": {
+    "wall_calendar": {
+      "atlas": [
+        7,
+        3
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "covered_mirror": {
+      "atlas": [
+        0,
+        5
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "nightstand": {
       "atlas": [
         4,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "dead_plant": {
+      "atlas": [
+        5,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "food_tray": {
+      "atlas": [
+        6,
+        5
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "wall_top": {
+      "atlas": [
+        7,
         5
       ],
       "size": [
@@ -175,8 +235,8 @@
     },
     "chair": {
       "atlas": [
-        5,
-        5
+        0,
+        7
       ],
       "size": [
         1,
@@ -199,8 +259,8 @@
     },
     "lamp": {
       "atlas": [
-        7,
-        3
+        1,
+        5
       ],
       "size": [
         1,
@@ -229,8 +289,8 @@
     },
     "trash_bag": {
       "atlas": [
-        6,
-        5
+        1,
+        7
       ],
       "size": [
         1,
@@ -239,58 +299,10 @@
       "layer": "object",
       "solid": true
     },
-    "noodle_cups": {
-      "atlas": [
-        7,
-        5
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "cans": {
-      "atlas": [
-        0,
-        6
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "pizza_box": {
-      "atlas": [
-        1,
-        6
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
     "clothes": {
       "atlas": [
         2,
-        6
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "socks": {
-      "atlas": [
-        3,
-        6
+        7
       ],
       "size": [
         1,
@@ -301,23 +313,11 @@
     },
     "cushion": {
       "atlas": [
-        4,
-        6
+        3,
+        7
       ],
       "size": [
         1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "cable": {
-      "atlas": [
-        0,
-        5
-      ],
-      "size": [
-        2,
         1
       ],
       "layer": "decor",
@@ -325,32 +325,8 @@
     },
     "paper_balls": {
       "atlas": [
-        5,
-        6
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "mug": {
-      "atlas": [
-        6,
-        6
-      ],
-      "size": [
-        1,
-        1
-      ],
-      "layer": "decor",
-      "solid": false
-    },
-    "books": {
-      "atlas": [
-        7,
-        6
+        4,
+        7
       ],
       "size": [
         1,
@@ -361,7 +337,7 @@
     },
     "console": {
       "atlas": [
-        0,
+        5,
         7
       ],
       "size": [
