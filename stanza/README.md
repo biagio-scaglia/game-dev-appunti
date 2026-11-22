@@ -40,6 +40,8 @@ audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal gen
 audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, valzer lento in Re minore
                                  su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
 audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
+audio/magic_*.wav                i suoni della magia: il luccichio della carica, il soffio del lancio,
+                                 il rintocco di vetro dell'impatto
 world/
 ├── room_tiles.png / .json       atlante dei tile e i suoi dati (dal generatore)
 ├── room_tileset.gd              costruisce il TileSet dal JSON, con le collisioni
@@ -50,6 +52,8 @@ fx/
 ├── flicker.gd                   sfarfallio di una luce: tremolio + cali improvvisi
 ├── screen_glow.gd               lo schermo del PC che tremola, con la riga di scansione
 ├── moon_beam.gd                 il raggio di luna dalla tenda, con il pulviscolo
+├── sparks.gd                    scintille di magia (scia e scoppio), quadratini da 2 pixel
+├── screen_shake.gd              un piccolo tremolio dello schermo all'impatto
 └── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
@@ -57,9 +61,10 @@ characters/protagonista/
 ├── protagonista.gd / .tscn      CharacterBody2D: movimento, corsa, magia
 └── sprites/                     gli sheet: SOLO IN LOCALE (vedi sotto)
 magic/
-├── magic_frames.gd              animazioni di carica, proiettile, impatto
-├── projectile.gd / .tscn        vola, ha una luce viola, esplode su muri e mobili
-└── one_shot_effect.gd           carica e impatto: si suonano una volta, la luce si spegne
+├── magic_frames.gd              animazioni di carica (8), proiettile (4), impatto (9), ognuna col suo ritmo
+├── projectile.gd / .tscn        vola con una scia di scintille e una luce viola, esplode su muri e mobili
+└── one_shot_effect.gd           carica e impatto: luce (sale nella carica, si spegne nell'impatto),
+                                 suono, scoppio di scintille e tremolio a scelta
 core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
@@ -77,7 +82,11 @@ tests/                           un file per modulo + mini runner headless
   scura e semitrasparente.
 - **Stile dei tile**: come Lethe, una sola griglia a 16 px ingrandita a blocchi 2x2 (niente Scale2x
   né dettagli a mezzo pixel): contorno colorato, tre toni per materiale, riflessi, retinatura a scacchi.
-- **Magia**: gli effetti usano il blend additivo (`CanvasItemMaterial` -> Add) per brillare.
+- **Magia**: tre tempi, come nei campioni di incantesimi: la carica raccoglie scintille a spirale
+  sulle mani (la luce sale, un luccichio sempre più acuto), il colpo parte con un lampo e un soffio e
+  lascia una scia; all'impatto un lampo bianco, un anello che si allarga e si spezza in archi, uno
+  scoppio di scintille, un piccolo tremolio e un rintocco di vetro. Sprite sulla griglia di Lethe,
+  blend additivo (`CanvasItemMaterial` -> Add) per brillare.
 - **Una stanza che racconta**: niente doppioni, solo oggetti che sono uno strato della storia (vedi
   il vault, "La stanza di Lethe"): lo specchio coperto da un lenzuolo, il calendario barrato fino a un
   giorno cerchiato, il vassoio intatto davanti alla porta, la foto a faccia in giù sul comodino, le
