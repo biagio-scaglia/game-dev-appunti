@@ -30,7 +30,10 @@ title/
 ├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
 ├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
-└── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse), col suono del carillon
+├── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse): davanti alla voce
+│                                scelta batte un cuore, e cambiare voce suona il carillon
+└── art/                         finestra con tende e luna, pavimento, pannello del menu, cuore,
+                                 ornamento (dal generatore in locale: griglia a 16 px, blocchi 2x2)
 ui/fonts/                        Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
 audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
@@ -72,12 +75,13 @@ tests/                           un file per modulo + mini runner headless
 - **Protagonista**: disegnata sulla griglia 32x32 della sagoma e ingrandita a blocchi 2x2,
   senza dettagli a mezzo pixel: ha la stessa grana del pavimento. Sotto i piedi ha un'ombra
   scura e semitrasparente.
-- **Stile dei tile**: pixel a blocchi (16 px raddoppiati con Scale2x) con
-  dettagli da 1 pixel: contorno colorato, luce e ombra sui bordi, riflessi, retinatura a scacchi.
+- **Stile dei tile**: come Lethe, una sola griglia a 16 px ingrandita a blocchi 2x2 (niente Scale2x
+  né dettagli a mezzo pixel): contorno colorato, tre toni per materiale, riflessi, retinatura a scacchi.
 - **Magia**: gli effetti usano il blend additivo (`CanvasItemMaterial` -> Add) per brillare.
-- **Disordine**: felpe e calzini per terra, cup noodle, lattine, cartone della pizza, palline di
-  carta accanto alla scrivania, una tazza, il cuscino schiacciato davanti alla console e il cavo
-  del controller che attraversa il pavimento.
+- **Una stanza che racconta**: niente doppioni, solo oggetti che sono uno strato della storia (vedi
+  il vault, "La stanza di Lethe"): lo specchio coperto da un lenzuolo, il calendario barrato fino a un
+  giorno cerchiato, il vassoio intatto davanti alla porta, la foto a faccia in giù sul comodino, le
+  palline di carta accanto alla scrivania, la pianta secca sotto la finestra.
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
