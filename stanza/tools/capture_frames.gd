@@ -1,5 +1,6 @@
 extends SceneTree
-## Avvia main.tscn, fa camminare la protagonista e lanciare due magie, e salva uno
+## Avvia main.tscn, fa camminare la protagonista, lanciare due magie e dare un colpo di
+## spada, e salva uno
 ## screenshot ogni tanto. Non headless (serve il renderer per luci e blend additivo).
 ## Uso: Godot.exe --path . -s res://tools/capture_frames.gd -- <cartella_output> [fitto] [scena]
 ## Con "fitto" scatta ogni 0,08 s (per montare una GIF). Con una scena (es.
@@ -17,10 +18,14 @@ const SCRIPT := [
 	[3.4, []],
 	[3.5, [&"cast"]],
 	[3.6, []],
+	[4.5, [&"move_right"]],
+	[4.6, []],
+	[4.7, [&"slash"]],
+	[4.8, []],
 ]
-const SHOTS := [0.2, 0.9, 1.4, 1.95, 2.2, 2.45, 3.8, 4.05]
+const SHOTS := [0.2, 0.9, 1.4, 1.95, 2.2, 2.45, 3.8, 4.05, 4.95]
 const DENSE_STEP := 0.08
-const DENSE_END := 4.6
+const DENSE_END := 5.4
 
 var _shots: Array = SHOTS
 var _time := 0.0
@@ -55,7 +60,7 @@ func _apply_input() -> void:
 	for step in SCRIPT:
 		if _time >= step[0]:
 			pressed = step[1]
-	for action: StringName in [&"move_left", &"move_right", &"move_up", &"move_down", &"run", &"cast"]:
+	for action: StringName in [&"move_left", &"move_right", &"move_up", &"move_down", &"run", &"cast", &"slash"]:
 		if not InputMap.has_action(action):
 			continue
 		if action in pressed:
