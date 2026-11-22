@@ -20,6 +20,7 @@ Mentire o dire la verità cambia il tuo potere (spada vs magia), la tua route e 
 - [[Sistema a scelte (grafo)]]
 - [[Sistema Karma]]
 - [[Verità = Magia, Bugia = Spada]]
+- [[La spada di vetro]]
 - [[Route e finali]]
 
 ### 📜 Storia e Lore

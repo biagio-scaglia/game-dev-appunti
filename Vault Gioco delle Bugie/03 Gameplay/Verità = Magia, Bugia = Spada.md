@@ -14,4 +14,6 @@ stato: idea forte
 - Come si combatte? A turni (stile RPG) o in tempo reale?
 - La spada è "peggiore" moralmente ma più forte? Una tentazione meccanica a mentire creerebbe un bel conflitto.
 
-Collegato: [[Sistema Karma]], [[Tema - Le bugie]]
+La spada: [[La spada di vetro]] (il vetro dello specchio, in tre stadi).
+
+Collegato: [[Sistema Karma]], [[Tema - Le bugie]], [[La spada di vetro]]
