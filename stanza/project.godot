@@ -29,6 +29,7 @@ window/stretch/scale_mode="integer"
 
 2d_physics/layer_1="mondo"
 2d_physics/layer_2="protagonista"
+2d_physics/layer_3="nemici"
 
 [rendering]
 
