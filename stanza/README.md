@@ -31,7 +31,8 @@ world/
 fx/
 ├── flicker.gd                   sfarfallio di una luce: tremolio + cali improvvisi
 ├── screen_glow.gd               lo schermo del PC che tremola, con la riga di scansione
-└── moon_beam.gd                 il raggio di luna dalla tenda, con il pulviscolo
+├── moon_beam.gd                 il raggio di luna dalla tenda, con il pulviscolo
+└── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
 ├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack x 5 direzioni)
@@ -53,7 +54,10 @@ tests/                           un file per modulo + mini runner headless
   lampada ogni tanto), e così il proiettile e l'impatto (viola).
 - **Atmosfera**: lo schermo acceso tremola con una riga di scansione; dalla tenda scende un raggio
   di luna con il pulviscolo; l'OST lo-fi (piano elettrico, basso, batteria leggera, vinile) va in loop.
-- **Stile dei tile**: come la protagonista, pixel a blocchi (16 px raddoppiati con Scale2x) con
+- **Protagonista**: disegnata sulla griglia 32x32 della sagoma e ingrandita a blocchi 2x2,
+  senza dettagli a mezzo pixel: ha la stessa grana del pavimento. Sotto i piedi ha un'ombra
+  scura e semitrasparente.
+- **Stile dei tile**: pixel a blocchi (16 px raddoppiati con Scale2x) con
   dettagli da 1 pixel: contorno colorato, luce e ombra sui bordi, riflessi, retinatura a scacchi.
 - **Magia**: gli effetti usano il blend additivo (`CanvasItemMaterial` -> Add) per brillare.
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa

@@ -28,6 +28,25 @@ func test_tutte_le_animazioni_in_5_direzioni() -> void:
 			assert_eq(frames.get_frame_count(StringName("%s_%s" % [kind, row])), counts[kind], "%s_%s" % [kind, row])
 
 
+func test_ha_l_ombra_sotto_lo_sprite() -> void:
+	var hero := _hero()
+	var shadow: Node2D = hero.get_node("Shadow")
+	assert_true(shadow.get_index() < hero.sprite.get_index(), "l'ombra si disegna prima dello sprite")
+	assert_true(shadow.color.a > 0.0 and shadow.color.a < 1.0, "semitrasparente")
+
+
+func test_l_ombra_e_un_ellisse_a_blocchi() -> void:
+	var DropShadow := preload("res://fx/drop_shadow.gd")
+	var rows := DropShadow.rows(Vector2(10, 4), 2)
+	var box := rows[0]
+	for row in rows:
+		box = box.merge(row)
+		for v in [row.position.x, row.position.y, row.size.x, row.size.y]:
+			assert_true(is_equal_approx(fmod(absf(v), 2.0), 0.0), "sulla griglia da 2: %s" % row)
+	assert_eq(box.size, Vector2(20, 8), "larga 20, alta 8")
+	assert_true(rows[0].size.x < rows[1].size.x, "più stretta in alto che al centro")
+
+
 func test_parte_ferma_verso_il_basso() -> void:
 	var hero := _hero()
 	assert_eq(hero.sprite.animation, &"idle_down", "ferma, verso il basso")
