@@ -9,7 +9,8 @@ Appunti e pezzi riusabili per i miei giochi.
   si parte da `00 Home/🏠 Home.md`.
 - **[intro-studio](intro-studio/)**: progetto Godot 4.7 con l'intro dello studio (la luna che guarda),
   da copiare all'inizio di ogni gioco. Con test e generatori degli asset.
-- **[stanza](stanza/)**: progetto Godot 4.7, la stanza di un hikikomori di notte. La protagonista
+- **[stanza](stanza/)**: progetto Godot 4.7 del gioco (titolo provvisorio *Aletheia*): intro dello
+  studio, schermata del titolo, poi la stanza di un hikikomori di notte. La protagonista, Lethe,
   cammina, corre e lancia magie che illuminano la stanza. Tileset ed effetti disegnati da zero.
 
 ## La protagonista nella stanza

@@ -1,7 +1,10 @@
 # stanza
 
-Progetto Godot 4.7: la stanza di un hikikomori, di notte. La protagonista cammina in 8 direzioni,
-corre e lancia magie che illuminano la stanza.
+Progetto Godot 4.7 del gioco (titolo provvisorio **Aletheia**, testi per ora in inglese): si apre
+con l'intro dello studio, poi la schermata del titolo, poi la stanza di un hikikomori di notte.
+La protagonista, Lethe, cammina in 8 direzioni, corre e lancia magie che illuminano la stanza.
+
+![Il titolo](../docs/titolo.png)
 
 ![La stanza](../docs/stanza.gif)
 
@@ -14,12 +17,19 @@ corre e lancia magie che illuminano la stanza.
 ```sh
 $GODOT --path .                                                   # gioca
 $GODOT --headless --path . -s res://tests/run_tests.gd            # test
-$GODOT --path . -s res://tools/capture_frames.gd -- <cartella>    # screenshot automatici
+$GODOT --path . -s res://tools/capture_frames.gd -- <cartella>    # screenshot automatici della stanza
+$GODOT --path . -s res://tools/capture_frames.gd -- <cartella> - res://title/title_screen.tscn  # ...del titolo
 ```
 
 ## Com'è fatto
 
 ```
+studio_intro/                    l'intro dello studio (copiata da ../intro-studio, sottotitolo "presents")
+title/
+├── title_screen.gd / .tscn      il titolo: appare dal nero, menu Start / Quit, poi la stanza
+├── title_backdrop.gd            raggio di luna e pulviscolo dietro il titolo
+└── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse)
+ui/fonts/                        Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
 audio/stanza_theme.wav           l'OST: loop lo-fi di 25 s (dal generatore, senza stacchi)
 world/
@@ -60,6 +70,9 @@ tests/                           un file per modulo + mini runner headless
 - **Stile dei tile**: pixel a blocchi (16 px raddoppiati con Scale2x) con
   dettagli da 1 pixel: contorno colorato, luce e ombra sui bordi, riflessi, retinatura a scacchi.
 - **Magia**: gli effetti usano il blend additivo (`CanvasItemMaterial` -> Add) per brillare.
+- **Disordine**: felpe e calzini per terra, cup noodle, lattine, cartone della pizza, palline di
+  carta accanto alla scrivania, una tazza, il cuscino schiacciato davanti alla console e il cavo
+  del controller che attraversa il pavimento.
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
