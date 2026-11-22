@@ -7,38 +7,31 @@ const SIZE := Vector2i(20, 11)
 const FLOOR := Rect2i(1, 2, 18, 8)
 const PLAYER_START := Vector2i(8, 7)   # davanti al tappeto, non sopra la console
 
+## Ogni cosa racconta (vedi il vault, "La stanza di Lethe"): il resto è stato tolto.
 const WALL_FEATURES := [
-	["wall_poster", Vector2i(4, 0)],
-	["window", Vector2i(8, 0)],
-	["wall_poster", Vector2i(14, 0)],
-	["door", Vector2i(17, 0)],
+	["wall_poster", Vector2i(4, 0)],      # la vita di prima: la sua maghetta preferita
+	["window", Vector2i(8, 0)],           # la luna: fuori c'è ancora un mondo
+	["wall_calendar", Vector2i(14, 0)],   # giorni barrati fino a uno cerchiato, poi niente
+	["door", Vector2i(17, 0)],            # chiusa
 ]
 
 const DECOR := [
 	["rug", Vector2i(7, 5)],
-	["console", Vector2i(9, 5)],
-	["cushion", Vector2i(8, 6)],        # dove si siede a giocare
-	["cable", Vector2i(10, 5)],         # dal controller verso la scrivania
-	["mug", Vector2i(6, 5)],
-	["paper_balls", Vector2i(14, 3)],   # accanto alla scrivania: ha provato a scrivere
-	["socks", Vector2i(15, 8)],
-	["clothes", Vector2i(4, 4)],
-	["clothes", Vector2i(5, 8)],
-	["noodle_cups", Vector2i(10, 4)],
-	["noodle_cups", Vector2i(3, 9)],
-	["cans", Vector2i(14, 4)],
-	["cans", Vector2i(12, 8)],
-	["pizza_box", Vector2i(6, 9)],
-	["books", Vector2i(16, 5)],
+	["console", Vector2i(9, 5)],          # dove scappa
+	["cushion", Vector2i(8, 6)],          # dove si siede, schiacciato
+	["clothes", Vector2i(4, 8)],          # buttata accanto al letto
+	["paper_balls", Vector2i(14, 3)],     # accanto alla scrivania: una lettera che non riesce a scrivere
+	["food_tray", Vector2i(17, 2)],       # davanti alla porta, intatto, con un biglietto
 ]
 
 const OBJECTS := [
 	["shelf", Vector2i(1, 2)],
+	["covered_mirror", Vector2i(5, 2)],   # non riesce a guardarsi
+	["dead_plant", Vector2i(7, 2)],       # sotto la finestra: nessuno la annaffia da mesi
 	["bed", Vector2i(1, 6)],
+	["nightstand", Vector2i(3, 6)],       # una foto a faccia in giù
 	["desk_pc", Vector2i(11, 2)],
 	["chair", Vector2i(12, 4)],
 	["lamp", Vector2i(15, 2)],
 	["trash_bag", Vector2i(18, 8)],
-	["trash_bag", Vector2i(17, 9)],
-	["trash_bag", Vector2i(18, 9)],
 ]
