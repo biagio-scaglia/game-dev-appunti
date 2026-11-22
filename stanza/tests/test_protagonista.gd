@@ -22,7 +22,7 @@ func test_gli_sprite_ci_sono() -> void:
 
 func test_tutte_le_animazioni_in_5_direzioni() -> void:
 	var frames := Frames.build()
-	var counts := {"idle": 4, "walk": 4, "run": 6, "attack": 7}
+	var counts := {"idle": 4, "walk": 4, "run": 6, "attack": 7, "slash": 7}
 	for kind: String in counts:
 		for row in ["down", "down_side", "side", "up_side", "up"]:
 			assert_eq(frames.get_frame_count(StringName("%s_%s" % [kind, row])), counts[kind], "%s_%s" % [kind, row])
@@ -71,7 +71,7 @@ func test_la_magia_carica_poi_lancia_il_proiettile() -> void:
 	var holder := hero.get_parent()
 	assert_eq(hero.sprite.animation, &"attack_side", "attacco di lato")
 	assert_true(holder.get_children().any(func(n): return n.name.begins_with("Charge")), "parte la carica")
-	assert_true(await wait_signal(hero.cast_finished, 3.0), "l'attacco finisce")
+	assert_true(await wait_signal(hero.attack_finished, 3.0), "l'attacco finisce")
 	var shots := holder.get_children().filter(func(n): return n.name.begins_with("Projectile"))
 	assert_eq(shots.size(), 1, "è partito un proiettile")
 	if shots.size() == 1:
@@ -87,3 +87,32 @@ func test_mentre_lancia_non_si_muove() -> void:
 	await wait_seconds(0.2)
 	Input.action_release(&"move_left")
 	assert_eq(hero.position, start, "ferma durante la magia")
+
+
+func test_la_spada_fende_verso_dove_guarda() -> void:
+	Engine.time_scale = 4.0
+	var hero := _hero()
+	hero.update_animation(Vector2.LEFT, false)
+	hero.update_animation(Vector2.ZERO, false)
+	hero.sword_stage = 2
+	hero.slash()
+	var holder := hero.get_parent()
+	assert_eq(hero.sprite.animation, &"slash_side", "la posa con la scia di vetro")
+	assert_true(hero.sprite.flip_h, "verso sinistra, specchiata")
+	assert_false(holder.get_children().any(func(n): return n.name.begins_with("Charge")), "niente carica di magia")
+	var kind := {"k": &""}
+	hero.attack_finished.connect(func(k): kind["k"] = k)
+	assert_true(await wait_signal(hero.attack_finished, 3.0), "il fendente finisce")
+	assert_eq(kind["k"], &"slash", "era la spada")
+	var swords := holder.get_children().filter(func(n): return n.name.begins_with("GlassSword"))
+	assert_eq(swords.size(), 1, "una lama")
+	if swords.size() == 1:
+		assert_eq(swords[0].direction, Vector2.LEFT, "verso dove guardava")
+		assert_eq(swords[0].stage, 2, "lo stadio della spada")
+
+
+func test_non_si_attacca_due_volte_insieme() -> void:
+	var hero := _hero()
+	hero.cast()
+	hero.slash()
+	assert_eq(hero.attacking, &"cast", "la spada aspetta che finisca la magia")
