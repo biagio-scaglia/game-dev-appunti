@@ -26,6 +26,7 @@ Mentire o dire la verità cambia il tuo potere (spada vs magia), la tua route e 
 - [[Trama - bozza]]
 - [[Ambientazione]]
 - [[Il mistero della ragazzina]]
+- [[La stanza di Lethe]]
 - [[Divinità supervisore]]
 
 ### 🧍 Personaggi
