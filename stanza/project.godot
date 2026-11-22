@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="Stanza"
-config/description="La stanza di un hikikomori: la protagonista cammina, corre e lancia magie."
-run/main_scene="res://main.tscn"
+config/name="Aletheia"
+config/description="Aletheia (titolo provvisorio): intro dello studio, titolo, e la stanza di Lethe."
+run/main_scene="res://studio_intro/studio_intro.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]

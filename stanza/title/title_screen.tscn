@@ -1,0 +1,104 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://title/title_screen.gd" id="1_title"]
+[ext_resource type="Script" path="res://title/title_backdrop.gd" id="2_backdrop"]
+[ext_resource type="Script" path="res://title/title_menu.gd" id="3_menu"]
+[ext_resource type="FontFile" path="res://ui/fonts/kenpixel_high_square.ttf" id="4_font"]
+[ext_resource type="AudioStream" path="res://audio/stanza_theme.wav" id="5_theme"]
+
+[sub_resource type="Gradient" id="glow_gradient"]
+colors = PackedColorArray(0.5, 0.32, 0.78, 0.22, 0.3, 0.18, 0.5, 0)
+
+[sub_resource type="GradientTexture2D" id="glow_texture"]
+gradient = SubResource("glow_gradient")
+width = 320
+height = 160
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="TitleScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.067, 0.051, 0.086, 1)
+
+[node name="Backdrop" type="Node2D" parent="."]
+script = ExtResource("2_backdrop")
+
+[node name="Glow" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 160.0
+offset_top = 50.0
+offset_right = 480.0
+offset_bottom = 210.0
+mouse_filter = 2
+texture = SubResource("glow_texture")
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 96.0
+offset_right = 640.0
+offset_bottom = 148.0
+theme_override_colors/font_color = Color(0.93, 0.9, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.28, 0.14, 0.46, 1)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 48
+text = "ALETHEIA"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TaglineLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_top = 150.0
+offset_right = 640.0
+offset_bottom = 170.0
+theme_override_colors/font_color = Color(0.72, 0.62, 0.92, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 16
+text = "Death is a Lie"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 240.0
+offset_top = 222.0
+offset_right = 400.0
+offset_bottom = 286.0
+theme_override_constants/separation = 2
+script = ExtResource("3_menu")
+
+[node name="Black" type="ColorRect" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_theme")
+volume_db = -40.0

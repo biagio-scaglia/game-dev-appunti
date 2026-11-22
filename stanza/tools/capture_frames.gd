@@ -1,8 +1,9 @@
 extends SceneTree
 ## Avvia main.tscn, fa camminare la protagonista e lanciare due magie, e salva uno
 ## screenshot ogni tanto. Non headless (serve il renderer per luci e blend additivo).
-## Uso: Godot.exe --path . -s res://tools/capture_frames.gd -- <cartella_output> [fitto]
-## Con "fitto" scatta ogni 0,08 s (per montare una GIF).
+## Uso: Godot.exe --path . -s res://tools/capture_frames.gd -- <cartella_output> [fitto] [scena]
+## Con "fitto" scatta ogni 0,08 s (per montare una GIF). Con una scena (es.
+## res://title/title_screen.tscn) fotografa quella invece della stanza ("-" = non fitto).
 
 ## (secondo, azioni premute)
 const SCRIPT := [
@@ -36,7 +37,8 @@ func _initialize() -> void:
 		while t < DENSE_END:
 			_shots.append(t)
 			t += DENSE_STEP
-	root.add_child(load("res://main.tscn").instantiate())
+	var scene := args[2] if args.size() > 2 else "res://main.tscn"
+	root.add_child(load(scene).instantiate())
 
 
 func _process(delta: float) -> bool:
