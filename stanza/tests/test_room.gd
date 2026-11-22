@@ -27,7 +27,9 @@ func test_mobili_solidi_e_oggetti_per_terra_no() -> void:
 	assert_true(room.is_solid(Vector2i(2, 7)), "il letto blocca")
 	assert_true(room.is_solid(Vector2i(12, 3)), "la scrivania blocca")
 	assert_false(room.is_solid(Vector2i(8, 5)), "sul tappeto si cammina")
-	assert_false(room.is_solid(Vector2i(4, 4)), "sui vestiti per terra si cammina")
+	assert_false(room.is_solid(Vector2i(4, 8)), "sui vestiti per terra si cammina")
+	assert_true(room.is_solid(Vector2i(5, 3)), "lo specchio coperto blocca")
+	assert_false(room.is_solid(Vector2i(17, 2)), "sul vassoio davanti alla porta si passa")
 
 
 func test_la_protagonista_parte_in_un_punto_libero() -> void:

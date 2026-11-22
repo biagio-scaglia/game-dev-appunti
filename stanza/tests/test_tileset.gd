@@ -8,7 +8,8 @@ func test_il_json_ha_tutti_i_tile_della_stanza() -> void:
 	var data := Tiles.load_data()
 	assert_eq(int(data["tile"]), 32, "celle da 32")
 	for tile_name in ["floor", "wall", "window", "door", "bed", "desk_pc", "chair", "shelf", "rug",
-			"clothes", "socks", "cushion", "cable", "paper_balls", "mug"]:
+			"clothes", "cushion", "paper_balls", "wall_calendar", "covered_mirror", "nightstand",
+			"dead_plant", "food_tray"]:
 		assert_true(data["tiles"].has(tile_name), "manca %s" % tile_name)
 
 
