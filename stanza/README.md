@@ -11,6 +11,7 @@ La protagonista, Lethe, cammina in 8 direzioni, corre e lancia magie che illumin
 - **WASD / frecce**: cammina
 - **Shift**: corri
 - **Spazio / J**: magia (carica sulle mani, poi il proiettile parte verso dove guarda)
+- **K**: spada di vetro dello specchio (fende verso dove guarda; **Tab**, solo in debug, cambia lo stadio)
 
 ## Comandi
 
@@ -40,6 +41,7 @@ audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal gen
 audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, valzer lento in Re minore
                                  su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
 audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
+audio/sword_slash.wav            il fendente: sibilo, vetro che stride, schegge
 audio/magic_*.wav                i suoni della magia: il luccichio della carica, il soffio del lancio,
                                  il rintocco di vetro dell'impatto
 world/
@@ -58,13 +60,18 @@ fx/
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
 ├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack x 5 direzioni)
-├── protagonista.gd / .tscn      CharacterBody2D: movimento, corsa, magia
+├── protagonista.gd / .tscn      CharacterBody2D: movimento, corsa, magia e spada
 └── sprites/                     gli sheet: SOLO IN LOCALE (vedi sotto)
 magic/
 ├── magic_frames.gd              animazioni di carica (8), proiettile (4), impatto (9), ognuna col suo ritmo
 ├── projectile.gd / .tscn        vola con una scia di scintille e una luce viola, esplode su muri e mobili
 └── one_shot_effect.gd           carica e impatto: luce (sale nella carica, si spegne nell'impatto),
                                  suono, scoppio di scintille e tremolio a scelta
+weapon/
+├── glass_sword.gd / .tscn       un fendente: lama che compare e luccica, scia di vetro, schegge, suono;
+│                                colpisce il livello "nemici" mentre la lama passa
+├── sword_frames.gd              il fendente in tre stadi (scheggia, pugnale, lama) x 6 fotogrammi
+└── sprites/                     lo sheet della spada (dal generatore in locale)
 core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
@@ -91,6 +98,9 @@ tests/                           un file per modulo + mini runner headless
   il vault, "La stanza di Lethe"): lo specchio coperto da un lenzuolo, il calendario barrato fino a un
   giorno cerchiato, il vassoio intatto davanti alla porta, la foto a faccia in giù sul comodino, le
   palline di carta accanto alla scrivania, la pianta secca sotto la finestra.
+- **Spada di vetro**: fatta del vetro dello specchio coperto (vedi il vault, "La spada di vetro"):
+  ogni bugia ne stacca una scheggia, e la lama cresce in tre stadi. Lethe usa la posa d'attacco con
+  la scia del braccio in vetro azzurro (la magia viola è la verità, la spada no).
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
