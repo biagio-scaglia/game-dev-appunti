@@ -1,5 +1,5 @@
 extends RefCounted
-## Animazioni della protagonista dai suoi 4 sheet (celle 64x64, 5 righe = 5 direzioni).
+## Animazioni della protagonista dai suoi 5 sheet (celle 64x64, 5 righe = 5 direzioni).
 ## Gli sheet stanno in sprites/, che resta fuori da git: si caricano a runtime, così
 ## il progetto si apre anche senza (con un errore chiaro invece di uno di parsing).
 
@@ -8,8 +8,8 @@ const SPRITES := "res://characters/protagonista/sprites/protagonista_%s.png"
 const CELL := Vector2(64, 64)
 ## Bordo inferiore dei piedi nella cella.
 const FEET_Y := 64.0
-const KINDS := ["idle", "walk", "run", "attack"]
-const FPS := {"idle": 6.0, "walk": 8.0, "run": 12.0, "attack": 14.0}
+const KINDS := ["idle", "walk", "run", "attack", "slash"]   # slash: la spada (scia di vetro)
+const FPS := {"idle": 6.0, "walk": 8.0, "run": 12.0, "attack": 14.0, "slash": 14.0}
 
 
 static func sprites_available() -> bool:
@@ -29,7 +29,7 @@ static func build() -> SpriteFrames:
 			var anim := StringName("%s_%s" % [kind, Facing.ROWS[row]])
 			frames.add_animation(anim)
 			frames.set_animation_speed(anim, FPS[kind])
-			frames.set_animation_loop(anim, kind != "attack")
+			frames.set_animation_loop(anim, kind not in ["attack", "slash"])
 			for column in columns:
 				var atlas := AtlasTexture.new()
 				atlas.atlas = sheet
