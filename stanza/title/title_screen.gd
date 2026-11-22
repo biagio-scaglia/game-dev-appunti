@@ -5,7 +5,8 @@ extends Control
 ## Musica: il lamento del giullare (carillon stonato, valzer lento).
 ##
 ## Pezzi: title_backdrop.gd (raggio e pulviscolo), title_figure.gd (Lethe),
-## title_name.gd (il titolo col nome nascosto), title_menu.gd (il menu).
+## title_name.gd (il titolo col nome nascosto), title_menu.gd (il menu col cuore che batte).
+## I disegni (finestra, pavimento, pannello, cuore, ornamento) stanno in art/.
 
 ## Emesso quando si sceglie Start, a schermo già nero (prima di cambiare scena).
 signal start_requested
@@ -29,6 +30,7 @@ const FOOTER_ALPHA := 0.35
 @onready var title_name: HBoxContainer = %TitleName
 @onready var tagline_label: Label = %TaglineLabel
 @onready var menu: VBoxContainer = %Menu
+@onready var menu_panel: PanelContainer = %MenuPanel
 @onready var footer: Label = %Footer
 @onready var glow: TextureRect = %Glow
 @onready var figure: Node2D = %Figure
@@ -66,8 +68,8 @@ func _hide_all() -> void:
 	tagline_label.modulate.a = 0.0
 	figure.modulate.a = 0.0
 	footer.modulate.a = 0.0
-	menu.modulate.a = 0.0
-	menu.visible = false
+	menu_panel.modulate.a = 0.0
+	menu_panel.visible = false
 	music.volume_db = -40.0
 
 
@@ -107,9 +109,9 @@ func skip_reveal() -> void:
 
 func _show_menu() -> void:
 	_revealed = true
-	menu.visible = true
+	menu_panel.visible = true
 	var t := create_tween().set_parallel()
-	t.tween_property(menu, "modulate:a", 1.0, 0.5)
+	t.tween_property(menu_panel, "modulate:a", 1.0, 0.5)
 	t.tween_property(footer, "modulate:a", FOOTER_ALPHA, 1.0)
 	menu.focus_first()
 
