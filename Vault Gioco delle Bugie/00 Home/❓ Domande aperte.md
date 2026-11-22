@@ -22,8 +22,8 @@ Tutti i "boh" e i "??" degli appunti, raccolti in un posto solo.
 - [ ] La mano che stringe il cuore: a che pro? → [[La mano che stringe il cuore]]
 
 ## Identità
-- [ ] Titolo definitivo → [[Titolo del gioco]]
-- [ ] Nome protagonista → [[Nome della protagonista]]
+- [ ] Titolo definitivo: *Aletheia* o *Death is a lie* → [[Titolo del gioco]]
+- [x] Nome protagonista: **Lethe** → [[Nome della protagonista]]
 - [ ] Cosa leggere di psicologia? ("Ma cosa?? Eee")
 
 ## Audio

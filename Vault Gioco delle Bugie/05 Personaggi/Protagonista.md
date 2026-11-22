@@ -7,7 +7,7 @@ stato: da definire
 - È il personaggio **giocabile** (MC o la MC: "altro punto dolente")
 - Dagli appunti successivi sembra orientarsi verso una **ragazzina** → [[Il mistero della ragazzina]]
 - Possibile background: **hikikomori** (isekai)
-- Nome: da trovare → [[Nome della protagonista]]
+- Nome: **Lethe** (il fiume dell'oblio; il contrario di *aletheia*, la verità) → [[Nome della protagonista]]
 - Sprite: [[Pixel art]]
 
 ## Domande
