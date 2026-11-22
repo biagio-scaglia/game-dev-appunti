@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://magic/one_shot_effect.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://audio/magic_charge.wav" id="2_sfx"]
 
 [sub_resource type="CanvasItemMaterial" id="additive"]
 blend_mode = 1
@@ -11,6 +12,11 @@ script = ExtResource("1_script")
 animation = &"charge"
 light_energy = 0.9
 light_radius = 60.0
+light_rises = true
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 material = SubResource("additive")
+
+[node name="Sfx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_sfx")
+volume_db = -6.0
