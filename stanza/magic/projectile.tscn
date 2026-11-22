@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://magic/projectile.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://audio/magic_cast.wav" id="2_sfx"]
 
 [sub_resource type="CanvasItemMaterial" id="additive"]
 blend_mode = 1
@@ -19,3 +20,7 @@ material = SubResource("additive")
 
 [node name="Shape" type="CollisionShape2D" parent="."]
 shape = SubResource("orb")
+
+[node name="Sfx" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_sfx")
+volume_db = -6.0

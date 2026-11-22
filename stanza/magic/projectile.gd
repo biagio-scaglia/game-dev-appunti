@@ -1,21 +1,25 @@
 extends Area2D
-## Il proiettile magico: vola dritto, illumina la stanza di viola, esplode quando
-## tocca un muro o un mobile (livello "mondo") o dopo max_distance pixel.
+## Il proiettile magico: vola dritto lasciando una scia di scintille, illumina la stanza
+## di viola, esplode quando tocca un muro o un mobile (livello "mondo") o dopo
+## max_distance pixel. Al lancio suona il soffio (nodo Sfx).
 
 signal exploded(at: Vector2)
 
 const MagicFrames := preload("magic_frames.gd")
 const Glow := preload("../core/glow.gd")
+const Sparks := preload("../fx/sparks.gd")
 const IMPACT := preload("impact.tscn")
 
 @export var speed := 190.0
 @export var max_distance := 420.0
 
 @onready var sprite: AnimatedSprite2D = $Sprite
+@onready var sfx: AudioStreamPlayer = $Sfx
 
 var direction := Vector2.RIGHT
 var travelled := 0.0
 var _done := false
+var trail: CPUParticles2D
 
 
 func _ready() -> void:
@@ -24,6 +28,10 @@ func _ready() -> void:
 	sprite.rotation = direction.angle()          # lo sheet vola verso destra
 	add_child(Glow.light(Color(0.72, 0.48, 1.0), 1.3, 80.0))
 	body_entered.connect(func(_body): explode())
+	trail = Sparks.trail()
+	add_child(trail)
+	trail.emitting = true
+	sfx.play()
 
 
 func _physics_process(delta: float) -> void:
@@ -42,4 +50,15 @@ func explode() -> void:
 	get_parent().add_child(fx)
 	fx.global_position = global_position
 	exploded.emit(global_position)
+	_leave_trail()
 	queue_free()
+
+
+## La scia resta nel mondo e si spegne da sola (le scintille già nate finiscono la vita).
+func _leave_trail() -> void:
+	var at := trail.global_position
+	trail.emitting = false
+	remove_child(trail)
+	get_parent().add_child(trail)
+	trail.global_position = at
+	get_tree().create_timer(trail.lifetime + 0.05).timeout.connect(trail.queue_free)
