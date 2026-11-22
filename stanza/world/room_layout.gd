@@ -5,7 +5,7 @@ extends RefCounted
 
 const SIZE := Vector2i(20, 11)
 const FLOOR := Rect2i(1, 2, 18, 8)
-const PLAYER_START := Vector2i(9, 6)
+const PLAYER_START := Vector2i(8, 7)   # davanti al tappeto, non sopra la console
 
 const WALL_FEATURES := [
 	["wall_poster", Vector2i(4, 0)],
@@ -16,7 +16,12 @@ const WALL_FEATURES := [
 
 const DECOR := [
 	["rug", Vector2i(7, 5)],
-	["console", Vector2i(9, 6)],
+	["console", Vector2i(9, 5)],
+	["cushion", Vector2i(8, 6)],        # dove si siede a giocare
+	["cable", Vector2i(10, 5)],         # dal controller verso la scrivania
+	["mug", Vector2i(6, 5)],
+	["paper_balls", Vector2i(14, 3)],   # accanto alla scrivania: ha provato a scrivere
+	["socks", Vector2i(15, 8)],
 	["clothes", Vector2i(4, 4)],
 	["clothes", Vector2i(5, 8)],
 	["noodle_cups", Vector2i(10, 4)],
