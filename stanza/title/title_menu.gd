@@ -4,8 +4,12 @@ extends VBoxContainer
 ## veri, il focus lo gestisce Godot.
 
 signal chosen(id: StringName)
+## Il focus è passato a un'altra voce (per il suono del carillon). Non al primo focus.
+signal moved
 
 const MARK := "> "
+
+var _sound_ready := false
 
 
 ## Crea le voci: [[id, testo], ...]. La prima prende il focus.
@@ -36,6 +40,7 @@ func setup(entries: Array, font: Font, font_size: int) -> void:
 func focus_first() -> void:
 	if get_child_count() > 0:
 		(get_child(0) as Button).grab_focus()
+	_sound_ready = true
 
 
 ## La voce che ha il focus ora (vuoto se nessuna).
@@ -46,6 +51,8 @@ func focused_id() -> StringName:
 
 func _mark(button: Button) -> void:
 	button.text = MARK + String(button.get_meta(&"label"))
+	if _sound_ready:
+		moved.emit()
 
 
 func _unmark(button: Button) -> void:
