@@ -14,7 +14,7 @@ func test_parte_dal_nero_col_titolo_nascosto() -> void:
 	var title := _title()
 	assert_near(title.get_node("%Black").color.a, 1.0, 0.001, "parte nero")
 	assert_near(title.get_node("%TitleName").modulate.a, 0.0, 0.001, "titolo nascosto")
-	assert_false(title.get_node("%Menu").visible, "menu nascosto")
+	assert_false(title.get_node("%MenuPanel").visible, "menu nascosto")
 	assert_eq(title.get_node("%TitleName").full_text(), "ALETHEIA", "titolo")
 	assert_eq(title.get_node("%TaglineLabel").text, "Death is a Lie", "sottotitolo")
 
@@ -27,7 +27,7 @@ func test_l_apparizione_arriva_al_menu() -> void:
 		await tree.process_frame
 	assert_true(title.is_revealed(), "apparizione finita")
 	assert_near(title.get_node("%Black").color.a, 0.0, 0.001, "niente più nero")
-	assert_true(title.get_node("%Menu").visible, "menu visibile")
+	assert_true(title.get_node("%MenuPanel").visible, "menu visibile")
 
 
 func test_un_tasto_salta_l_apparizione_e_start_ha_il_focus() -> void:
@@ -39,8 +39,11 @@ func test_un_tasto_salta_l_apparizione_e_start_ha_il_focus() -> void:
 	assert_near(title.get_node("%TitleName").modulate.a, 1.0, 0.001, "titolo visibile")
 	var menu: VBoxContainer = title.get_node("%Menu")
 	assert_eq(menu.focused_id(), &"start", "Start ha il focus")
-	assert_eq(menu.get_node("start").text, "> Start", "segno davanti alla voce scelta")
-	assert_eq(menu.get_node("quit").text, "Quit", "le altre senza segno")
+	assert_true(menu.has_heart(&"start"), "il cuore davanti alla voce scelta")
+	assert_false(menu.has_heart(&"quit"), "le altre senza cuore")
+	assert_eq(menu.get_node("start").text, "Start", "il testo resta quello")
+	menu.get_node("quit").grab_focus()
+	assert_true(menu.has_heart(&"quit") and not menu.has_heart(&"start"), "il cuore segue il focus")
 
 
 func test_start_dissolve_al_nero_e_chiede_il_gioco() -> void:
