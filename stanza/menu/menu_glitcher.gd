@@ -1,8 +1,8 @@
 extends Node
-## Mentre il menu è aperto, ogni tanto qualcosa non va: una scritta si guasta per un
-## attimo, oppure succede uno degli `events` (lo stato che legge "Dead", la finestra che
-## trema, la sagoma che lampeggia). Le scritte le dà `targets`: chi la chiama decide
-## quali sono visibili.
+## Mentre il menu è aperto, ogni tanto qualcosa non va: una scritta visibile sotto `root`
+## si guasta per un attimo, oppure succede uno degli `events` (lo stato che legge "Dead",
+## la finestra che sobbalza). Le scritte con il meta "no_glitch" non si toccano mai
+## (il tempo che cambia ogni frame, la barra d'aiuto).
 
 const Glitch := preload("glitch.gd")
 
@@ -14,8 +14,7 @@ const GLITCH_AMOUNT := 0.45
 const EVENT_CHANCE := 0.25
 
 var rng := RandomNumberGenerator.new()
-## Callable che rende un Array di Control con `text` (Label, Button).
-var targets: Callable
+var root: Control
 var events: Array[Callable] = []
 var running := false
 var _wait := 0.0
@@ -28,9 +27,8 @@ func start() -> void:
 
 func stop() -> void:
 	running = false
-	if targets.is_valid():
-		for node: Control in targets.call():
-			restore(node)
+	for node in targets():
+		restore(node)
 
 
 func _process(delta: float) -> void:
@@ -47,9 +45,24 @@ func trigger() -> void:
 	if not events.is_empty() and rng.randf() < EVENT_CHANCE:
 		events[rng.randi() % events.size()].call()
 		return
-	var nodes: Array = targets.call() if targets.is_valid() else []
+	var nodes := targets()
 	if not nodes.is_empty():
 		glitch(nodes[rng.randi() % nodes.size()])
+
+
+## Le scritte che si possono guastare: Label e Button visibili, senza "no_glitch".
+func targets() -> Array[Control]:
+	var out: Array[Control] = []
+	if root == null:
+		return out
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		stack.append_array(node.get_children())
+		if (node is Label or node is Button) and node.is_visible_in_tree() \
+				and not node.has_meta(&"no_glitch"):
+			out.append(node)
+	return out
 
 
 ## Guasta la scritta di `node` per `duration` secondi, poi la rimette a posto.
@@ -64,9 +77,8 @@ func glitch(node: Control, duration := GLITCH_TIME, amount := GLITCH_AMOUNT) -> 
 
 ## Tutte le scritte guaste insieme, un po' più a lungo.
 func burst(duration := 0.3) -> void:
-	if targets.is_valid():
-		for node: Control in targets.call():
-			glitch(node, duration)
+	for node in targets():
+		glitch(node, duration)
 
 
 func restore(node: Control) -> void:
