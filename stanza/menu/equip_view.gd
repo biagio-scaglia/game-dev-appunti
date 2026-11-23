@@ -11,7 +11,7 @@ signal equipped
 const Style := preload("menu_style.gd")
 const Data := preload("menu_data.gd")
 const Equipment := preload("equipment.gd")
-const HeartMenu := preload("res://title/title_menu.gd")
+const HeartMenu := preload("res://ui/heart_menu.gd")
 const NONE := "none"
 
 var state: RefCounted

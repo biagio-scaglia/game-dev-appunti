@@ -1,33 +1,18 @@
-extends VBoxContainer
+extends "menu_page.gd"
 ## Gli slot di salvataggio, per salvare o caricare. Ogni slot mostra nome, giorno e tempo
 ## di gioco. Il terzo non è suo: c'è già dentro qualcosa, e non si tocca.
 
 signal slot_chosen(slot: int)
 
-const Style := preload("menu_style.gd")
 const Data := preload("menu_data.gd")
 const SaveStore := preload("save_store.gd")
 const GameState := preload("game_state.gd")
-const HeartMenu := preload("res://title/title_menu.gd")
 
 ## Lo slot che non è di Lethe.
 const CURSED_SLOT := 3
 const CURSED_TEXT := "File 3   Lethe   Day 0   ??:??:??"
 
-var header: Label
-var list: HeartMenu
 var mode := &"save"
-
-
-func _init() -> void:
-	add_theme_constant_override(&"separation", 8)
-	header = Style.label("", Style.ACCENT)
-	add_child(header)
-	add_child(HSeparator.new())
-	list = HeartMenu.new()
-	list.add_theme_constant_override(&"separation", -4)
-	list.chosen.connect(func(id: StringName): slot_chosen.emit(int(String(id).trim_prefix("slot"))))
-	add_child(list)
 
 
 ## mode: &"save" o &"load".
@@ -36,9 +21,12 @@ func refresh(new_mode: StringName) -> void:
 	header.text = "Save to which file?" if mode == &"save" else "Load which file?"
 	var entries := []
 	for slot in range(1, SaveStore.SLOTS + 1):
-		entries.append([StringName("slot%d" % slot), slot_text(slot)])
-	list.setup(entries, Style.FONT, Style.FONT_SIZE)
-	list.set_active(false)
+		entries.append([slot_id(slot), slot_text(slot)])
+	fill(entries)
+
+
+static func slot_id(slot: int) -> StringName:
+	return StringName("slot%d" % slot)
 
 
 static func slot_text(slot: int) -> String:
@@ -51,10 +39,10 @@ static func slot_text(slot: int) -> String:
 		GameState.format_time(float(data.get("play_time", 0.0)))]
 
 
-func enter() -> void:
-	list.set_active(true)
-	list.focus_first()
+## Il pulsante di uno slot (per gli effetti che lo toccano).
+func slot_button(slot: int) -> Button:
+	return list.get_node_or_null(NodePath(String(slot_id(slot)))) as Button
 
 
-func leave() -> void:
-	list.set_active(false)
+func _on_chosen(id: StringName) -> void:
+	slot_chosen.emit(int(String(id).trim_prefix("slot")))
