@@ -30,9 +30,8 @@ $GODOT --headless --path . -s res://tests/run_tests.gd   # test
 | K | spada di vetro dello specchio |
 | Esc / X | menu di pausa (oggetti, incantesimi, equipaggiamento, stato, salvataggi) |
 
-Gli sprite di Lethe **non sono nel repo** (sono disegnati sopra un template che non si può
-ridistribuire): senza, il gioco si apre lo stesso ma lei non si vede. Dettagli nel
-[README della stanza](stanza/README.md#sprite-della-protagonista-solo-in-locale).
+Gli sprite di Lethe sono ridisegnati sopra un template di Eris Esra: dettagli e licenza nel
+[README della stanza](stanza/README.md#sprite-della-protagonista).
 
 ## Lethe
 

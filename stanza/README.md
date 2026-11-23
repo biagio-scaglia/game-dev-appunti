@@ -75,7 +75,7 @@ characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
 ├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack, slash x 5 direzioni)
 ├── protagonista.gd / .tscn      CharacterBody2D: movimento, corsa, magia e spada
-└── sprites/                     gli sheet: SOLO IN LOCALE (vedi sotto)
+└── sprites/                     gli sheet (idle, walk, run, attack, slash), vedi sotto
 magic/
 ├── magic_frames.gd              animazioni di carica (8), proiettile (4), impatto (9), ognuna col suo ritmo
 ├── projectile.gd / .tscn        vola con una scia di scintille e una luce viola, esplode su muri e mobili
@@ -149,11 +149,13 @@ tests/                           un file per modulo + mini runner headless
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
-## Sprite della protagonista: solo in locale
+## Sprite della protagonista
 
-Gli sheet in `characters/protagonista/sprites/` non sono nel repo: sono la protagonista disegnata
-sopra il [Character Template di Eris Esra](https://erisesra.itch.io/character-templates-pack), che
-si può usare nei giochi ma non ridistribuire. Senza quella cartella il progetto si apre lo stesso
-(con un errore che lo spiega), ma la protagonista non si vede e i suoi test falliscono.
+Gli sheet in `characters/protagonista/sprites/` sono Lethe ridisegnata sopra il
+[Character Templates Pack di Eris Esra](https://erisesra.itch.io/character-templates-pack). La
+licenza permette di usare i template nei giochi, commerciali e non; nei progetti gratuiti chiede
+di citare l'autrice con il link al template (fatto qui e nei crediti). Non permette di rivenderli,
+nemmeno modificati, né di usarli per asset pack o commissioni: questi sprite sono parte del gioco,
+non un pacchetto a sé.
 
-Il tileset e gli effetti magici invece sono disegnati da zero (generatori in locale) e sono nel repo.
+Il tileset, gli effetti magici e la spada invece sono disegnati da zero (generatori in locale).
