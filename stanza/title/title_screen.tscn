@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://title/title_screen.gd" id="1_title"]
 [ext_resource type="Script" path="res://title/title_backdrop.gd" id="2_backdrop"]
-[ext_resource type="Script" path="res://title/title_menu.gd" id="3_menu"]
+[ext_resource type="Script" path="res://ui/heart_menu.gd" id="3_menu"]
 [ext_resource type="FontFile" path="res://ui/fonts/kenpixel_high_square.ttf" id="4_font"]
 [ext_resource type="AudioStream" path="res://audio/title_theme.wav" id="5_theme"]
 [ext_resource type="Script" path="res://title/title_name.gd" id="6_name"]

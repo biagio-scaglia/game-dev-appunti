@@ -78,6 +78,19 @@ func focus_id(id: StringName) -> void:
 	_sound_ready = true
 
 
+## Il punto (globale) a metà della scritta di una voce: i pulsanti sono larghi quanto la
+## lista, la scritta no.
+func entry_point(id: StringName) -> Vector2:
+	var button := get_node(NodePath(String(id))) as Button
+	var font: Font = button.get_theme_font(&"font")
+	var text_width := font.get_string_size(button.text, HORIZONTAL_ALIGNMENT_LEFT, -1,
+		button.get_theme_font_size(&"font_size")).x
+	var icon_width := 0.0
+	if button.icon:
+		icon_width = button.icon.get_width() + button.get_theme_constant(&"h_separation")
+	return button.get_global_rect().position + Vector2(icon_width + text_width / 2.0, button.size.y / 2.0)
+
+
 ## Una lista non attiva non prende il focus (né da tastiera né col mouse).
 func set_active(active: bool) -> void:
 	for button: Button in get_children():

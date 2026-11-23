@@ -6,7 +6,7 @@ extends Control
 ## Musica: il lamento del giullare (carillon stonato, valzer lento).
 ##
 ## Pezzi: title_backdrop.gd (raggio e pulviscolo), title_figure.gd (Lethe),
-## title_name.gd (il titolo col nome nascosto), title_menu.gd (il menu col cuore che batte).
+## title_name.gd (il titolo col nome nascosto), heart_menu.gd (il menu col cuore che batte).
 ## I disegni (finestra, pavimento, pannello, cuore, ornamento) stanno in art/.
 
 ## Emesso quando si sceglie Start, a schermo già nero (prima di cambiare scena).
@@ -162,8 +162,7 @@ func quit_game() -> void:
 	_leaving = true
 	var shatter := ScreenShatter.new()
 	add_child(shatter)
-	var from := (menu.get_node("quit") as Control).get_global_rect().get_center()
-	shatter.play(from, music)
+	shatter.play(menu.entry_point(&"quit"), music)
 	await shatter.finished
 	quit_requested.emit()
 	if really_quit:
