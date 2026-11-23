@@ -16,6 +16,7 @@ fende con la spada di vetro dello specchio.
 | Spazio / J | magia (carica sulle mani, poi il proiettile parte verso dove guarda) |
 | K | spada di vetro (fende verso dove guarda) |
 | Tab | solo in debug: cambia lo stadio della spada |
+| Esc / X | menu di pausa (Esc, X o tasto destro: indietro) |
 
 ## Comandi
 
@@ -78,6 +79,20 @@ weapon/
 │                                colpisce il livello "nemici" mentre la lama passa
 ├── sword_frames.gd              il fendente in tre stadi (scheggia, pugnale, lama) x 6 fotogrammi
 └── sprites/                     lo sheet della spada (dal generatore in locale)
+menu/
+├── pause_menu.gd / .tscn        il menu di pausa stile RPG Maker: voci, finestra grande, barra d'aiuto
+├── party_view.gd, hero_card.gd  la pagina del gruppo (solo Lethe) e la sua riga (ritratto, barre)
+├── items_view.gd                gli oggetti della stanza (riguardati, cambiano descrizione)
+├── spells_view.gd               gli incantesimi: quale va su Spazio / J
+├── equip_view.gd                arma, corpo, accessorio, con l'anteprima dei parametri
+├── status_view.gd               parametri, equipaggiamento, incantesimo, verità e bugie
+├── save_view.gd, save_store.gd  i 3 file di salvataggio (JSON in user://saves)
+├── end_view.gd                  Game End: torna al titolo
+├── game_state.gd, equipment.gd  lo stato che si salva e i conti dei parametri (solo logica)
+├── menu_data.gd                 tutti i testi e i numeri del menu (solo dati)
+├── menu_style.gd, gauge.gd      tema, finestre, ritratti ritagliati dagli sheet, barre HP/MP
+├── menu_glitcher.gd, glitch.gd  le scritte che si guastano per un attimo
+└── menu_backdrop.gdshader       il gioco fermo dietro il menu: grigio, vignetta, righe, tremolio
 core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
@@ -107,6 +122,14 @@ tests/                           un file per modulo + mini runner headless
 - **Spada di vetro**: fatta del vetro dello specchio coperto (vedi il vault, "La spada di vetro"):
   ogni bugia ne stacca una scheggia, e la lama cresce in tre stadi. Lethe usa la posa d'attacco con
   la scia del braccio in vetro azzurro (la magia viola è la verità, la spada no).
+- **Menu di pausa**: come in RPG Maker, con il cuore del titolo come cursore. Oggetti, incantesimi
+  (quale parte con Spazio / J), equipaggiamento con l'anteprima dei parametri, stato, salvataggi.
+  In fondo una barra d'aiuto dice cosa fa quello che si guarda e quali tasti usare. Per ora
+  parametri, armi diverse dalla spada e incantesimi scelti si vedono solo nel menu: il
+  combattimento non li usa ancora. E qualcosa non va: il gioco dietro si fa grigio e trema, la
+  musica rallenta e stona, le scritte si guastano per un attimo (mai l'aiuto), lo stato a volte
+  legge "Dead", Lethe a volte è di spalle, gli oggetti riguardati cambiano descrizione, e il
+  File 3 non è suo.
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
