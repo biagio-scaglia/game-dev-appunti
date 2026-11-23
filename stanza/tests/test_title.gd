@@ -4,6 +4,7 @@ extends "res://tests/base_test.gd"
 const TITLE := "res://title/title_screen.tscn"
 const Backdrop := preload("res://title/title_backdrop.gd")
 const TitleName := preload("res://title/title_name.gd")
+const ScreenShatter := preload("res://fx/screen_shatter.gd")
 
 
 func _title() -> Control:
@@ -113,3 +114,30 @@ func test_lethe_c_e_solo_se_ci_sono_gli_sprite() -> void:
 	var title := _title()
 	var Frames := preload("res://characters/protagonista/protagonista_frames.gd")
 	assert_eq(title.get_node("%Figure").visible, Frames.sprites_available(), "visibile solo con gli sprite")
+
+
+func test_i_frammenti_coprono_tutto_lo_schermo() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 3
+	var size := Vector2(640, 360)
+	var web := ScreenShatter.web(Vector2(90, 300), size, 11, 4, rng)
+	assert_eq(web.size(), 11 * 4, "un triangolo e tre anelli per raggio")
+	for x in range(0, 641, 40):
+		for y in range(0, 361, 40):
+			var p := Vector2(x, y) + Vector2(0.37, 0.53)
+			assert_true(web.any(func(poly): return Geometry2D.is_point_in_polygon(p, poly)),
+				"nessun buco in %s" % p)
+
+
+func test_quit_rompe_lo_schermo_e_poi_chiede_di_chiudere() -> void:
+	Engine.time_scale = 4.0
+	var title := add_scene(TITLE, func(n):
+		n.next_scene = ""
+		n.really_quit = false)
+	await tree.process_frame
+	title.skip_reveal()
+	title.get_node("%Menu").get_node("quit").pressed.emit()
+	await tree.process_frame
+	var shatter: CanvasLayer = title.get_children().filter(func(n): return n is ScreenShatter)[0]
+	assert_true(shatter.shard_count() > 0, "lo schermo è in pezzi")
+	assert_true(await wait_signal(title.quit_requested, 6.0), "poi quit_requested")

@@ -2,6 +2,7 @@ extends Control
 ## La schermata del titolo, dopo l'intro dello studio. Dal nero compaiono il raggio di
 ## luna con Lethe di spalle, il titolo e il sottotitolo, poi il menu (Start / Quit).
 ## Un tasto durante l'apparizione la salta. Start: dissolvenza al nero, poi la stanza.
+## Quit: lo schermo si rompe come in un incubo (fx/screen_shatter.gd), poi si chiude.
 ## Musica: il lamento del giullare (carillon stonato, valzer lento).
 ##
 ## Pezzi: title_backdrop.gd (raggio e pulviscolo), title_figure.gd (Lethe),
@@ -10,6 +11,8 @@ extends Control
 
 ## Emesso quando si sceglie Start, a schermo già nero (prima di cambiare scena).
 signal start_requested
+## Emesso a schermo rotto, prima di chiudere il gioco.
+signal quit_requested
 
 ## Il titolo del gioco. Non è ancora deciso: si cambia qui.
 @export var game_title := "ALETHEIA"
@@ -18,8 +21,11 @@ signal start_requested
 @export var tagline := "Death is a Lie"
 ## La scena del gioco. Vuota = resta qui ed emette solo start_requested (per i test).
 @export_file("*.tscn") var next_scene := "res://main.tscn"
+## Falso nei test: Quit rompe lo schermo ed emette quit_requested, ma non chiude.
+@export var really_quit := true
 
 const Music := preload("res://core/music.gd")
+const ScreenShatter := preload("res://fx/screen_shatter.gd")
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const MENU := [[&"start", "Start"], [&"quit", "Quit"]]
 ## Di quanti pixel sale il titolo mentre compare.
@@ -132,8 +138,7 @@ func _on_chosen(id: StringName) -> void:
 		&"start":
 			start_game()
 		&"quit":
-			await sfx_confirm.finished
-			get_tree().quit()
+			quit_game()
 
 
 ## Start: dissolvenza al nero (anche la musica), poi la stanza.
@@ -148,3 +153,18 @@ func start_game() -> void:
 	start_requested.emit()
 	if next_scene != "":
 		get_tree().change_scene_to_file(next_scene)
+
+
+## Quit: lo schermo si rompe partendo dalla voce, i pezzi cadono nel buio, poi si chiude.
+func quit_game() -> void:
+	if _leaving:
+		return
+	_leaving = true
+	var shatter := ScreenShatter.new()
+	add_child(shatter)
+	var from := (menu.get_node("quit") as Control).get_global_rect().get_center()
+	shatter.play(from, music)
+	await shatter.finished
+	quit_requested.emit()
+	if really_quit:
+		get_tree().quit()
