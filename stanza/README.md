@@ -35,6 +35,7 @@ $GODOT --path . -s res://tools/capture_frames.gd -- <cartella> - res://title/tit
 studio_intro/                    l'intro dello studio (copiata da ../intro-studio, sottotitolo "presents")
 title/
 ├── title_screen.gd / .tscn      il titolo: appare dal nero, menu Start / Quit, poi la stanza
+│                                (Quit: lo schermo si rompe come in un incubo, poi si chiude)
 ├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
 ├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
@@ -63,7 +64,9 @@ fx/
 ├── moon_beam.gd                 il raggio di luna dalla tenda, con il pulviscolo
 ├── sparks.gd                    scintille di magia (scia e scoppio), quadratini da 2 pixel
 ├── screen_shake.gd              un piccolo tremolio dello schermo all'impatto
-└── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
+├── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
+└── screen_shatter.gd            lo schermo che si rompe: crepe a ragnatela, frammenti che cadono
+                                 nel buio, la musica che muore come un nastro, "Wake up, Lethe."
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
 ├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack, slash x 5 direzioni)
