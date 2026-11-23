@@ -1,6 +1,7 @@
 extends Node
-## Mentre il menu è aperto, ogni tanto un suono che non dovrebbe esserci: qualcuno bussa
-## alla porta, un sussurro, un respiro vicino. Piano, e mai lo stesso due volte di fila.
+## Mentre il menu è aperto, ogni tanto un oggetto della stanza fa rumore da solo: bussano
+## alla porta, il telefono vibra, lo specchio si incrina, il carillon suona tre note,
+## l'orologio si ferma. Piano, e mai lo stesso due volte di fila.
 ## I suoni li fa tools/audio/make_menu_sfx.py (in locale).
 
 signal played(kind: StringName)
@@ -8,8 +9,10 @@ signal played(kind: StringName)
 const Sfx := preload("res://core/sfx.gd")
 const SOUNDS := {
 	&"knock": preload("res://audio/menu_knock.wav"),
-	&"whisper": preload("res://audio/menu_whisper.wav"),
-	&"breath": preload("res://audio/menu_breath.wav"),
+	&"phone": preload("res://audio/menu_phone.wav"),
+	&"glass": preload("res://audio/menu_glass.wav"),
+	&"music_box": preload("res://audio/menu_music_box.wav"),
+	&"clock": preload("res://audio/menu_clock.wav"),
 }
 const MIN_WAIT := 8.0
 const MAX_WAIT := 20.0

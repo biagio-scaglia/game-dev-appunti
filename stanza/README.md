@@ -51,8 +51,9 @@ audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, va
                                  su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
 audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
 audio/sword_slash.wav            il fendente: sibilo, vetro che stride, schegge
-audio/menu_*.wav                 i suoni del menu di pausa: bussano alla porta, un sussurro al contrario,
-                                 un respiro, il "no" basso e scordato (dal generatore in locale)
+audio/menu_*.wav                 i suoni del menu di pausa: oggetti che fanno rumore da soli (la porta, il
+                                 telefono, lo specchio, il carillon, l'orologio) e il "no" basso e scordato
+                                 (dal generatore in locale)
 audio/magic_*.wav                i suoni della magia: il luccichio della carica, il soffio del lancio,
                                  il rintocco di vetro dell'impatto
 world/
@@ -99,7 +100,7 @@ menu/
 ├── menu_data.gd                 tutti i testi e i numeri del menu (solo dati)
 ├── menu_style.gd, gauge.gd      tema, finestre, ritratti ritagliati dagli sheet, barre HP/MP
 ├── menu_glitcher.gd, glitch.gd  le scritte che si guastano per un attimo
-├── menu_ambience.gd             i suoni che non dovrebbero esserci, ogni tanto, a menu aperto
+├── menu_ambience.gd             gli oggetti della stanza che fanno rumore da soli, a menu aperto
 ├── menu_reactions.gd            il "no" sulle cose che non si possono, gli eventi dopo un salvataggio
 └── menu_backdrop.gdshader       il gioco fermo dietro il menu: grigio, vignetta, righe, tremolio
 core/
@@ -139,7 +140,8 @@ tests/                           un file per modulo + mini runner headless
   combattimento non li usa ancora. E qualcosa non va: il gioco dietro si fa grigio e trema, la
   musica rallenta e stona, le scritte si guastano per un attimo (mai l'aiuto), lo stato a volte
   legge "Dead", Lethe a volte è di spalle, gli oggetti riguardati cambiano descrizione, e il
-  File 3 non è suo. Ogni tanto qualcuno bussa alla porta, sussurra o respira. Scegliere una cosa
+  File 3 non è suo. Ogni tanto gli oggetti della stanza fanno rumore da soli:
+  bussano alla porta, il telefono vibra, lo specchio si incrina, il carillon suona, l'orologio si ferma. Scegliere una cosa
   che non si può (un incantesimo non imparato, usare un oggetto, uno slot vuoto) dà un "no" basso:
   la voce si fa rossa, la finestra sobbalza, a volte compare "STOP.". Dopo un salvataggio, a volte,
   succede qualcosa: bussano, il file per un attimo è di qualcun altro, "She saw you save.".

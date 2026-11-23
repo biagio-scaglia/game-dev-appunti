@@ -2,7 +2,7 @@ extends Node
 ## Le reazioni del menu quando qualcosa non va:
 ## - deny(): si è scelta una cosa che non si può (un incantesimo non imparato, usare un
 ##   oggetto, uno slot vuoto). Un "no" basso e scordato, la voce si fa rossa, la finestra
-##   sobbalza; a volte sopra tutto compare "STOP." con un sussurro.
+##   sobbalza; a volte sopra tutto compare "STOP." e lo specchio si incrina.
 ## - after_save(): dopo un salvataggio, a volte succede qualcosa (SAVE_EVENTS): bussano
 ##   alla porta, il file per un attimo diventa un altro, qualcuno ti ha vista.
 
@@ -70,7 +70,7 @@ func stop_word() -> void:
 	stop_label.text = STOP_WORDS[rng.randi() % STOP_WORDS.size()]
 	stop_label.show()
 	if ambience:
-		ambience.play(&"whisper", -4.0)
+		ambience.play(&"glass", -4.0)
 	await get_tree().create_timer(0.22).timeout
 	stop_label.hide()
 
@@ -106,6 +106,6 @@ func _run_save_event(event: StringName, slot: int, button: Button) -> void:
 		&"watched":
 			await get_tree().create_timer(1.0).timeout
 			if ambience:
-				ambience.play(&"breath", -4.0)
+				ambience.play(&"phone", -4.0)
 			say.call("She saw you save.", true)
 	happened.emit(event)
