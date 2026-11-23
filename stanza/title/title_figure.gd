@@ -1,6 +1,6 @@
 extends Node2D
 ## Lethe nel raggio di luna, di spalle, che guarda la finestra. Usa gli sprite della
-## protagonista; se non ci sono (sono solo in locale) resta nascosta, senza errori.
+## protagonista; se non ci sono (es. una copia senza sprites/) resta nascosta, senza errori.
 ## L'origine del nodo è ai piedi.
 
 const Frames := preload("res://characters/protagonista/protagonista_frames.gd")

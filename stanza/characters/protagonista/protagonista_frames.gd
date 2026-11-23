@@ -1,6 +1,6 @@
 extends RefCounted
 ## Animazioni della protagonista dai suoi 5 sheet (celle 64x64, 5 righe = 5 direzioni).
-## Gli sheet stanno in sprites/, che resta fuori da git: si caricano a runtime, così
+## Gli sheet stanno in sprites/ e si caricano a runtime, così
 ## il progetto si apre anche senza (con un errore chiaro invece di uno di parsing).
 
 const Facing := preload("facing.gd")
@@ -20,7 +20,7 @@ static func build() -> SpriteFrames:
 	var frames := SpriteFrames.new()
 	frames.remove_animation(&"default")
 	if not sprites_available():
-		push_error("Sprite della protagonista mancanti in characters/protagonista/sprites/ (sono solo in locale).")
+		push_error("Sprite della protagonista mancanti in characters/protagonista/sprites/ .")
 		return frames
 	for kind: String in KINDS:
 		var sheet: Texture2D = load(SPRITES % kind)
