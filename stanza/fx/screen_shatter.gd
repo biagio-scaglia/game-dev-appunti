@@ -10,6 +10,7 @@ extends CanvasLayer
 signal finished
 
 const Glitch := preload("res://menu/glitch.gd")
+const Sfx := preload("res://core/sfx.gd")
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const CRACK_SOUND := preload("res://audio/sword_slash.wav")
 const BREAK_SOUND := preload("res://audio/magic_impact.wav")
@@ -23,8 +24,6 @@ const GRAVITY := 900.0
 ## [testo, colore, misura del font]
 const LINES := [["Wake up, Lethe.", Color(0.7, 0.66, 0.85), 16], ["You can't.", Color(0.78, 0.2, 0.3), 32]]
 const LINE_TIME := 1.0
-## Dopo quanto un tasto può saltare il resto.
-const SKIP_AFTER := 0.4
 
 var rng := RandomNumberGenerator.new()
 var shards: Array[Polygon2D] = []
@@ -34,7 +33,6 @@ var _rays: Array = []
 var _center := Vector2.ZERO
 var _done := false
 var _skippable := false
-var _sounds: Array[AudioStreamPlayer] = []
 
 
 func _init() -> void:
@@ -105,7 +103,7 @@ func play(at: Vector2, music: AudioStreamPlayer = null) -> void:
 		var tape := create_tween().set_parallel()
 		tape.tween_property(music, "pitch_scale", 0.15, CRACK_TIME + HOLD_TIME).set_trans(Tween.TRANS_QUAD)
 		tape.tween_property(music, "volume_db", -40.0, CRACK_TIME + HOLD_TIME + 0.3)
-	_sound(CRACK_SOUND, 0.55, -4.0)
+	Sfx.play(self, CRACK_SOUND, 0.55, -4.0)
 
 	# Le crepe corrono fuori dall'impatto, lo schermo trema.
 	var crack := create_tween()
@@ -120,7 +118,7 @@ func play(at: Vector2, music: AudioStreamPlayer = null) -> void:
 	if _done:
 		return
 
-	_sound(BREAK_SOUND, 0.5, -2.0)
+	Sfx.play(self, BREAK_SOUND, 0.5, -2.0)
 	if music:
 		music.stop()
 	_cracks.hide()
@@ -230,16 +228,6 @@ func _draw_cracks() -> void:
 			_cracks.draw_polyline(shown, Color(0, 0, 0, 0.8), 3.0)
 			_cracks.draw_polyline(shown, Color(0.95, 0.92, 1.0, 0.9), 1.0)
 	_cracks.draw_circle(_center, 3.0 + 4.0 * _crack_progress, Color(1, 1, 1, 0.8))
-
-
-func _sound(stream: AudioStream, pitch: float, db: float) -> void:
-	var player := AudioStreamPlayer.new()
-	player.stream = stream
-	player.pitch_scale = pitch
-	player.volume_db = db
-	add_child(player)
-	player.play()
-	_sounds.append(player)
 
 
 static func _mid(poly: PackedVector2Array) -> Vector2:
