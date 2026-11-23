@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://ixqtvn5dadfl"
-path="res://.godot/imported/menu_breath.wav-1f2e8c433197e91687606e6113c17322.sample"
+uid="uid://dj6co8s8uyiwa"
+path="res://.godot/imported/menu_clock.wav-499e5602e1df24512892ff247975dd40.sample"
 
 [deps]
 
-source_file="res://audio/menu_breath.wav"
-dest_files=["res://.godot/imported/menu_breath.wav-1f2e8c433197e91687606e6113c17322.sample"]
+source_file="res://audio/menu_clock.wav"
+dest_files=["res://.godot/imported/menu_clock.wav-499e5602e1df24512892ff247975dd40.sample"]
 
 [params]
 

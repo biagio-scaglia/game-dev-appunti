@@ -2,13 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://c4xqb167boaow"
-path="res://.godot/imported/menu_whisper.wav-65f8b0125170c5a3e8970bea92b490da.sample"
+uid="uid://bg44346kx2yot"
+path="res://.godot/imported/menu_glass.wav-9fa6c66f83a0828b1481dfe17bb6afd3.sample"
 
 [deps]
 
-source_file="res://audio/menu_whisper.wav"
-dest_files=["res://.godot/imported/menu_whisper.wav-65f8b0125170c5a3e8970bea92b490da.sample"]
+source_file="res://audio/menu_glass.wav"
+dest_files=["res://.godot/imported/menu_glass.wav-9fa6c66f83a0828b1481dfe17bb6afd3.sample"]
 
 [params]
 
