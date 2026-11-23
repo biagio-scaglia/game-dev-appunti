@@ -1,0 +1,221 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://menu/pause_menu.gd" id="1_menu"]
+[ext_resource type="Shader" path="res://menu/menu_backdrop.gdshader" id="2_shader"]
+[ext_resource type="Script" path="res://title/title_menu.gd" id="3_list"]
+[ext_resource type="Script" path="res://menu/party_view.gd" id="4_party"]
+[ext_resource type="Script" path="res://menu/status_view.gd" id="5_status"]
+[ext_resource type="Script" path="res://menu/items_view.gd" id="6_items"]
+[ext_resource type="Script" path="res://menu/save_view.gd" id="7_save"]
+[ext_resource type="Script" path="res://menu/end_view.gd" id="8_end"]
+[ext_resource type="Script" path="res://menu/menu_glitcher.gd" id="9_glitch"]
+[ext_resource type="AudioStream" path="res://audio/ui_move.wav" id="10_move"]
+[ext_resource type="AudioStream" path="res://audio/ui_confirm.wav" id="11_confirm"]
+[ext_resource type="AudioStream" path="res://audio/sword_slash.wav" id="12_wrong"]
+[ext_resource type="Script" path="res://menu/spells_view.gd" id="13_spells"]
+[ext_resource type="Script" path="res://menu/equip_view.gd" id="14_equip"]
+
+[sub_resource type="ShaderMaterial" id="backdrop_mat"]
+shader = ExtResource("2_shader")
+shader_parameter/strength = 0.0
+shader_parameter/aberration = 1.5
+shader_parameter/tint = Vector3(0.7, 0.66, 0.95)
+
+[node name="PauseMenu" type="CanvasLayer"]
+process_mode = 3
+layer = 10
+script = ExtResource("1_menu")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+unique_name_in_owner = true
+material = SubResource("backdrop_mat")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Root" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CommandWindow" type="PanelContainer" parent="Root"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 158.0
+offset_bottom = 120.0
+
+[node name="Commands" type="VBoxContainer" parent="Root/CommandWindow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = -4
+script = ExtResource("3_list")
+
+[node name="InfoWindow" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -78.0
+offset_right = 158.0
+offset_bottom = -8.0
+grow_vertical = 0
+
+[node name="Info" type="VBoxContainer" parent="Root/InfoWindow"]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="TimeLabel" type="Label" parent="Root/InfoWindow/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Time  00:00:00"
+
+[node name="DayLabel" type="Label" parent="Root/InfoWindow/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Day  1"
+
+[node name="PlaceLabel" type="Label" parent="Root/InfoWindow/Info"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Her Room"
+
+[node name="MainWindow" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 166.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -86.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PartyView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("4_party")
+
+[node name="StatusView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("5_status")
+
+[node name="ItemsView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("6_items")
+
+[node name="SpellsView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("13_spells")
+
+[node name="EquipView" type="HBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("14_equip")
+
+[node name="SaveView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("7_save")
+
+[node name="EndView" type="VBoxContainer" parent="Root/MainWindow"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+script = ExtResource("8_end")
+
+[node name="HelpWindow" type="PanelContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 166.0
+offset_top = -78.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="Help" type="VBoxContainer" parent="Root/HelpWindow"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="HelpLabel" type="Label" parent="Root/HelpWindow/Help"]
+unique_name_in_owner = true
+layout_mode = 2
+autowrap_mode = 3
+
+[node name="KeysLabel" type="Label" parent="Root/HelpWindow/Help"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_colors/font_color = Color(0.55, 0.5, 0.68, 1)
+horizontal_alignment = 2
+
+[node name="Message" type="PanelContainer" parent="Root"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -18.0
+offset_right = 130.0
+offset_bottom = 18.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MessageLabel" type="Label" parent="Root/Message"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="Fade" type="ColorRect" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Glitcher" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("9_glitch")
+
+[node name="SfxMove" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("10_move")
+volume_db = -6.0
+
+[node name="SfxConfirm" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("11_confirm")
+volume_db = -6.0
+
+[node name="SfxWrong" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("12_wrong")
+volume_db = -8.0
+pitch_scale = 0.45
