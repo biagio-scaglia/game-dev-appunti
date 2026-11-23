@@ -2,18 +2,24 @@
 
 Progetto Godot 4.7 del gioco (titolo provvisorio **Aletheia**, testi per ora in inglese): si apre
 con l'intro dello studio, poi la schermata del titolo, poi la stanza di un hikikomori di notte.
-La protagonista, Lethe, cammina in 8 direzioni, corre e lancia magie che illuminano la stanza.
+La protagonista, Lethe, cammina in 8 direzioni, corre, lancia magie che illuminano la stanza e
+fende con la spada di vetro dello specchio.
 
 ![Il titolo](../docs/titolo.png)
 
 ![La stanza](../docs/stanza.gif)
 
-- **WASD / frecce**: cammina
-- **Shift**: corri
-- **Spazio / J**: magia (carica sulle mani, poi il proiettile parte verso dove guarda)
-- **K**: spada di vetro dello specchio (fende verso dove guarda; **Tab**, solo in debug, cambia lo stadio)
+| Tasto | Azione |
+| --- | --- |
+| WASD / frecce | cammina |
+| Shift | corri |
+| Spazio / J | magia (carica sulle mani, poi il proiettile parte verso dove guarda) |
+| K | spada di vetro (fende verso dove guarda) |
+| Tab | solo in debug: cambia lo stadio della spada |
 
 ## Comandi
+
+`$GODOT` è il percorso dell'eseguibile di Godot 4.7; i comandi si lanciano da questa cartella.
 
 ```sh
 $GODOT --path .                                                   # gioca
