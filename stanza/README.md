@@ -65,7 +65,7 @@ fx/
 └── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
-├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack x 5 direzioni)
+├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack, slash x 5 direzioni)
 ├── protagonista.gd / .tscn      CharacterBody2D: movimento, corsa, magia e spada
 └── sprites/                     gli sheet: SOLO IN LOCALE (vedi sotto)
 magic/
