@@ -39,17 +39,20 @@ title/
 ├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
 ├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
-├── title_menu.gd                il menu (Button veri: tastiera, gamepad, mouse): davanti alla voce
-│                                scelta batte un cuore, e cambiare voce suona il carillon
 └── art/                         finestra con tende e luna, pavimento, pannello del menu, cuore,
                                  ornamento (dal generatore in locale: griglia a 16 px, blocchi 2x2)
-ui/fonts/                        Kenney Pixel (CC0)
+ui/
+├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
+│                                alla voce scelta batte un cuore. La usano il titolo e il menu di pausa
+└── fonts/                       Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
 audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
 audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, valzer lento in Re minore
                                  su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
 audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
 audio/sword_slash.wav            il fendente: sibilo, vetro che stride, schegge
+audio/menu_*.wav                 i suoni del menu di pausa: bussano alla porta, un sussurro al contrario,
+                                 un respiro, il "no" basso e scordato (dal generatore in locale)
 audio/magic_*.wav                i suoni della magia: il luccichio della carica, il soffio del lancio,
                                  il rintocco di vetro dell'impatto
 world/
@@ -83,22 +86,26 @@ weapon/
 ├── sword_frames.gd              il fendente in tre stadi (scheggia, pugnale, lama) x 6 fotogrammi
 └── sprites/                     lo sheet della spada (dal generatore in locale)
 menu/
-├── pause_menu.gd / .tscn        il menu di pausa stile RPG Maker: voci, finestra grande, barra d'aiuto
+├── pause_menu.gd / .tscn        il menu di pausa stile RPG Maker: tiene insieme i pezzi, sceglie la pagina
+├── menu_page.gd                 la base delle pagine a lista (titolo, lista col cuore, aiuto, "no")
 ├── party_view.gd, hero_card.gd  la pagina del gruppo (solo Lethe) e la sua riga (ritratto, barre)
 ├── items_view.gd                gli oggetti della stanza (riguardati, cambiano descrizione)
 ├── spells_view.gd               gli incantesimi: quale va su Spazio / J
 ├── equip_view.gd                arma, corpo, accessorio, con l'anteprima dei parametri
 ├── status_view.gd               parametri, equipaggiamento, incantesimo, verità e bugie
 ├── save_view.gd, save_store.gd  i 3 file di salvataggio (JSON in user://saves)
-├── end_view.gd                  Game End: torna al titolo
+├── end_view.gd                  Game End: lo schermo si rompe e si torna al titolo
 ├── game_state.gd, equipment.gd  lo stato che si salva e i conti dei parametri (solo logica)
 ├── menu_data.gd                 tutti i testi e i numeri del menu (solo dati)
 ├── menu_style.gd, gauge.gd      tema, finestre, ritratti ritagliati dagli sheet, barre HP/MP
 ├── menu_glitcher.gd, glitch.gd  le scritte che si guastano per un attimo
+├── menu_ambience.gd             i suoni che non dovrebbero esserci, ogni tanto, a menu aperto
+├── menu_reactions.gd            il "no" sulle cose che non si possono, gli eventi dopo un salvataggio
 └── menu_backdrop.gdshader       il gioco fermo dietro il menu: grigio, vignetta, righe, tremolio
 core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
+├── sfx.gd                       suoni usa-e-getta (si liberano da soli, suonano anche in pausa)
 └── input_setup.gd               crea le azioni di input se mancano
 tests/                           un file per modulo + mini runner headless
 ```
@@ -132,7 +139,11 @@ tests/                           un file per modulo + mini runner headless
   combattimento non li usa ancora. E qualcosa non va: il gioco dietro si fa grigio e trema, la
   musica rallenta e stona, le scritte si guastano per un attimo (mai l'aiuto), lo stato a volte
   legge "Dead", Lethe a volte è di spalle, gli oggetti riguardati cambiano descrizione, e il
-  File 3 non è suo.
+  File 3 non è suo. Ogni tanto qualcuno bussa alla porta, sussurra o respira. Scegliere una cosa
+  che non si può (un incantesimo non imparato, usare un oggetto, uno slot vuoto) dà un "no" basso:
+  la voce si fa rossa, la finestra sobbalza, a volte compare "STOP.". Dopo un salvataggio, a volte,
+  succede qualcosa: bussano, il file per un attimo è di qualcun altro, "She saw you save.".
+  Game End rompe lo schermo come il Quit del titolo.
 - **Profondità**: il livello dei mobili è ordinato per Y insieme alla protagonista, che passa
   davanti o dietro a seconda di dove sta.
 
