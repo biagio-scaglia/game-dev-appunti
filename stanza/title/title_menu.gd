@@ -2,7 +2,7 @@ extends VBoxContainer
 ## Il menu del titolo: una voce per riga; davanti alla voce scelta batte un piccolo
 ## cuore (le altre hanno un'icona vuota della stessa misura: il testo non si sposta).
 ## Tastiera, gamepad (ui_up / ui_down / ui_accept) e mouse: sono Button veri, il focus
-## lo gestisce Godot.
+## lo gestisce Godot. Lo usa anche il menu di pausa, per ogni sua lista.
 
 signal chosen(id: StringName)
 ## Il focus è passato a un'altra voce (per il suono del carillon). Non al primo focus.
@@ -13,6 +13,8 @@ const HEART := preload("res://title/art/heart.png")
 ## Il battito come un cuore vero: tum-tum, pausa. [fotogramma, secondi] (0 pieno, 1 stretto).
 const BEAT := [[1, 0.12], [0, 0.12], [1, 0.12], [0, 0.7]]
 
+## Quanto corre il cuore (2 = il doppio veloce: il menu di pausa lo fa agitare).
+var beat_speed := 1.0
 var heart_frames: Array[AtlasTexture] = []
 var _blank: ImageTexture
 var _sound_ready := false
@@ -34,6 +36,7 @@ func _init() -> void:
 ## Crea le voci: [[id, testo], ...]. La prima prende il focus.
 func setup(entries: Array, font: Font, font_size: int) -> void:
 	for child in get_children():
+		remove_child(child)      # subito: le voci nuove possono riusare gli stessi nomi
 		child.queue_free()
 	for entry in entries:
 		var button := Button.new()
@@ -55,12 +58,31 @@ func setup(entries: Array, font: Font, font_size: int) -> void:
 		button.mouse_entered.connect(button.grab_focus)
 		button.pressed.connect(func(): chosen.emit(entry[0]))
 		add_child(button)
+		# Il focus resta nella lista: niente salti di lato verso altre liste.
+		button.focus_neighbor_left = NodePath(".")
+		button.focus_neighbor_right = NodePath(".")
+	var buttons := get_children()
+	if buttons.size() > 1:   # dalla prima si sale all'ultima e viceversa
+		buttons[0].focus_neighbor_top = buttons[0].get_path_to(buttons[-1])
+		buttons[-1].focus_neighbor_bottom = buttons[-1].get_path_to(buttons[0])
 
 
 func focus_first() -> void:
-	if get_child_count() > 0:
-		(get_child(0) as Button).grab_focus()
+	focus_id(StringName(get_child(0).name) if get_child_count() > 0 else &"")
+
+
+func focus_id(id: StringName) -> void:
+	var button := get_node_or_null(NodePath(String(id))) as Button if id != &"" else null
+	if button:
+		button.grab_focus()
 	_sound_ready = true
+
+
+## Una lista non attiva non prende il focus (né da tastiera né col mouse).
+func set_active(active: bool) -> void:
+	for button: Button in get_children():
+		button.focus_mode = Control.FOCUS_ALL if active else Control.FOCUS_NONE
+		button.mouse_filter = Control.MOUSE_FILTER_STOP if active else Control.MOUSE_FILTER_IGNORE
 
 
 ## La voce che ha il focus ora (vuoto se nessuna).
@@ -72,7 +94,7 @@ func focused_id() -> StringName:
 ## True se davanti a questa voce c'è il cuore.
 func has_heart(id: StringName) -> bool:
 	var button := get_node_or_null(NodePath(String(id))) as Button if id != &"" else null
-	return button != null and button.icon in heart_frames
+	return button != null and button.icon is AtlasTexture and button.icon in heart_frames
 
 
 func _process(delta: float) -> void:
@@ -80,7 +102,7 @@ func _process(delta: float) -> void:
 	if _beat_left > 0.0:
 		return
 	_beat_step = (_beat_step + 1) % BEAT.size()
-	_beat_left = BEAT[_beat_step][1]
+	_beat_left = BEAT[_beat_step][1] / beat_speed
 	var id := focused_id()
 	if id != &"":
 		(get_node(NodePath(String(id))) as Button).icon = heart_frames[BEAT[_beat_step][0]]
