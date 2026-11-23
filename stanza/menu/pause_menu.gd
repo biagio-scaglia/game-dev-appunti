@@ -1,18 +1,19 @@
 extends CanvasLayer
 ## Il menu di pausa, come in RPG Maker. Esc o X lo apre e ferma il gioco; Esc, X o il
-## tasto destro del mouse tornano indietro. A sinistra le voci (Items, Spells, Equip,
-## Status, Save, Load, Game End) col cuore che batte, sotto tempo di gioco, giorno e
-## luogo; a destra la finestra grande, che cambia con la voce. In fondo la barra d'aiuto:
-## cosa fa quello che si sta guardando, e quali tasti usare.
+## tasto destro del mouse tornano indietro. A sinistra le voci col cuore che batte e sotto
+## tempo di gioco, giorno e luogo; a destra la pagina della voce scelta; in fondo la barra
+## d'aiuto (cosa fa quello che si guarda, e quali tasti usare).
 ##
-## Cose che non vanno: il gioco dietro si fa grigio e trema (menu_backdrop.gdshader), la
-## musica rallenta e stona, le scritte si guastano per un attimo (menu_glitcher.gd; mai
-## la barra d'aiuto), lo stato legge "Dead", a volte Lethe è di spalle, in fondo al gruppo
-## c'è un sussurro, e il File 3 non è suo (save_view.gd).
+## Questo script tiene insieme i pezzi e decide quale pagina si vede. Il resto sta altrove:
+## - le pagine: party_view, items_view, spells_view, equip_view, status_view, save_view,
+##   end_view (le liste estendono menu_page.gd);
+## - cosa non va: menu_glitcher.gd (scritte guaste), menu_ambience.gd (bussano, sussurri,
+##   respiri), menu_reactions.gd (il "no" e gli eventi dopo un salvataggio),
+##   menu_backdrop.gdshader (il gioco grigio dietro), fx/screen_shatter.gd (Game End).
 
 signal opened
 signal closed
-## Game End -> To Title, a schermo già nero (prima di cambiare scena).
+## Game End -> To Title, a schermo già rotto (prima di cambiare scena).
 signal title_requested
 
 const Data := preload("menu_data.gd")
@@ -20,19 +21,19 @@ const Style := preload("menu_style.gd")
 const GameState := preload("game_state.gd")
 const SaveStore := preload("save_store.gd")
 const InputSetup := preload("res://core/input_setup.gd")
+const ScreenShatter := preload("res://fx/screen_shatter.gd")
 
 ## Una volta su tante, aprendo il menu, il ritratto di Lethe è di spalle.
 const AWAY_CHANCE := 0.125
 const MUSIC_PITCH := 0.8
 const MUSIC_DROP_DB := 6.0
-const MESSAGE_TIME := 1.4
+const MESSAGE_TIME := 1.6
 
 ## La scena del titolo per Game End. Vuota = emette solo title_requested (per i test).
 @export_file("*.tscn") var title_scene := "res://title/title_screen.tscn"
 
 @onready var root: Control = %Root
 @onready var backdrop: ColorRect = %Backdrop
-@onready var fade: ColorRect = %Fade
 @onready var commands: VBoxContainer = %Commands
 @onready var time_label: Label = %TimeLabel
 @onready var day_label: Label = %DayLabel
@@ -49,9 +50,10 @@ const MESSAGE_TIME := 1.4
 @onready var message: PanelContainer = %Message
 @onready var message_label: Label = %MessageLabel
 @onready var glitcher: Node = %Glitcher
+@onready var ambience: Node = %Ambience
+@onready var reactions: Node = %Reactions
 @onready var sfx_move: AudioStreamPlayer = %SfxMove
 @onready var sfx_confirm: AudioStreamPlayer = %SfxConfirm
-@onready var sfx_wrong: AudioStreamPlayer = %SfxWrong
 
 var state := GameState.new()
 ## La protagonista (un Node2D con `sword_stage`). Può mancare (test).
@@ -62,6 +64,7 @@ var rng := RandomNumberGenerator.new()
 ## &"load", &"end".
 var view := &""
 var _open := false
+var _leaving := false
 var _last_command := &"items"
 var _music_pitch := 1.0
 var _music_db := 0.0
@@ -73,24 +76,24 @@ func _ready() -> void:
 	visible = false
 	root.theme = Style.theme()
 	message.hide()
-	fade.color.a = 0.0
 	for label in [time_label, help_label, keys_label]:
 		label.set_meta(&"no_glitch", true)   # il tempo cambia ogni frame; l'aiuto deve leggersi
-	commands.setup(Data.COMMANDS.map(func(c): return [c[0], c[1]]), Style.FONT, Style.FONT_SIZE)
-	for c in Data.COMMANDS:
-		commands.get_node(String(c[0])).focus_entered.connect(_help.bind(c[2], Data.KEYS_MAIN))
-	commands.chosen.connect(_on_command)
+	_build_commands()
 	for list in [commands, items_view.list, spells_view.list, equip_view.slots, equip_view.items,
 			save_view.list, end_view.list]:
 		list.moved.connect(sfx_move.play)
-	for v in [items_view, spells_view, equip_view]:
-		v.described.connect(func(text): help_label.text = text)
+	for page in [items_view, spells_view, equip_view]:
+		page.described.connect(func(text): help_label.text = text)
+	for page in [items_view, spells_view]:
+		page.denied.connect(_deny)
 	equip_view.equipped.connect(sfx_confirm.play)
 	save_view.slot_chosen.connect(_on_slot)
 	end_view.chosen.connect(_on_end)
-	glitcher.rng = rng
-	glitcher.targets = _glitch_targets
-	glitcher.events.assign([_blink_dead, _shake])
+	for node in [glitcher, ambience, reactions]:
+		node.rng = rng
+	glitcher.root = root
+	glitcher.events.assign([_blink_dead, reactions.jolt])
+	reactions.setup(root, ambience, _say)
 
 
 func setup(game_state: GameState, hero_node: Node2D, music_player: AudioStreamPlayer) -> void:
@@ -111,7 +114,6 @@ func open() -> void:
 	visible = true
 	party.hero.show_face(rng.randf() < AWAY_CHANCE)
 	party.whisper.text = Data.WHISPERS[rng.randi() % Data.WHISPERS.size()]
-	_refresh()
 	_show(&"")
 	commands.set_active(true)
 	commands.focus_first()
@@ -127,6 +129,7 @@ func open() -> void:
 		t.tween_property(music, "pitch_scale", MUSIC_PITCH, 0.6)
 		t.tween_property(music, "volume_db", _music_db - MUSIC_DROP_DB, 0.6)
 	glitcher.start()
+	ambience.start()
 	opened.emit()
 
 
@@ -135,6 +138,7 @@ func close() -> void:
 		return
 	_open = false
 	glitcher.stop()
+	ambience.stop()
 	visible = false
 	message.hide()
 	get_tree().paused = false
@@ -148,14 +152,16 @@ func close() -> void:
 ## Indietro: dentro una pagina un passo alla volta, da una pagina alle voci, dalle voci
 ## si chiude.
 func back() -> void:
+	if _leaving:
+		return
 	if view == &"":
 		close()
 		return
 	sfx_move.play()
 	if view == &"equip" and equip_view.back():
 		return
-	for v in [items_view, spells_view, equip_view, save_view, end_view]:
-		v.leave()
+	for page in [items_view, spells_view, equip_view, save_view, end_view]:
+		page.leave()
 	_show(&"")
 	commands.set_active(true)
 	commands.focus_id(_last_command)
@@ -164,6 +170,14 @@ func back() -> void:
 ## Sceglie una voce come se la si premesse (pubblico per i test).
 func choose(id: StringName) -> void:
 	_on_command(id)
+
+
+func help_text() -> String:
+	return help_label.text
+
+
+func message_text() -> String:
+	return message_label.text if message.visible else ""
 
 
 func _process(delta: float) -> void:
@@ -186,77 +200,38 @@ func _unhandled_input(event: InputEvent) -> void:
 		back()
 
 
+# --- Voci e pagine ---
+
+func _build_commands() -> void:
+	commands.setup(Data.COMMANDS.map(func(c): return [c[0], c[1]]), Style.FONT, Style.FONT_SIZE)
+	for c in Data.COMMANDS:
+		commands.get_node(String(c[0])).focus_entered.connect(_help.bind(c[2], Data.KEYS_MAIN))
+	commands.chosen.connect(_on_command)
+
+
 func _on_command(id: StringName) -> void:
 	sfx_confirm.play()
 	_last_command = id
 	commands.set_active(false)
+	_show(id)
 	match id:
 		&"items":
-			_show(id)
 			items_view.enter()
 		&"spells":
-			_show(id)
 			spells_view.enter()
 		&"equip":
-			_show(id)
 			equip_view.enter()
 		&"status":
-			_show(id)
 			_help("Everything about Lethe, at a glance.", Data.KEYS_VIEW)
 		&"save", &"load":
 			save_view.refresh(id)
-			_show(id)
 			save_view.enter()
 			_help("Choose a file." if id == &"save" else "Choose a file to continue from.")
 		&"end":
-			_show(id)
 			end_view.enter()
 			_help("Unsaved progress will be lost.")
 	if id != &"status":
 		keys_label.text = Data.KEYS_PAGE
-
-
-func _on_slot(slot: int) -> void:
-	if slot == save_view.CURSED_SLOT:
-		sfx_wrong.play()
-		glitcher.burst()
-		_say("This file is already in use." if view == &"save" else "...not yet.", true)
-		return
-	if view == &"save":
-		SaveStore.write(slot, state.to_save(_hero_position(), _sword_stage()))
-		sfx_confirm.play()
-		save_view.refresh(&"save")
-		save_view.enter()
-		save_view.list.focus_id(StringName("slot%d" % slot))
-		_say("Saved to File %d." % slot)
-		return
-	var data := SaveStore.read(slot)
-	if data.is_empty():
-		sfx_wrong.play()
-		_say("There is nothing there.")
-		return
-	state.load_save(data)
-	if hero:
-		hero.global_position = GameState.saved_position(data)
-		hero.set("sword_stage", int(data.get("sword_stage", 0)))
-	sfx_confirm.play()
-	close()
-
-
-func _on_end(id: StringName) -> void:
-	if id != &"title":
-		back()
-		return
-	glitcher.stop()
-	var t := create_tween()
-	t.tween_property(fade, "color:a", 1.0, 0.8)
-	if music:
-		t.parallel().tween_property(music, "volume_db", -40.0, 0.8)
-	await t.finished
-	title_requested.emit()
-	if title_scene != "":
-		get_tree().paused = false
-		get_tree().change_scene_to_file(title_scene)
 
 
 func _show(new_view: StringName) -> void:
@@ -283,14 +258,66 @@ func _refresh() -> void:
 	equip_view.refresh(state, _sword_stage())
 
 
+# --- Salvare, caricare, uscire ---
+
+func _on_slot(slot: int) -> void:
+	var button: Button = save_view.slot_button(slot)
+	if slot == save_view.CURSED_SLOT:
+		reactions.deny(button)
+		glitcher.burst()
+		_say("This file is already in use." if view == &"save" else "...not yet.", true)
+		return
+	if view == &"save":
+		SaveStore.write(slot, state.to_save(_hero_position(), _sword_stage()))
+		sfx_confirm.play()
+		save_view.refresh(&"save")
+		save_view.enter(save_view.slot_id(slot))
+		_say("Saved to File %d." % slot)
+		reactions.after_save(slot, save_view.slot_button(slot))
+		return
+	var data := SaveStore.read(slot)
+	if data.is_empty():
+		reactions.deny(button)
+		_say("There is nothing there.", true)
+		return
+	state.load_save(data)
+	if hero:
+		hero.global_position = GameState.saved_position(data)
+		hero.set("sword_stage", int(data.get("sword_stage", 0)))
+	sfx_confirm.play()
+	close()
+
+
+## Game End -> To Title: lo schermo si rompe come al Quit del titolo, poi il titolo.
+func _on_end(id: StringName) -> void:
+	if id != &"title":
+		back()
+		return
+	_leaving = true
+	glitcher.stop()
+	ambience.stop()
+	var shatter := ScreenShatter.new()
+	add_child(shatter)
+	shatter.play(end_view.list.entry_point(&"title"), music)
+	await shatter.finished
+	title_requested.emit()
+	if title_scene != "":
+		get_tree().paused = false
+		get_tree().change_scene_to_file(title_scene)
+
+
+# --- Aiuto, messaggi, effetti ---
+
 ## La barra d'aiuto: cosa fa quello che si guarda, e i tasti.
 func _help(text: String, keys := Data.KEYS_PAGE) -> void:
 	help_label.text = text
 	keys_label.text = keys
 
 
-func help_text() -> String:
-	return help_label.text
+## Si è scelta una cosa che non si può: la reazione, e il perché nella barra d'aiuto.
+func _deny(reason: String) -> void:
+	reactions.deny(get_viewport().gui_get_focus_owner())
+	help_label.text = reason
 
 
 ## Un messaggio a centro schermo, che sparisce da solo. `wrong`: in rosso.
@@ -305,30 +332,8 @@ func _say(text: String, wrong := false) -> void:
 	_message_tween.tween_callback(message.hide)
 
 
-func message_text() -> String:
-	return message_label.text if message.visible else ""
-
-
-func _glitch_targets() -> Array:
-	var out := []
-	var stack: Array[Node] = [root]
-	while not stack.is_empty():
-		var node: Node = stack.pop_back()
-		stack.append_array(node.get_children())
-		if (node is Label or node is Button) and node.is_visible_in_tree() \
-				and not node.has_meta(&"no_glitch"):
-			out.append(node)
-	return out
-
-
 func _blink_dead() -> void:
 	(status_view if view == &"status" else party).hero.blink_dead()
-
-
-func _shake() -> void:
-	var t := create_tween()
-	for x in [3.0, -2.0, 1.0, 0.0]:
-		t.tween_property(root, "position:x", x, 0.03)
 
 
 func _set_strength(v: float) -> void:

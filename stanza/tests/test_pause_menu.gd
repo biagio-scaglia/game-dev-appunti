@@ -1,9 +1,11 @@
 extends "res://tests/base_test.gd"
 ## Il menu di pausa: apre e ferma il gioco, le pagine, la barra d'aiuto, equipaggiare,
-## scegliere l'incantesimo, salvare e caricare, il File 3, le scritte che si guastano.
+## scegliere l'incantesimo, salvare e caricare, il File 3, le scritte che si guastano, il
+## "no" sulle cose che non si possono, gli eventi dopo un salvataggio, i suoni, Game End.
 
 const MENU := "res://menu/pause_menu.tscn"
 const SaveStore := preload("res://menu/save_store.gd")
+const ScreenShatter := preload("res://fx/screen_shatter.gd")
 
 var _real_dir := ""
 
@@ -38,7 +40,11 @@ func _hero() -> Node2D:
 func _menu(hero: Node2D = null) -> CanvasLayer:
 	var menu := add_scene(MENU, func(n): n.title_scene = "")
 	menu.setup(menu.state, hero, null)
-	menu.glitcher.set_process(false)   # niente guasti a caso durante i test
+	# Niente a caso durante i test: guasti, suoni e reazioni si chiamano a mano.
+	menu.glitcher.set_process(false)
+	menu.ambience.set_process(false)
+	menu.reactions.stop_chance = 0.0
+	menu.reactions.save_event_chance = 0.0
 	return menu
 
 
@@ -133,11 +139,14 @@ func test_scegliere_l_incantesimo_su_spazio() -> void:
 	menu.open()
 	menu.choose(&"spells")
 	var spells: VBoxContainer = menu.spells_view
-	assert_true(spells.ready_label.text.contains("Truth Spark"), "quello pronto")
+	assert_true(spells.header.text.contains("Truth Spark"), "quello pronto")
 	assert_true(spells.list.get_node("truth_spark").text.contains("(ready)"), "segnato nella lista")
 	assert_true(spells.list.get_node("moonlight").text.begins_with("???"), "quelli non imparati")
+	var denied := {"n": 0}
+	menu.reactions.happened.connect(func(e): if e == &"deny": denied["n"] += 1)
 	spells.list.chosen.emit(&"moonlight")
 	assert_eq(menu.state.spell, "truth_spark", "uno non imparato non si sceglie")
+	assert_eq(denied["n"], 1, "e si sente il no")
 	assert_eq(menu.help_text(), "You haven't learned this yet.", "e lo dice")
 
 
@@ -202,7 +211,7 @@ func test_una_scritta_guasta_torna_com_era() -> void:
 	assert_true(label.text != clean and label.text.length() == clean.length(), "guasta")
 	await wait_seconds(0.15)
 	assert_eq(label.text, clean, "rimessa a posto")
-	assert_false(menu.time_label in menu._glitch_targets(), "il tempo non si guasta")
+	assert_false(menu.time_label in menu.glitcher.targets(), "il tempo non si guasta")
 
 
 func test_lo_stato_legge_dead_per_un_attimo() -> void:
@@ -217,10 +226,59 @@ func test_lo_stato_legge_dead_per_un_attimo() -> void:
 	assert_eq(card.hp.value, card.hp.max_value, "HP pieni")
 
 
-func test_game_end_porta_al_titolo() -> void:
+func test_game_end_rompe_lo_schermo_e_porta_al_titolo() -> void:
+	Engine.time_scale = 4.0
 	var menu := _menu()
 	menu.open()
 	menu.choose(&"end")
 	menu.end_view.chosen.emit(&"title")
-	assert_true(await wait_signal(menu.title_requested, 3.0), "title_requested emesso")
-	assert_near(menu.fade.color.a, 1.0, 0.001, "schermo nero")
+	await tree.process_frame
+	assert_eq(menu.get_children().filter(func(n): return n is ScreenShatter).size(), 1, "lo schermo si rompe")
+	menu.back()
+	assert_true(menu.is_open(), "mentre si rompe, indietro non fa niente")
+	assert_true(await wait_signal(menu.title_requested, 6.0), "title_requested emesso")
+
+
+func test_usare_un_oggetto_non_si_puo() -> void:
+	var menu := _menu()
+	menu.open()
+	menu.choose(&"items")
+	var events := []
+	menu.reactions.happened.connect(events.append)
+	menu.items_view.list.chosen.emit(&"tray")
+	assert_eq(events, [&"deny"], "il no")
+	assert_eq(menu.help_text(), "You can't use that now.", "e il perché")
+	menu.reactions.stop_chance = 1.0
+	menu.reactions.deny()
+	assert_true(menu.reactions.stop_label.visible, "a volte STOP. sopra tutto")
+	await wait_seconds(0.4)
+	assert_false(menu.reactions.stop_label.visible, "solo per un attimo")
+
+
+func test_dopo_un_salvataggio_a_volte_succede_qualcosa() -> void:
+	Engine.time_scale = 4.0
+	var menu := _menu(_hero())
+	menu.open()
+	menu.choose(&"save")
+	menu.save_view.slot_chosen.emit(1)
+	var button: Button = menu.save_view.slot_button(1)
+	var real := button.text
+	assert_eq(menu.reactions.after_save(1, button), &"", "di solito niente")
+	menu.reactions.after_save(1, button, &"stolen_file")
+	await wait_seconds(0.8)   # tempo di gioco: lo scambio va da 0,5 a 1,2 s
+	assert_eq(button.text, menu.reactions.STOLEN_TEXT % 1, "il file per un attimo è un altro")
+	assert_true(await wait_signal(menu.reactions.happened, 2.0), "poi finisce")
+	assert_eq(button.text, real, "e torna il suo")
+	menu.reactions.after_save(1, button, &"watched")
+	assert_true(await wait_signal(menu.reactions.happened, 2.0), "qualcuno ha visto")
+	assert_eq(menu.message_text(), "She saw you save.", "e lo dice")
+
+
+func test_i_suoni_di_sottofondo_non_si_ripetono_di_fila() -> void:
+	var menu := _menu()
+	var last := &""
+	for i in 12:
+		var kind: StringName = menu.ambience.play_random()
+		assert_true(kind != last, "mai due uguali di fila")
+		assert_true(kind in menu.ambience.SOUNDS, "un suono vero")
+		last = kind

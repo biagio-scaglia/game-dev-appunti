@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://menu/pause_menu.gd" id="1_menu"]
 [ext_resource type="Shader" path="res://menu/menu_backdrop.gdshader" id="2_shader"]
-[ext_resource type="Script" path="res://title/title_menu.gd" id="3_list"]
+[ext_resource type="Script" path="res://ui/heart_menu.gd" id="3_list"]
 [ext_resource type="Script" path="res://menu/party_view.gd" id="4_party"]
 [ext_resource type="Script" path="res://menu/status_view.gd" id="5_status"]
 [ext_resource type="Script" path="res://menu/items_view.gd" id="6_items"]
@@ -11,9 +11,10 @@
 [ext_resource type="Script" path="res://menu/menu_glitcher.gd" id="9_glitch"]
 [ext_resource type="AudioStream" path="res://audio/ui_move.wav" id="10_move"]
 [ext_resource type="AudioStream" path="res://audio/ui_confirm.wav" id="11_confirm"]
-[ext_resource type="AudioStream" path="res://audio/sword_slash.wav" id="12_wrong"]
 [ext_resource type="Script" path="res://menu/spells_view.gd" id="13_spells"]
 [ext_resource type="Script" path="res://menu/equip_view.gd" id="14_equip"]
+[ext_resource type="Script" path="res://menu/menu_ambience.gd" id="15_ambience"]
+[ext_resource type="Script" path="res://menu/menu_reactions.gd" id="16_reactions"]
 
 [sub_resource type="ShaderMaterial" id="backdrop_mat"]
 shader = ExtResource("2_shader")
@@ -190,19 +191,17 @@ unique_name_in_owner = true
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="Fade" type="ColorRect" parent="."]
-unique_name_in_owner = true
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0, 0, 0, 0)
-
 [node name="Glitcher" type="Node" parent="."]
 unique_name_in_owner = true
 script = ExtResource("9_glitch")
+
+[node name="Ambience" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("15_ambience")
+
+[node name="Reactions" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("16_reactions")
 
 [node name="SfxMove" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
@@ -213,9 +212,3 @@ volume_db = -6.0
 unique_name_in_owner = true
 stream = ExtResource("11_confirm")
 volume_db = -6.0
-
-[node name="SfxWrong" type="AudioStreamPlayer" parent="."]
-unique_name_in_owner = true
-stream = ExtResource("12_wrong")
-volume_db = -8.0
-pitch_scale = 0.45
