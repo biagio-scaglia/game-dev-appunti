@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://world/room.gd" id="2_room"]
 [ext_resource type="PackedScene" path="res://characters/protagonista/protagonista.tscn" id="3_hero"]
 [ext_resource type="AudioStream" path="res://audio/stanza_theme.wav" id="4_theme"]
+[ext_resource type="PackedScene" path="res://menu/pause_menu.tscn" id="5_menu"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -24,6 +25,7 @@ unique_name_in_owner = true
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+process_mode = 3
 stream = ExtResource("4_theme")
 volume_db = -6.0
 
@@ -36,4 +38,7 @@ offset_right = 634.0
 offset_bottom = 360.0
 theme_override_colors/font_color = Color(0.8, 0.78, 0.9, 0.8)
 theme_override_font_sizes/font_size = 9
-text = "WASD / Arrows: move   Shift: run   Space / J: magic   K: sword"
+text = "WASD / Arrows: move   Shift: run   Space / J: magic   K: sword   Esc / X: menu"
+
+[node name="PauseMenu" parent="." instance=ExtResource("5_menu")]
+unique_name_in_owner = true
