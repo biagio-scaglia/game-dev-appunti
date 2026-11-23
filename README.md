@@ -1,31 +1,46 @@
 # game-dev-appunti
 
-Appunti e pezzi riusabili per i miei giochi.
+Appunti e pezzi riusabili per i miei giochi in pixel art, fatti con Godot 4.7.
+
+![Lethe nella stanza](docs/stanza.gif)
 
 ## Contenuto
 
-- **[Vault Gioco delle Bugie](Vault%20Gioco%20delle%20Bugie/)**: vault Obsidian con le idee per il prossimo
-  gioco (un gioco a scelte sulle bugie, in pixel art). Si apre con *Obsidian → Apri cartella come vault*;
-  si parte da `00 Home/🏠 Home.md`.
-- **[intro-studio](intro-studio/)**: progetto Godot 4.7 con l'intro dello studio (la luna che guarda),
-  da copiare all'inizio di ogni gioco. Con test e generatori degli asset.
-- **[stanza](stanza/)**: progetto Godot 4.7 del gioco (titolo provvisorio *Aletheia*): intro dello
-  studio, schermata del titolo, poi la stanza di un hikikomori di notte. La protagonista, Lethe,
-  cammina, corre e lancia magie che illuminano la stanza. Tileset ed effetti disegnati da zero.
+| Cartella | Cos'è |
+| --- | --- |
+| [stanza](stanza/) | Il gioco, titolo provvisorio **Aletheia**: intro dello studio, schermata del titolo, poi la stanza di un hikikomori di notte. La protagonista, Lethe, cammina, corre, lancia magie che illuminano la stanza e fende con una spada di vetro. |
+| [intro-studio](intro-studio/) | L'intro dello studio (la luna che guarda) da copiare all'inizio di ogni gioco, con i suoi test. |
+| [Vault Gioco delle Bugie](Vault%20Gioco%20delle%20Bugie/) | Vault Obsidian con storia, lore e idee del gioco (un gioco a scelte sulle bugie). Si apre con *Obsidian → Apri cartella come vault* e si parte da `00 Home/🏠 Home.md`. |
 
-## La protagonista nella stanza
+## Provarlo
 
-![La protagonista nella stanza](docs/stanza.gif)
+Serve [Godot 4.7](https://godotengine.org/download). `$GODOT` qui sotto è il percorso dell'eseguibile.
 
-Capelli bianchi lunghi, occhi viola, vestito nero e viola. Cammina in 8 direzioni, corre, e lancia
-una magia: la carica sulle mani, poi il proiettile parte verso dove guarda e illumina di viola la
-stanza buia, rischiarata solo dal monitor, dalla lampada e da uno spiraglio di luna tra le tende.
+```sh
+cd stanza
+$GODOT --path .                                          # gioca
+$GODOT --headless --path . -s res://tests/run_tests.gd   # test
+```
 
-Gli sprite della protagonista restano in locale (derivano dal
-[Character Template di Eris Esra](https://erisesra.itch.io/character-templates-pack)): dettagli nel
-[README della stanza](stanza/README.md).
+| Tasto | Azione |
+| --- | --- |
+| WASD / frecce | cammina (8 direzioni) |
+| Shift | corri |
+| Spazio / J | magia: la carica sulle mani, poi il colpo parte verso dove guarda |
+| K | spada di vetro dello specchio |
+
+Gli sprite di Lethe **non sono nel repo** (sono disegnati sopra un template che non si può
+ridistribuire): senza, il gioco si apre lo stesso ma lei non si vede. Dettagli nel
+[README della stanza](stanza/README.md#sprite-della-protagonista-solo-in-locale).
+
+## Lethe
+
+Capelli bianchi lunghi, occhi viola, vestito nero e viola. La stanza è al buio, rischiarata solo
+dal monitor, dalla lampada e da uno spiraglio di luna tra le tende: la sua magia viola la illumina
+mentre vola. La spada è fatta del vetro dello specchio coperto, e cresce a ogni bugia.
 
 ## Crediti
 
 - Base dei personaggi: [Character Templates Pack](https://erisesra.itch.io/character-templates-pack) di Eris Esra
-- Font dell'intro: Kenney Pixel ([kenney.nl](https://www.kenney.nl), CC0)
+- Font: Kenney Pixel ([kenney.nl](https://www.kenney.nl), CC0)
+- Tileset, effetti, spada, musica e suoni: fatti da zero per il gioco
