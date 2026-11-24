@@ -34,6 +34,8 @@ var things: Array[Dictionary] = []
 var target := ""
 ## {id: quante volte ci ha parlato}
 var visits := {}
+## Altri oggetti dove i dialoghi cercano variabili e funzioni (es. la porta che bussa).
+var extra_states: Array = []
 var box: CanvasLayer
 ## L'icona sopra la testa di Lethe. Sta in un CanvasLayer che segue il mondo: il buio
 ## della stanza (CanvasModulate) non la scurisce.
@@ -83,7 +85,7 @@ func talk(id: String) -> void:
 	box.finished.connect(_on_finished.bind(id))
 	add_child(box)
 	talk_started.emit(id)
-	box.start(DIALOGUE, id, [self, state])
+	box.start(DIALOGUE, id, [self, state] + extra_states)
 
 
 ## Dove sta la punta dell'icona: sopra la testa di Lethe. In cima alla stanza l'icona
