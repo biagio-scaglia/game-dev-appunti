@@ -101,6 +101,8 @@ func test_la_barra_d_aiuto_spiega_voce_e_tasti() -> void:
 
 func test_equipaggiare_un_arma_cambia_i_parametri() -> void:
 	var menu := _menu(_hero())
+	menu.state.give("glass_sword")
+	menu.state.give("toy_wand")
 	menu.open()
 	menu.choose(&"equip")
 	var equip: HBoxContainer = menu.equip_view
@@ -134,8 +136,38 @@ func test_indietro_dagli_oggetti_torna_agli_slot() -> void:
 	assert_eq(menu.view, &"", "poi alle voci")
 
 
+func test_all_inizio_tutto_e_punto_interrogativo() -> void:
+	var menu := _menu(_hero())
+	menu.open()
+	menu.choose(&"spells")
+	var spells: VBoxContainer = menu.spells_view
+	assert_true(spells.header.text.ends_with("(none)"), "niente su Spazio / J")
+	for button: Button in spells.list.get_children():
+		assert_true(button.text.begins_with("???"), "%s: ???" % button.name)
+	menu.back()
+	menu.choose(&"items")
+	assert_false(menu.items_view.list.has_node("shard"), "senza spada niente schegge")
+	menu.back()
+	menu.choose(&"equip")
+	var equip: HBoxContainer = menu.equip_view
+	assert_true(equip.slots.get_node("weapon").text.contains("(none)"), "a mani vuote")
+	equip.open_slot("weapon")
+	assert_eq(equip.items.focused_id(), &"none", "il cuore su (none)")
+	assert_eq(equip.items.get_node("glass_sword").text, "???", "la spada non si sa ancora")
+	equip.items.get_node("glass_sword").grab_focus()
+	assert_eq(equip.preview_text("ATK"), "", "nessuna anteprima")
+	equip.items.chosen.emit(&"glass_sword")
+	assert_eq(menu.state.equipped["weapon"], "", "non si mette")
+	assert_eq(menu.help_text(), "You don't have this yet.", "e lo dice")
+	menu.back()
+	menu.back()
+	menu.choose(&"status")
+	assert_eq(menu.status_view.spell_label.text, "(none)", "lo stato: nessun incantesimo")
+
+
 func test_scegliere_l_incantesimo_su_spazio() -> void:
 	var menu := _menu()
+	menu.state.learn("truth_spark")
 	menu.open()
 	menu.choose(&"spells")
 	var spells: VBoxContainer = menu.spells_view

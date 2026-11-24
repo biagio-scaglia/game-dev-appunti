@@ -76,9 +76,11 @@ func test_le_schegge_contano_lo_stadio_della_spada() -> void:
 
 func test_i_parametri_sommano_l_equipaggiamento() -> void:
 	var p := Equipment.params(Data.START_EQUIPMENT, 0)
-	assert_eq(p["ATK"], 4, "base 2 + spada 2")
+	assert_eq(p["ATK"], 2, "all'inizio niente spada: solo la base")
 	assert_eq(p["DEF"], 3, "base 1 + vestito 2")
-	assert_eq(Equipment.params(Data.START_EQUIPMENT, 2)["ATK"], 8, "la lama: +4 in più")
+	var armed := {"weapon": "glass_sword", "body": "black_dress", "accessory": ""}
+	assert_eq(Equipment.params(armed, 0)["ATK"], 4, "base 2 + spada 2")
+	assert_eq(Equipment.params(armed, 2)["ATK"], 8, "la lama: +4 in più")
 	assert_eq(Equipment.params({"weapon": "", "body": "", "accessory": ""}, 0), Data.BASE_PARAMS, "senza niente")
 
 
@@ -91,11 +93,50 @@ func test_la_spada_cambia_nome_con_lo_stadio() -> void:
 
 func test_equipaggiamento_e_incantesimo_si_salvano() -> void:
 	var state := GameState.new()
-	state.equipped["accessory"] = "bracelet"
+	state.give("glass_sword")
+	state.give("bracelet")
+	state.learn("truth_spark")
 	var data: Dictionary = JSON.parse_string(JSON.stringify(state.to_save(Vector2.ZERO, 0)))
-	data["spell"] = "moonlight"   # non imparato: si torna a quello di partenza
 	var loaded := GameState.new()
 	loaded.load_save(data)
 	assert_eq(loaded.equipped["accessory"], "bracelet", "accessorio")
 	assert_eq(loaded.equipped["weapon"], "glass_sword", "arma")
-	assert_eq(loaded.spell, "truth_spark", "incantesimo valido")
+	assert_eq(loaded.spell, "truth_spark", "incantesimo")
+	assert_true(loaded.knows("truth_spark") and loaded.owns("glass_sword"), "cosa sa e cosa ha")
+	data["spell"] = "moonlight"           # non imparato: niente su Spazio / J
+	data["equipped"]["body"] = "hoodie"   # mai trovata: torna il vestito
+	data["learned"].append("fireball")    # non esiste
+	loaded.load_save(data)
+	assert_eq(loaded.spell, "", "un incantesimo non imparato non si carica")
+	assert_eq(loaded.equipped["body"], "black_dress", "un oggetto mai trovato non si mette")
+	assert_eq(loaded.learned, ["truth_spark"] as Array[String], "quelli che non esistono si scartano")
+
+
+func test_all_inizio_lethe_non_ha_niente() -> void:
+	var state := GameState.new()
+	assert_eq(state.learned.size(), 0, "nessun incantesimo")
+	assert_eq(state.spell, "", "niente su Spazio / J")
+	assert_false(state.can_cast(), "niente magia")
+	assert_false(state.can_slash(), "niente spada")
+	assert_eq(state.owned, ["black_dress"] as Array[String], "solo il vestito")
+	assert_eq(state.equipped, {"weapon": "", "body": "black_dress", "accessory": ""}, "addosso")
+	var old := GameState.new()
+	old.load_save({"version": 1, "spell": "truth_spark", "equipped": {"weapon": "glass_sword"}})
+	assert_false(old.can_cast() or old.can_slash(), "un salvataggio vecchio non regala niente")
+
+
+func test_imparare_e_trovare() -> void:
+	var state := GameState.new()
+	state.learn("truth_spark")
+	assert_eq(state.spell, "truth_spark", "il primo incantesimo va su Spazio / J")
+	assert_true(state.can_cast(), "ora la magia c'è")
+	state.learn("mend")
+	assert_eq(state.spell, "truth_spark", "il secondo non lo sostituisce")
+	state.learn("mend")
+	state.learn("nope")
+	assert_eq(state.learned.size(), 2, "niente doppioni, niente inventati")
+	state.give("glass_sword")
+	assert_true(state.can_slash(), "la spada va subito in mano")
+	state.give("toy_wand")
+	assert_eq(state.equipped["weapon"], "glass_sword", "con le mani piene, la bacchetta resta da parte")
+	assert_true(state.owns("toy_wand"), "ma ce l'ha")
