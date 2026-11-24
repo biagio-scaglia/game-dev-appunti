@@ -72,7 +72,8 @@ func glitch(node: Control, duration := GLITCH_TIME, amount := GLITCH_AMOUNT) -> 
 	node.set_meta(&"clean_text", node.get("text"))
 	node.set("text", Glitch.corrupt(node.get("text"), amount, rng))
 	await get_tree().create_timer(duration).timeout
-	restore(node)
+	if is_instance_valid(node):       # nel frattempo la pagina può averla rifatta (es. salvando)
+		restore(node)
 
 
 ## Tutte le scritte guaste insieme, un po' più a lungo.
@@ -81,7 +82,9 @@ func burst(duration := 0.3) -> void:
 		glitch(node, duration)
 
 
-func restore(node: Control) -> void:
+## Rimette a posto la scritta. Non tipizzato: può arrivare un nodo già liberato (la lista
+## degli slot si ricostruisce quando si salva), e allora non fa niente.
+func restore(node) -> void:
 	if is_instance_valid(node) and node.has_meta(&"clean_text"):
 		node.set("text", node.get_meta(&"clean_text"))
 		node.remove_meta(&"clean_text")

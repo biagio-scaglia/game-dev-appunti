@@ -314,3 +314,19 @@ func test_i_suoni_di_sottofondo_non_si_ripetono_di_fila() -> void:
 		assert_true(kind != last, "mai due uguali di fila")
 		assert_true(kind in menu.ambience.SOUNDS, "un suono vero")
 		last = kind
+
+
+func test_salvare_mentre_una_voce_e_guasta_non_rompe_niente() -> void:
+	# Il bug: una voce degli slot guasta per un attimo, si salva (la lista si rifà e la voce
+	# vecchia viene liberata), poi il guasto prova a rimetterla a posto.
+	var menu := _menu(_hero())
+	menu.open()
+	menu.choose(&"save")
+	var slot: Button = menu.save_view.slot_button(1)
+	menu.glitcher.glitch(slot, 0.05, 1.0)
+	menu.save_view.slot_chosen.emit(1)
+	await tree.process_frame
+	await wait_seconds(0.1)
+	assert_true(SaveStore.exists(1), "il salvataggio c'è")
+	assert_true(menu.is_open(), "e il menu è ancora lì")
+	menu.glitcher.restore(slot)          # anche chiamata a mano su un nodo liberato: niente
