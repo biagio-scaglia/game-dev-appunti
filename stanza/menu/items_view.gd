@@ -13,9 +13,12 @@ func _init() -> void:
 	header.text = "Items"
 
 
-func refresh(sword_stage: int) -> void:
+## `has_sword`: le schegge dello specchio ci sono solo da quando Lethe ha la spada.
+func refresh(sword_stage: int, has_sword := true) -> void:
 	var entries := []
 	for item in Data.ITEMS:
+		if item["id"] == &"shard" and not has_sword:
+			continue
 		entries.append([item["id"], "%s   x%d" % [item["name"], Data.item_count(item, sword_stage)]])
 	fill(entries, _describe)
 

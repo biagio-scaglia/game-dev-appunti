@@ -3,9 +3,11 @@ extends HBoxContainer
 ## quello che Lethe ha addosso; scelto uno slot, sotto compaiono gli oggetti che ci vanno.
 ## A destra i parametri: mentre si guarda un oggetto, accanto ai valori che cambierebbero
 ## c'è quello nuovo (più alto in viola, più basso in rosso).
+## Gli oggetti non ancora trovati ci sono, ma come "???": non si possono mettere.
 
 ## Il testo per la barra d'aiuto in fondo al menu.
 signal described(text: String)
+signal denied(text: String)
 signal equipped
 
 const Style := preload("menu_style.gd")
@@ -102,8 +104,10 @@ func open_slot(id: String) -> void:
 	mode = &"items"
 	var entries := []
 	for item_id in Equipment.items_for(slot):
-		entries.append([StringName(item_id), Equipment.item_name(item_id, sword_stage)])
-	if slot == "accessory":
+		var known: bool = state.owns(item_id)
+		entries.append([StringName(item_id),
+			Equipment.item_name(item_id, sword_stage) if known else Data.UNKNOWN])
+	if slot != "body":      # le mani e l'accessorio possono restare vuoti, il vestito no
 		entries.append([StringName(NONE), "(none)"])
 	items.setup(entries, Style.FONT, Style.FONT_SIZE)
 	for button: Button in items.get_children():
@@ -116,6 +120,9 @@ func open_slot(id: String) -> void:
 
 
 func equip(id: String) -> void:
+	if id != NONE and not state.owns(id):
+		denied.emit("You don't have this yet.")
+		return
 	state.equipped[slot] = "" if id == NONE else id
 	equipped.emit()
 	refresh(state, sword_stage)
@@ -143,6 +150,10 @@ func _on_slot_focus(id: String) -> void:
 
 
 func _preview(id: String) -> void:
+	if id != NONE and not state.owns(id):
+		_show_params({})
+		described.emit("You don't have this yet.")
+		return
 	var trial: Dictionary = state.equipped.duplicate()
 	trial[slot] = "" if id == NONE else id
 	_show_params(Equipment.params(trial, sword_stage))

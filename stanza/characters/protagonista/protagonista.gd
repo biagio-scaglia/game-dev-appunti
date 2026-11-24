@@ -5,6 +5,8 @@ extends CharacterBody2D
 ## - Spada di vetro dello specchio (K): la bugia. La lama compare dalla mano e fende verso
 ##   dove guarda; sword_stage (0 scheggia, 1 pugnale, 2 lama) cresce con le bugie.
 ## Mentre attacca o parla (`frozen`) sta ferma. L'origine del nodo è ai piedi.
+## `can_cast` e `can_slash` dicono se la magia e la spada ci sono già: nel gioco le decide lo
+## stato della partita (all'inizio niente), da sola (test, reel) può tutto.
 
 signal attack_finished(kind: StringName)
 
@@ -33,6 +35,9 @@ var attacking := &""
 var _launched := false
 ## Ferma (sta parlando con qualcosa): niente movimento né attacchi.
 var frozen := false
+## Sa un incantesimo (Spazio / J) e ha la spada in mano (K).
+var can_cast := true
+var can_slash := true
 
 
 func _ready() -> void:
@@ -50,11 +55,11 @@ func _physics_process(_delta: float) -> void:
 		if not is_attacking():
 			_play("idle")
 		return
-	if Input.is_action_just_pressed(&"cast"):
+	if can_cast and Input.is_action_just_pressed(&"cast"):
 		cast()
-	elif Input.is_action_just_pressed(&"slash"):
+	elif can_slash and Input.is_action_just_pressed(&"slash"):
 		slash()
-	if OS.is_debug_build() and Input.is_action_just_pressed(&"sword_stage"):
+	if can_slash and OS.is_debug_build() and Input.is_action_just_pressed(&"sword_stage"):
 		sword_stage = (sword_stage + 1) % 3       # solo per provare gli stadi
 	if is_attacking():
 		velocity = Vector2.ZERO

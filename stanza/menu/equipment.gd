@@ -7,7 +7,7 @@ const Data := preload("menu_data.gd")
 
 static func item_name(id: String, sword_stage: int) -> String:
 	if id == "":
-		return "(none)"
+		return Data.NOTHING
 	if id == "glass_sword":
 		return Data.WEAPONS[clampi(sword_stage, 0, Data.WEAPONS.size() - 1)]
 	return Data.EQUIPMENT.get(id, {}).get("name", "?")

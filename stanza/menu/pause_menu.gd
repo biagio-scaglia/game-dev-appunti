@@ -84,7 +84,7 @@ func _ready() -> void:
 		list.moved.connect(sfx_move.play)
 	for page in [items_view, spells_view, equip_view]:
 		page.described.connect(func(text): help_label.text = text)
-	for page in [items_view, spells_view]:
+	for page in [items_view, spells_view, equip_view]:
 		page.denied.connect(_deny)
 	equip_view.equipped.connect(sfx_confirm.play)
 	save_view.slot_chosen.connect(_on_slot)
@@ -253,7 +253,7 @@ func _refresh() -> void:
 	place_label.text = state.place
 	status_view.refresh(state, _sword_stage())
 	status_view.hero.show_face(party.hero.is_away())
-	items_view.refresh(_sword_stage())
+	items_view.refresh(_sword_stage(), state.owns("glass_sword"))
 	spells_view.refresh(state)
 	equip_view.refresh(state, _sword_stage())
 

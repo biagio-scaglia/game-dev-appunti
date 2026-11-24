@@ -1,7 +1,7 @@
 extends "menu_page.gd"
 ## Gli incantesimi: in alto quello che parte con Spazio / J, sotto la lista. Scegliere un
 ## incantesimo imparato lo mette su Spazio / J; quelli non ancora imparati sono "???" e
-## sceglierli non si può.
+## sceglierli non si può. All'inizio sono tutti "???".
 
 const Data := preload("menu_data.gd")
 
@@ -10,23 +10,25 @@ var state: RefCounted
 
 func refresh(game_state: RefCounted) -> void:
 	state = game_state
-	header.text = "On Space / J:   %s" % Data.spell(state.spell)["name"]
+	header.text = "On Space / J:   %s" % Data.spell(state.spell).get("name", Data.NOTHING)
 	var entries := []
 	for s in Data.SPELLS:
-		var text := "???   - not learned -"
-		if s["learned"]:
+		var text := "%s   - not learned -" % Data.UNKNOWN
+		if state.knows(s["id"]):
 			text = "%s   %d MP%s" % [s["name"], s["mp"], "   (ready)" if s["id"] == state.spell else ""]
 		entries.append([StringName(s["id"]), text])
 	fill(entries, _describe)
 
 
 func enter(focus := &"") -> void:
-	super(focus if focus != &"" else StringName(state.spell))
+	if focus == &"" and state.spell != "":
+		focus = StringName(state.spell)
+	super(focus)
 
 
 func choose(id: String) -> void:
 	var s := Data.spell(id)
-	if not s.get("learned", false):
+	if not state.knows(id):
 		denied.emit("You haven't learned this yet.")
 		return
 	state.spell = id
@@ -37,7 +39,7 @@ func choose(id: String) -> void:
 
 func _describe(id: StringName) -> void:
 	var s := Data.spell(String(id))
-	described.emit(s["desc"] if s.get("learned", false) else "You haven't learned this yet.")
+	described.emit(s["desc"] if state.knows(String(id)) else "You haven't learned this yet.")
 
 
 func _on_chosen(id: StringName) -> void:

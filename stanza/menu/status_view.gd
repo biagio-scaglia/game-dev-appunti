@@ -59,7 +59,7 @@ func refresh(state: RefCounted, sword_stage: int) -> void:
 		_params[p].text = str(values[p])
 	for s in _slots:
 		_slots[s].text = Equipment.item_name(state.equipped[s], sword_stage)
-	spell_label.text = Data.spell(state.spell)["name"]
+	spell_label.text = Data.spell(state.spell).get("name", Data.NOTHING)
 	truth_label.text = str(state.truth)
 	lies_label.text = str(state.lies)
 
