@@ -1,7 +1,8 @@
 extends RefCounted
 ## Crea le azioni di input se mancano: move_* (WASD e frecce), run (Shift),
 ## cast (Spazio o J), slash (K, la spada di vetro), sword_stage (Tab, solo per provare
-## gli stadi della spada nelle build di debug), menu (Esc o X, il menu di pausa). Così il
+## gli stadi della spada nelle build di debug), menu (Esc o X, il menu di pausa),
+## interact (E, Z o Invio: parlare con le cose, andare avanti nei dialoghi). Così il
 ## progetto funziona senza toccare la Input Map a mano.
 
 const ACTIONS := {
@@ -14,6 +15,7 @@ const ACTIONS := {
 	&"slash": [KEY_K],
 	&"sword_stage": [KEY_TAB],
 	&"menu": [KEY_ESCAPE, KEY_X],
+	&"interact": [KEY_E, KEY_Z, KEY_ENTER],
 }
 
 
