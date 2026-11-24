@@ -1,7 +1,8 @@
 extends Area2D
 ## Il proiettile magico: vola dritto lasciando una scia di scintille, illumina la stanza
 ## di viola, esplode quando tocca un muro o un mobile (livello "mondo") o dopo
-## max_distance pixel. Al lancio suona il soffio (nodo Sfx).
+## max_distance pixel. Al lancio suona il soffio (nodo Sfx). Tocca anche i nemici (livello
+## "nemici"): fa male (`damage`), e la sua luce attira le falene (gruppo "lure").
 
 signal exploded(at: Vector2)
 
@@ -17,6 +18,7 @@ const IMPACT := preload("impact.tscn")
 @onready var sfx: AudioStreamPlayer = $Sfx
 
 var direction := Vector2.RIGHT
+var damage := 3
 var travelled := 0.0
 var _done := false
 var trail: CPUParticles2D
@@ -27,7 +29,8 @@ func _ready() -> void:
 	sprite.play(&"projectile")
 	sprite.rotation = direction.angle()          # lo sheet vola verso destra
 	add_child(Glow.light(Color(0.72, 0.48, 1.0), 1.3, 80.0))
-	body_entered.connect(func(_body): explode())
+	body_entered.connect(_on_body)
+	add_to_group(&"lure")
 	trail = Sparks.trail()
 	add_child(trail)
 	trail.emitting = true
@@ -40,6 +43,12 @@ func _physics_process(delta: float) -> void:
 	travelled += step.length()
 	if travelled >= max_distance:
 		explode()
+
+
+func _on_body(body: Node2D) -> void:
+	if body.is_in_group(&"enemies"):
+		body.hurt(damage, &"magic", global_position)
+	explode()
 
 
 func explode() -> void:
