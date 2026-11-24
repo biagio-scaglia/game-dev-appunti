@@ -7,7 +7,9 @@ stato: idea
 Mondo **fantasy**.
 
 ## Luoghi
-- 🌲 **Foresta**: punto di spawn della protagonista ("avrebbe senso")
+- 🌲 **Foresta**: punto di spawn della protagonista ("avrebbe senso"). Fitta, di notte: il bordo è un
+  muro di chiome, le radure sono poche. Al centro l'albero secco, e il primo ruscello del [[Il Lete|Lete]].
+  Tile pronti (stanza/world/forest/)
 - 🏘️ **Villaggio**: prima tappa dopo la foresta ("bingo!") → **Soglia**, il villaggio delle porte chiuse
 - 🏚️ **La casa dei ritratti girati**: la villa horror
 - 📜 **Borgo di Carta** e la **torre dell'orologio**: il secondo villaggio

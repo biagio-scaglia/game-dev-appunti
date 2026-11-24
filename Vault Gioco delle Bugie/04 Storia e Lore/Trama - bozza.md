@@ -67,7 +67,19 @@ Nemici e boss → [[Nemici e boss]]. Missioni, collezionabili, minigiochi → [[
   a matita: *"tomorrow I'll go out."*, e sotto ancora la stessa frase, sempre più sbiadita (una per
   ogni giorno dopo). Nero, bussano di nuovo. Poi la stanza. Continue non la mostra.
 - Notte. Lethe gira per la stanza, guarda le cose, le cose le parlano → [[La stanza di Lethe]].
+- **Il risveglio** (in gioco): dopo la cutscene Lethe è accanto al letto; gli occhi si aprono due
+  volte quasi e la terza davvero, un respiro, si alza. Narratore: *"Night. The same night. It's
+  always the same night."* La prima volta, accanto al fumetto, il tasto E.
+- **L'obiettivo in alto** (in gioco): una riga sola, sempre, così si sa cosa fare:
+  *"Look around the room (n/5)"* → *"Someone is knocking. Go to the door"* → *"Go to the mirror"*.
+  Guardate 5 cose, se non hanno ancora bussato bussano subito.
 - Bussano alla porta. Risponde, mente o sta zitta: è la **prima scelta** del gioco.
+- **Lo specchio chiama** (in gioco): quando chi bussava se n'è andato e Lethe ha guardato 5 cose,
+  l'angolo scoperto si accende di luce fredda, la musica della stanza si spegne e parte quella
+  dello specchio. *"Pull the sheet off."* o *"Not yet."* (che lo fa brillare di più, ma non obbliga).
+- **La caduta** (in gioco): il vetro cede, Lethe viene tirata dentro, lo schermo diventa vetro e le
+  schegge volano su mentre lei cade. Nel buio: *"Something sharp in her hand. A piece of the
+  mirror."* (la spada arriva qui). Poi CHAPTER 1 / THE FOREST.
 - Poi l'angolo di vetro scoperto dello specchio brilla della luce della luna. Lethe tira via il
   lenzuolo e **cade dentro**. (Il lenzuolo resta per terra nella stanza: indizio.)
 - Una scheggia le resta in mano: è il primo stadio della [[La spada di vetro|spada di vetro]].

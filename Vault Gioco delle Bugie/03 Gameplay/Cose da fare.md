@@ -34,6 +34,17 @@ o se Lethe lo dimentica bevendo dal [[Il Lete|Lete]]. Alcune si aprono solo con 
 - **I ricordi della stanza**: ogni volta che Lethe muore e si risveglia nel letto, qualcosa nella
   stanza è cambiato. Trovarli tutti è un traguardo.
 
+## Le icone (in gioco, `ui/items/`)
+| Tipo | Oggetti |
+|---|---|
+| Cibo (cura) | Rice Ball, Night Apple, Warm Bread, Cup of Tea, **Someone's Dinner** (dal vassoio: cura tutto) |
+| Luce (magia) | Moon Drop, Candle Stub |
+| Il Lete | Lethe Water (cura tutto, fa dimenticare) → [[Il Lete]] |
+| Potenziamenti | **Heart Thread** (più cuore), **Moon Pearl** (più luce), **Sharp Shard** (la spada cresce) |
+| Da raccogliere | Letter Page, Green Leaf, Magical Girl Figure |
+| Chiavi | Old Key (le radici) |
+| Accessori | Toy Wand, Oversized Hoodie, Hospital Bracelet, Moth Charm, Little Bell, Violet Ribbon |
+
 ## Minigiochi
 - **La sala giochi di Soglia** (la console): un cabinato con un gioco semplice, lo stesso che Lethe
   giocava di notte. Il record si salva. A volte lo schermo mostra la stanza.
