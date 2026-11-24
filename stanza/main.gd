@@ -25,10 +25,6 @@ func _ready() -> void:
 	knock.setup(room)
 	knock.is_busy = talk.is_talking
 	talk.extra_states.append(knock)
-	# La riga dei tasti sparisce sotto il riquadro dei dialoghi.
-	var hint: Label = $HUD/Hint
-	talk.talk_started.connect(func(_id: String) -> void: hint.hide())
-	talk.talk_finished.connect(func(_id: String) -> void: hint.show())
 	Music.play_loop(music)
 
 
