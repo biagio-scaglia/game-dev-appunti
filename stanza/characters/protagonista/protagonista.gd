@@ -62,6 +62,11 @@ var knock := Vector2.ZERO
 ## Dove va il fendente (verso il nemico della mira assistita, o dove guarda).
 var aim := Vector2.ZERO
 var _hitstop := false
+## Quanto taglia in più la spada (dal livello: lo mette chi conosce lo stato).
+var attack_bonus := 0
+## Un fendente premuto mentre ne finisce un altro: parte appena può (per BUFFER secondi).
+const BUFFER := 0.25
+var _buffered := 0.0
 
 
 func _ready() -> void:
@@ -88,7 +93,11 @@ func _physics_process(delta: float) -> void:
 	if can_cast and Input.is_action_just_pressed(&"cast"):
 		cast()
 	elif can_slash and Input.is_action_just_pressed(&"slash"):
-		slash()
+		if is_attacking():
+			_buffered = BUFFER          # lo ricorda: parte alla fine di questo
+		else:
+			slash()
+	_buffered = maxf(0.0, _buffered - delta)
 	if can_slash and OS.is_debug_build() and Input.is_action_just_pressed(&"sword_stage"):
 		sword_stage = (sword_stage + 1) % 3       # solo per provare gli stadi
 	if is_attacking():
@@ -207,7 +216,7 @@ func _on_frame_changed() -> void:
 			sword.stage = sword_stage
 			sword.hit.connect(func(body: Node2D) -> void:
 				if body.has_method(&"hurt"):
-					body.hurt(SWORD_DAMAGE + sword_stage, &"sword", global_position)
+					body.hurt(SWORD_DAMAGE + sword_stage + attack_bonus, &"sword", global_position)
 					hit_stop())
 			_spawn(sword, hand_position())
 
@@ -219,6 +228,9 @@ func _on_animation_finished() -> void:
 	attacking = &""
 	_play("idle")
 	attack_finished.emit(kind)
+	if _buffered > 0.0 and can_slash:
+		_buffered = 0.0
+		slash()
 
 
 func _spawn(node: Node2D, at: Vector2) -> void:
