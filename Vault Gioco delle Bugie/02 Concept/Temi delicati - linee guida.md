@@ -22,11 +22,11 @@ Queste regole valgono per testi, immagini, musica e finali → [[Vibe e tono]].
 
 ## Nel gioco
 - **All'inizio**, prima del titolo: un avviso breve e calmo sui contenuti (isolamento, pensieri
-  suicidi, horror leggero).
+  suicidi, horror leggero). **In gioco**: compare la prima volta che si gioca.
 - **Dopo i titoli di coda**, in tutti i finali: *"Se ti sei riconosciuto in Lethe, parlane con qualcuno."*
   e un numero d'aiuto. Italia: **Telefono Amico 02 2327 2327**; emergenze **112**.
   (Per altre lingue: un link a una lista di numeri per paese.)
-- Nel menu delle opzioni: la stessa pagina, sempre raggiungibile.
+- **Talk to Someone**: la pagina coi numeri, sempre nel menu del titolo (**in gioco**).
 
 ## Da fare
 - Far provare il gioco a qualcuno che conosce questi temi (psicologo, o chi ci è passato) prima di

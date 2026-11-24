@@ -16,4 +16,11 @@ stato: idea forte
 
 La spada: [[La spada di vetro]] (il vetro dello specchio, in tre stadi).
 
+## All'inizio a mani vuote (in gioco)
+Nel prologo Lethe **non ha né magia né spada**: nella stanza i tasti non fanno niente, e nel menu
+incantesimi ed equipaggiamento non ancora trovati sono **"???"**. Addosso ha solo il vestito nero.
+- La **spada** arriva con la scheggia dello specchio, alla fine del prologo → [[Trama - bozza]].
+- La **magia** (*Truth Spark*) arriva con la prima verità detta nella foresta.
+- Gli altri incantesimi e l'equipaggiamento si trovano lungo la strada ([[Cose da fare]]).
+
 Collegato: [[Sistema Karma]], [[Tema - Le bugie]], [[La spada di vetro]]
