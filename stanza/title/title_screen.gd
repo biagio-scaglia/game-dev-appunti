@@ -6,8 +6,8 @@ extends Control
 ## La prima volta che si gioca, prima di tutto, l'avviso sui contenuti (care_note.gd). Poi
 ## dal nero compaiono la scena, il titolo e il sottotitolo, poi il menu:
 ## Continue (solo se c'è un salvataggio) / New Game / Talk to Someone / Quit.
-## Un tasto durante l'apparizione la salta. New Game e Continue: dissolvenza al nero, poi
-## la stanza. Talk to Someone: la pagina coi numeri d'aiuto. Quit: lo schermo si rompe
+## Un tasto durante l'apparizione la salta. New Game: dissolvenza al nero, la cutscene
+## (opening/), poi la stanza. Continue: dissolvenza al nero, poi la stanza. Talk to Someone: la pagina coi numeri d'aiuto. Quit: lo schermo si rompe
 ## come in un incubo (fx/screen_shatter.gd), poi si chiude.
 ## Musica: il lamento del giullare (carillon stonato, valzer lento).
 ##
@@ -27,6 +27,8 @@ signal quit_requested
 @export var tagline := "Death is a Lie"
 ## La scena del gioco. Vuota = resta qui ed emette solo start_requested (per i test).
 @export_file("*.tscn") var next_scene := "res://main.tscn"
+## La cutscene di New Game, prima della stanza (Continue la salta). Vuota = niente cutscene.
+@export_file("*.tscn") var opening_scene := "res://opening/opening.tscn"
 ## Falso nei test: Quit rompe lo schermo ed emette quit_requested, ma non chiude.
 @export var really_quit := true
 ## L'avviso sui contenuti la prima volta (falso nei test che non lo provano).
@@ -241,8 +243,16 @@ func start_game() -> void:
 	t.tween_property(music, "volume_db", -40.0, 1.2)
 	await t.finished
 	start_requested.emit()
-	if next_scene != "":
-		get_tree().change_scene_to_file(next_scene)
+	var target := scene_after_start()
+	if target != "":
+		get_tree().change_scene_to_file(target)
+
+
+## Dove si va dopo: New Game passa dalla cutscene, Continue va dritto nella stanza.
+func scene_after_start() -> String:
+	if next_scene == "":
+		return ""
+	return opening_scene if Main.pending_save.is_empty() and opening_scene != "" else next_scene
 
 
 ## Quit: lo schermo si rompe partendo dalla voce, i pezzi cadono nel buio, poi si chiude.
