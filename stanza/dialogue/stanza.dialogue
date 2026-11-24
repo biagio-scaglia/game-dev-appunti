@@ -39,9 +39,32 @@ else
 	The food is still there. So is the note.
 => END
 
+# Quando bussano (world/door_knock.gd): knocking = c'è qualcuno, knock_over = è già
+# successo, answer() = chi bussava se ne va.
 ~ door
-The door. Locked [shiver]from the inside[/shiver].
-Lethe: Not yet.
+if knocking
+	Someone is knocking. A thin line of light under the door, and the shadow of two feet.
+	Voice: Lethe? ...Are you awake?
+	- I'm awake.
+		Lethe: ...I'm awake.
+		Voice: Okay. Okay.
+		Voice: There's dinner on the tray. Please eat something.
+		set truth += 1
+	- I'm asleep.
+		Lethe: I'm asleep. [#wrong]
+		Voice: ...Okay. Goodnight, then.
+		set lies += 1
+	- Say nothing.
+		Lethe: ...
+		The voice doesn't ask again.
+	do answer()
+	Footsteps, going away.
+elif knock_over
+	The light under the door is gone.
+	Lethe: [flicker]They'll come back tomorrow.[/flicker] They always do.
+else
+	The door. Locked [shiver]from the inside[/shiver].
+	Lethe: Not yet.
 => END
 
 ~ nightstand
