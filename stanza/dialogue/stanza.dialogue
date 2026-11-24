@@ -1,0 +1,100 @@
+# La stanza di Lethe: cosa dicono le cose (vedi il vault, "La stanza di Lethe").
+# Ogni cue ha il nome del tile dell'oggetto (room_layout.gd): un oggetto con un cue qui
+# diventa interagibile da solo. "Lethe:" = i suoi pensieri (col ritratto), il resto è
+# il narratore. Stato: truth / lies (GameState), seen("id") = quante volte ci ha già parlato.
+
+~ covered_mirror
+if seen("covered_mirror") == 0
+	A mirror, under a bedsheet. One corner of the glass is uncovered.
+	- Look into the corner.
+		A sliver of an eye looks back. Tired. Red.
+		Lethe: ...That's me.
+		set truth += 1
+	- It's just old furniture.
+		Lethe: Just old furniture. Nothing to see here.
+		set lies += 1
+else
+	The sheet hasn't moved. The corner is still there.
+=> END
+
+~ wall_calendar
+Days crossed out, one by one, up to a circled day.
+After that, nothing.
+Lethe: I stopped counting.
+=> END
+
+~ food_tray
+if seen("food_tray") == 0
+	A tray by the door. The food is cold. Untouched.
+	There's a note under the cup, with a little heart in the corner.
+	- Read the note.
+		"Please eat something. I'm not angry. I'll be right outside."
+		Lethe: ...
+	- Leave it.
+		Lethe: Later.
+else
+	The food is still there. So is the note.
+=> END
+
+~ door
+The door. Locked from the inside.
+Lethe: Not yet.
+=> END
+
+~ nightstand
+A photo frame, face down.
+Lethe: Leave it like that.
+=> END
+
+~ paper_balls
+Crumpled pages. Every one starts the same way: "I'm sorry for"
+Lethe: For what? I never get past that line.
+=> END
+
+~ dead_plant
+A plant nobody has watered in months.
+Lethe: It was green, once. Wasn't it?
+=> END
+
+~ window
+The moon, between the curtains.
+Lethe: Out there, everything keeps going.
+=> END
+
+~ wall_poster
+A poster of a magical girl. Her favourite, once.
+Lethe: She never ran away from anything.
+=> END
+
+~ console
+The console is still warm.
+Lethe: One more game. Then I'll sleep.
+She says that every night.
+=> END
+
+~ cushion
+A cushion, pressed flat. Someone has sat here for a long time.
+=> END
+
+~ desk_pc
+The screen glows. Unread messages pile up in a corner.
+Lethe: I'll answer tomorrow.
+=> END
+
+~ bed
+The bed is unmade.
+Lethe: I'm not tired.
+=> END
+
+~ shelf
+Little heroines on the shelf, all facing the room.
+Lethe: Stop looking at me like that.
+=> END
+
+~ clothes
+A jacket, thrown on the floor. It hasn't been outside in a long time.
+=> END
+
+~ trash_bag
+A trash bag, tied shut. Nobody takes it out.
+=> END

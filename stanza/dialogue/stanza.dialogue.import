@@ -1,0 +1,16 @@
+[remap]
+
+importer="dialogue_manager"
+importer_version=18
+type="Resource"
+uid="uid://dm6mewqhlechg"
+path="res://.godot/imported/stanza.dialogue-739ada91391667e4f4f1a3656f0bd608.tres"
+
+[deps]
+
+source_file="res://dialogue/stanza.dialogue"
+dest_files=["res://.godot/imported/stanza.dialogue-739ada91391667e4f4f1a3656f0bd608.tres"]
+
+[params]
+
+defaults=true
