@@ -15,6 +15,14 @@ if seen("mirror") == 0
 	Lethe: Same glass as the one in my room...
 else
 	The moon in the mirror hasn't moved.
+She rests a moment, close to the glass. Her heart loosens.
+do rest()
+=> END
+
+# Quando il cuore è stretto del tutto (forest_zone.gd, die): si riparte dallo specchio.
+~ wake_again
+Lethe: ...
+The mirror is cold against her back. She's still here.
 => END
 
 ~ brambles

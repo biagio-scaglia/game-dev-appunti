@@ -10,11 +10,16 @@ extends Node2D
 ##   l'obiettivo in alto;
 ## - la prima volta (dalla caduta del prologo) l'arrivo: il nero che si apre, le schegge
 ##   che brillano intorno a lei, "Grass. Cold, wet grass.";
-## - l'uscita: per ora il capitolo finisce qui e si torna al titolo.
+## - l'uscita: per ora il capitolo finisce qui e si torna al titolo;
+## - i nemici (enemies/: falene d'ombra, rovi che sussurrano, lucciole false) e la vita a
+##   cuore (ui/heart_hud.gd): ogni colpo la mano stringe di più; stretto del tutto, "Death is
+##   a lie.", e Lethe si risveglia davanti allo specchio (dove si riposa: il cuore torna intero).
 ##
 ## Lo stato arriva da Main.pending_save (il prologo che finisce, o Continue dal titolo).
 
 signal exited
+signal died
+signal respawned
 
 const Main := preload("res://main.gd")
 const GameState := preload("res://menu/game_state.gd")
@@ -37,6 +42,15 @@ const THEME := preload("res://audio/forest_theme.wav")
 const GLINT := preload("res://audio/shard_glint.wav")
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const TITLE := "res://title/title_screen.tscn"
+const HeartHud := preload("res://ui/heart_hud.gd")
+const ScreenShake := preload("res://fx/screen_shake.gd")
+const HURT := preload("res://audio/heart_hurt.wav")
+const BREAK := preload("res://audio/heart_break.wav")
+const ENEMY_SCRIPTS := {
+	"moth": preload("res://enemies/shadow_moth.gd"),
+	"bramble": preload("res://enemies/whispering_bramble.gd"),
+	"firefly": preload("res://enemies/false_firefly.gd"),
+}
 
 const PLACE := "The Forest"
 const NIGHT := Color(0.4, 0.45, 0.62)
@@ -58,6 +72,10 @@ var music: AudioStreamPlayer
 var pause_menu: CanvasLayer
 var talk: Node
 var objective: CanvasLayer
+var hud: CanvasLayer
+## Dove si riparte quando il cuore è stretto del tutto (lo Spawn, poi lo specchio).
+var respawn_point := Vector2.ZERO
+var _dying := false
 var data: Dictionary
 ## Falso nei test: niente suoni.
 var sound := true
@@ -92,6 +110,9 @@ func _ready() -> void:
 	hero.set("sword_stage", int(Main.pending_save.get("sword_stage", 0)))
 	Main.pending_save = {}
 	_add_camera()
+	respawn_point = spawn.global_position
+	hero.damaged.connect(_on_hero_damaged)
+	spawn_enemies()
 	music = AudioStreamPlayer.new()
 	music.stream = THEME
 	music.volume_db = -6.0
@@ -106,10 +127,17 @@ func _ready() -> void:
 	talk.name = "Talk"
 	add_child(talk)                     # dopo il menu: il riquadro si prende l'input prima
 	talk.setup_with(self, hero, state, talk_things(), DIALOGUE)
+	talk.extra_states.append(self)
 	talk.key_hint = not state.flag("talk_learned")
 	talk.talk_finished.connect(_on_talk_finished)
 	objective = ObjectiveBanner.new()
+	objective.show_heart = false                     # il cuore c'è già: quello della vita
+	objective.at = Vector2(HeartHud.AT.x + HeartHud.FRAME + 6, 18)
 	add_child(objective)
+	hud = HeartHud.new()
+	hud.sound = sound
+	add_child(hud)
+	hud.show_heart(state.heart, state.heart_max)
 	exit_area.body_entered.connect(_on_exit)
 	if sound:
 		Music.play_loop(music)
@@ -210,6 +238,109 @@ func talk_things() -> Array[Dictionary]:
 			var top_left := Vector2(r[0], span[0]) * TILE
 			out.append({"id": "lethe", "rect": Rect2(top_left, Vector2(r[2] - r[0], span[1] - span[0]) * TILE)})
 	return out
+
+
+# --- I nemici e il cuore ------------------------------------------------------------------
+
+func enemies() -> Array:
+	return get_tree().get_nodes_in_group(&"enemies").filter(func(e): return is_ancestor_of(e))
+
+
+func spawn_enemies() -> void:
+	for entry in Layout.ENEMIES:
+		var enemy: CharacterBody2D = ENEMY_SCRIPTS[entry[0]].new()
+		enemy.name = "%s_%d" % [entry[0], world.get_child_count()]
+		enemy.sound = sound
+		enemy.target = hero
+		enemy.position = (Vector2(entry[1]) + Vector2(0.5, 0.8)) * TILE
+		world.add_child(enemy)
+
+
+func _on_hero_damaged(amount: int, _from: Vector2) -> void:
+	if _dying:
+		return
+	state.hurt(amount)
+	hud.show_heart(state.heart, state.heart_max)
+	hud.hit()
+	if sound:
+		Sfx.play(self, HURT, randf_range(0.95, 1.05), -2.0)
+	var shake := ScreenShake.new()
+	shake.strength = 3.0
+	shake.duration = 0.2
+	get_tree().root.add_child(shake)
+	if state.is_dead():
+		die()
+
+
+## Il cuore stretto del tutto: tutto si ferma, il nero, "Death is a lie.", e Lethe si
+## risveglia davanti allo specchio col cuore intero (i nemici tornano al loro posto).
+func die(pace := 1.0) -> void:
+	if _dying:
+		return
+	_dying = true
+	hero.set(&"frozen", true)
+	for enemy in enemies():
+		enemy.set_physics_process(false)
+	if sound:
+		Sfx.play(self, BREAK, 1.0, -2.0)
+	died.emit()
+	var layer := CanvasLayer.new()
+	layer.layer = 70
+	add_child(layer)
+	var black := ColorRect.new()
+	black.color = Color(0, 0, 0, 0)
+	black.size = Vector2(640, 360)
+	layer.add_child(black)
+	var label := Label.new()
+	label.text = "Death is a lie."
+	label.add_theme_font_override(&"font", FONT)
+	label.add_theme_font_size_override(&"font_size", 16)
+	label.add_theme_color_override(&"font_color", Color(0.78, 0.2, 0.3))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.size = Vector2(640, 20)
+	label.position = Vector2(0, 170)
+	label.modulate.a = 0.0
+	layer.add_child(label)
+	var t := create_tween()
+	t.tween_property(black, "color:a", 1.0, 1.2 * pace)
+	t.tween_property(label, "modulate:a", 1.0, 0.8 * pace)
+	t.tween_interval(1.6 * pace)
+	t.tween_property(label, "modulate:a", 0.0, 0.6 * pace)
+	await t.finished
+	respawn()
+	var back := create_tween()
+	back.tween_property(black, "color:a", 0.0, 1.2 * pace)
+	await back.finished
+	layer.queue_free()
+	_dying = false
+	respawned.emit()
+	talk.say(DIALOGUE, "wake_again")
+
+
+## Di nuovo in piedi: davanti allo specchio (o allo Spawn), cuore intero, nemici al posto.
+func respawn() -> void:
+	for enemy in enemies():
+		enemy.queue_free()
+	spawn_enemies.call_deferred()
+	state.heal(state.heart_max)
+	hud.show_heart(state.heart, state.heart_max)
+	hero.global_position = respawn_point
+	hero.set(&"knock", Vector2.ZERO)
+	hero.set(&"invulnerable", 0.0)
+	hero.set(&"frozen", false)
+	camera.reset_smoothing()
+
+
+## Lo specchio: ci si riposa (il cuore torna intero) e da qui si riparte.
+func rest() -> void:
+	state.heal(state.heart_max)
+	hud.show_heart(state.heart, state.heart_max)
+	for sprite in thing_nodes():
+		if sprite.get_meta(&"tile") == "mirror":
+			respawn_point = sprite.global_position + Vector2(0, 20)
+	state.set_flag("rested")
+	if sound:
+		Sfx.play(self, GLINT, 1.0, -8.0)
 
 
 # --- L'arrivo e l'uscita -------------------------------------------------------------------

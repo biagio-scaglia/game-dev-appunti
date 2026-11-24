@@ -49,6 +49,13 @@ const DECOR := [
 	["tall_grass", Vector2i(14, 16)], ["tall_grass", Vector2i(36, 16)], ["roots", Vector2i(13, 9)],
 	["roots", Vector2i(30, 12)],
 ]
+## I nemici: [tipo, cella]. Falene vicino al sentiero e al Lete, rovi ai lati del sentiero
+## (mai sopra: non chiudono la strada), lucciole false tra le lucciole vere.
+const ENEMIES := [
+	["moth", Vector2i(18, 8)], ["moth", Vector2i(31, 15)], ["moth", Vector2i(10, 17)],
+	["bramble", Vector2i(12, 9)], ["bramble", Vector2i(33, 13)], ["bramble", Vector2i(21, 14)],
+	["firefly", Vector2i(8, 18)], ["firefly", Vector2i(35, 7)],
+]
 ## Raggi di luna tra le chiome (pixel, dove cadono).
 const BEAMS := [Vector2(300, 150), Vector2(620, 330), Vector2(1000, 260)]
 ## Lucciole (pixel, centro di ogni nuvola).
