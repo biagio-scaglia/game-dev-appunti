@@ -1,0 +1,16 @@
+# Il prologo: le righe che non sono di una cosa della stanza (prologue/prologue.gd).
+# Il narratore senza nome, i pensieri di Lethe col suo nome.
+
+# Appena sveglia, dopo la cutscene del calendario.
+~ wake_up
+Night.
+The same night. It's always the same night.
+Lethe: ...
+=> END
+
+# Lo specchio comincia a chiamare.
+~ mirror_calls
+A sound. Like a wet finger on the rim of a glass.
+The mirror. [shiver]The uncovered corner is glowing.[/shiver]
+Lethe: ...What?
+=> END

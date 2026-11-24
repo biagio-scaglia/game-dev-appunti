@@ -6,8 +6,25 @@
 # [shiver]...[/shiver] tremano, [flicker]...[/flicker] si spengono; [#wrong] in fondo a una
 # riga la guasta tutta (e il riquadro sobbalza). Le bugie si guastano.
 
+# Alla fine del prologo lo specchio chiama (prologue/prologue.gd): mirror_calling = brilla,
+# call_visits = quante volte Lethe ha già detto "non ancora", pull_sheet() = la caduta.
 ~ covered_mirror
-if seen("covered_mirror") == 0
+if mirror_calling
+	if call_visits == 0
+		The uncovered corner is glowing. Not with any light from this room.
+		Cold. Like the moon, but closer.
+		Something on the other side is [shiver]waiting[/shiver].
+	elif call_visits == 1
+		It's brighter than before. The sheet moves, a little. There's no wind.
+	else
+		The glow fills the whole corner now. [flicker]It won't stop.[/flicker]
+	- Pull the sheet off.
+		Lethe: ...Okay. Okay.
+		do pull_sheet()
+	- Not yet.
+		Lethe: Not yet.
+		do not_yet()
+elif seen("covered_mirror") == 0
 	A mirror, under a bedsheet. One corner of the glass is uncovered.
 	- Look into the corner.
 		A sliver of an eye looks back. [shiver]Tired. Red.[/shiver]
