@@ -41,6 +41,7 @@ const SaveView := preload("res://menu/save_view.gd")
 const Settings := preload("res://core/settings_store.gd")
 const Main := preload("res://main.gd")
 const CareNote := preload("care_note.gd")
+const FOREST := "res://forest/zone_wake.tscn"
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const MENU := [[&"continue", "Continue"], [&"start", "New Game"], [&"help", "Talk to Someone"],
 	[&"quit", "Quit"]]
@@ -252,7 +253,10 @@ func start_game() -> void:
 func scene_after_start() -> String:
 	if next_scene == "":
 		return ""
-	return opening_scene if Main.pending_save.is_empty() and opening_scene != "" else next_scene
+	if Main.pending_save.is_empty():
+		return opening_scene if opening_scene != "" else next_scene
+	# Continue: si riparte dal posto del salvataggio.
+	return FOREST if String(Main.pending_save.get("place", "")) == "The Forest" else next_scene
 
 
 ## Quit: lo schermo si rompe partendo dalla voce, i pezzi cadono nel buio, poi si chiude.

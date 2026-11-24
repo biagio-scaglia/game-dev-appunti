@@ -4,12 +4,13 @@ extends Node2D
 ## in fondo alla scena: il suo riquadro si prende l'input prima del menu), e dopo un po'
 ## qualcuno che bussa alla porta (DoorKnock). Il prologo (prologue/prologue.gd) fa il
 ## risveglio dopo la cutscene, lo specchio che chiama e la caduta; finito, si torna al
-## titolo (il capitolo 1 non c'è ancora). Qui si conta il tempo di gioco.
+## la foresta (forest/zone_wake.tscn). Qui si conta il tempo di gioco.
 
 const Music := preload("core/music.gd")
 const GameState := preload("menu/game_state.gd")
 const Prologue := preload("prologue/prologue.gd")
 const TITLE := "res://title/title_screen.tscn"
+const FOREST := "res://forest/zone_wake.tscn"
 
 @onready var room: Node2D = %Room
 @onready var hero: CharacterBody2D = %Protagonista
@@ -56,11 +57,13 @@ func _ready() -> void:
 		prologue.wake_up()
 
 
-## Il prologo è finito: per ora si torna al titolo.
+## Il prologo è finito: Lethe è caduta nello specchio, si va nella foresta (con lo stato).
 func _on_prologue_finished() -> void:
 	sync_abilities()
+	state.place = "The Forest"
+	pending_save = state.to_save(Vector2.ZERO, int(hero.get("sword_stage")))
 	if is_inside_tree() and get_tree().current_scene == self:
-		get_tree().change_scene_to_file(TITLE)
+		get_tree().change_scene_to_file(FOREST)
 
 
 func sync_abilities() -> void:
