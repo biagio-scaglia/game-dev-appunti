@@ -15,6 +15,7 @@ extends Control
 signal finished
 
 const CalendarPage := preload("calendar_page.gd")
+const Main := preload("res://main.gd")
 const SkipInput := preload("res://studio_intro/core/skip_input.gd")
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const KNOCK := preload("res://audio/menu_knock.wav")
@@ -189,6 +190,7 @@ func _finish() -> void:
 
 
 func _leave() -> void:
+	Main.from_opening = true       # la stanza parte col risveglio
 	finished.emit()
 	if next_scene != "":
 		get_tree().change_scene_to_file(next_scene)

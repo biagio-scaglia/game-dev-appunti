@@ -2,10 +2,14 @@ extends Node2D
 ## La scena principale: la stanza al buio (CanvasModulate), la protagonista al centro,
 ## l'OST lo-fi in loop, il menu di pausa (Esc o X) e i dialoghi con le cose (Talk, sta
 ## in fondo alla scena: il suo riquadro si prende l'input prima del menu), e dopo un po'
-## qualcuno che bussa alla porta (DoorKnock). Qui si conta il tempo di gioco.
+## qualcuno che bussa alla porta (DoorKnock). Il prologo (prologue/prologue.gd) fa il
+## risveglio dopo la cutscene, lo specchio che chiama e la caduta; finito, si torna al
+## titolo (il capitolo 1 non c'è ancora). Qui si conta il tempo di gioco.
 
 const Music := preload("core/music.gd")
 const GameState := preload("menu/game_state.gd")
+const Prologue := preload("prologue/prologue.gd")
+const TITLE := "res://title/title_screen.tscn"
 
 @onready var room: Node2D = %Room
 @onready var hero: CharacterBody2D = %Protagonista
@@ -18,6 +22,10 @@ var state := GameState.new()
 
 ## Il salvataggio da riprendere all'avvio ("Continue" del titolo). Si usa una volta e si svuota.
 static var pending_save: Dictionary = {}
+## Vero quando si arriva dalla cutscene di New Game: si parte col risveglio.
+static var from_opening := false
+
+var prologue: Node
 
 
 func _ready() -> void:
@@ -37,7 +45,22 @@ func _ready() -> void:
 	knock.setup(room)
 	knock.is_busy = talk.is_talking
 	talk.extra_states.append(knock)
+	prologue = Prologue.new()
+	prologue.name = "Prologue"
+	add_child(prologue)
+	prologue.setup(room, hero, talk, knock, state, music)
+	prologue.finished.connect(_on_prologue_finished)
 	Music.play_loop(music)
+	if from_opening:
+		from_opening = false
+		prologue.wake_up()
+
+
+## Il prologo è finito: per ora si torna al titolo.
+func _on_prologue_finished() -> void:
+	sync_abilities()
+	if is_inside_tree() and get_tree().current_scene == self:
+		get_tree().change_scene_to_file(TITLE)
 
 
 func sync_abilities() -> void:
