@@ -7,6 +7,10 @@ extends Node
 ##
 ## Nei dialoghi si vedono: le variabili di GameState (truth, lies...) e seen("id"), quante
 ## volte ha già parlato con quella cosa.
+##
+## La prima volta (`key_hint`) accanto al fumetto c'è anche il tasto: "E". Dopo il primo
+## dialogo non compare più (i tasti si spiegano una volta, quando servono).
+## say() apre un dialogo che non è di una cosa (es. il narratore del prologo).
 
 signal talk_started(id: String)
 signal talk_finished(id: String)
@@ -43,6 +47,9 @@ var icon: Sprite2D
 var _beat_step := 0
 var _beat_left := 0.0
 var _pop: Tween
+## Mostra il tasto accanto al fumetto, finché non si parla la prima volta.
+var key_hint := false
+var hint_label: Label
 
 
 func _ready() -> void:
@@ -57,6 +64,16 @@ func _ready() -> void:
 	icon.offset = Vector2(0, -ICON.get_height() / 2.0)    # l'origine è in basso, sulla punta
 	icon.hide()
 	layer.add_child(icon)
+	hint_label = Label.new()
+	hint_label.text = "E"
+	hint_label.add_theme_font_override(&"font", preload("res://ui/fonts/kenpixel_high_square.ttf"))
+	hint_label.add_theme_font_size_override(&"font_size", 16)
+	hint_label.add_theme_color_override(&"font_color", Color(0.95, 0.9, 1.0))
+	hint_label.add_theme_color_override(&"font_outline_color", Color(0.12, 0.08, 0.18))
+	hint_label.add_theme_constant_override(&"outline_size", 4)
+	hint_label.position = Vector2(ICON.get_width() / 4.0 + 2, -ICON.get_height() - 4)
+	icon.add_child(hint_label)
+	hint_label.hide()
 
 
 func setup(room_node: Node2D, hero_node: Node2D, game_state: RefCounted) -> void:
@@ -77,15 +94,23 @@ func seen(id: String) -> int:
 
 ## Apre il dialogo della cosa `id` (anche senza averla davanti: lo usano i test).
 func talk(id: String) -> void:
+	say(DIALOGUE, id)
+
+
+## Apre il cue `cue` di un dialogo qualsiasi, fermando Lethe finché non finisce.
+func say(resource: Resource, cue: String) -> void:
 	if is_talking():
 		return
+	if resource == DIALOGUE:
+		key_hint = false        # ha parlato con una cosa: il tasto l'ha capito
+	hint_label.hide()
 	_set_target("", true)
 	hero.set(&"frozen", true)
 	box = DialogueBox.new()
-	box.finished.connect(_on_finished.bind(id))
+	box.finished.connect(_on_finished.bind(cue))
 	add_child(box)
-	talk_started.emit(id)
-	box.start(DIALOGUE, id, [self, state] + extra_states)
+	talk_started.emit(cue)
+	box.start(resource, cue, [self, state] + extra_states)
 
 
 ## Dove sta la punta dell'icona: sopra la testa di Lethe. In cima alla stanza l'icona
@@ -98,7 +123,7 @@ func icon_anchor() -> Vector2:
 
 func _process(delta: float) -> void:
 	var now := ""
-	if hero and not is_talking() and not get_tree().paused and not hero.call(&"is_attacking"):
+	if hero and not is_talking() and not get_tree().paused and not hero.call(&"is_attacking") 			and not hero.get(&"frozen"):
 		var feet := hero.global_position - room.global_position
 		now = RoomThings.in_front(things, feet, hero.get(&"facing"))
 	_set_target(now)
@@ -144,6 +169,7 @@ func _set_target(id: String, at_once := false) -> void:
 		_pop.tween_callback(icon.hide)
 		return
 	icon.position = icon_anchor()
+	hint_label.visible = key_hint
 	icon.show()
 	icon.frame = 0
 	_beat_step = 0
