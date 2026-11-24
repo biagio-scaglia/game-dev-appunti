@@ -1,0 +1,259 @@
+{
+  "cell": 32,
+  "items": {
+    "rice_ball": {
+      "atlas": [
+        0,
+        0
+      ],
+      "name": "Rice Ball",
+      "kind": "food",
+      "desc": "Still a little warm. Someone made it with care.",
+      "effect": {
+        "heal": 1
+      }
+    },
+    "apple": {
+      "atlas": [
+        1,
+        0
+      ],
+      "name": "Night Apple",
+      "kind": "food",
+      "desc": "It grows only in the dark part of the forest.",
+      "effect": {
+        "heal": 1
+      }
+    },
+    "bread": {
+      "atlas": [
+        2,
+        0
+      ],
+      "name": "Warm Bread",
+      "kind": "food",
+      "desc": "Soft. It smells like a kitchen you remember.",
+      "effect": {
+        "heal": 2
+      }
+    },
+    "tea": {
+      "atlas": [
+        3,
+        0
+      ],
+      "name": "Cup of Tea",
+      "kind": "food",
+      "desc": "Chamomile. Drink it slowly.",
+      "effect": {
+        "heal": 1,
+        "light": 1
+      }
+    },
+    "dinner": {
+      "atlas": [
+        4,
+        0
+      ],
+      "name": "Someone's Dinner",
+      "kind": "food",
+      "desc": "From the tray by your door. \"Please eat something.\"",
+      "effect": {
+        "heal": 99
+      }
+    },
+    "moon_drop": {
+      "atlas": [
+        5,
+        0
+      ],
+      "name": "Moon Drop",
+      "kind": "light",
+      "desc": "A drop of moonlight. It fills your hands again.",
+      "effect": {
+        "light": 3
+      }
+    },
+    "candle": {
+      "atlas": [
+        6,
+        0
+      ],
+      "name": "Candle Stub",
+      "kind": "light",
+      "desc": "Half burnt. Light, a little at a time.",
+      "effect": {
+        "light": 1
+      }
+    },
+    "lethe_water": {
+      "atlas": [
+        7,
+        0
+      ],
+      "name": "Lethe Water",
+      "kind": "lethe",
+      "desc": "It heals everything. It also takes something.",
+      "effect": {
+        "heal": 99,
+        "forget": 1
+      }
+    },
+    "heart_thread": {
+      "atlas": [
+        0,
+        1
+      ],
+      "name": "Heart Thread",
+      "kind": "upgrade",
+      "desc": "Red thread, to mend a heart. Your heart holds more.",
+      "effect": {
+        "max_heart": 1
+      }
+    },
+    "moon_pearl": {
+      "atlas": [
+        1,
+        1
+      ],
+      "name": "Moon Pearl",
+      "kind": "upgrade",
+      "desc": "Round and cold. Your light lasts longer.",
+      "effect": {
+        "max_light": 1
+      }
+    },
+    "sharp_shard": {
+      "atlas": [
+        2,
+        1
+      ],
+      "name": "Sharp Shard",
+      "kind": "upgrade",
+      "desc": "Another piece of the mirror. The blade grows.",
+      "effect": {
+        "sword": 1
+      }
+    },
+    "letter_page": {
+      "atlas": [
+        3,
+        1
+      ],
+      "name": "Letter Page",
+      "kind": "collectible",
+      "desc": "\"I'm sorry\" again. But this time it goes on.",
+      "effect": {
+        "collect": "letter"
+      }
+    },
+    "leaf": {
+      "atlas": [
+        4,
+        1
+      ],
+      "name": "Green Leaf",
+      "kind": "collectible",
+      "desc": "Alive. Bring it to the dry tree.",
+      "effect": {
+        "collect": "leaf"
+      }
+    },
+    "figure": {
+      "atlas": [
+        5,
+        1
+      ],
+      "name": "Magical Girl Figure",
+      "kind": "collectible",
+      "desc": "From the shelf in your room. How did it get here?",
+      "effect": {
+        "collect": "figure"
+      }
+    },
+    "old_key": {
+      "atlas": [
+        6,
+        1
+      ],
+      "name": "Old Key",
+      "kind": "key",
+      "desc": "Heavy and cold. It opens something under the roots.",
+      "effect": {
+        "key": "roots"
+      }
+    },
+    "toy_wand": {
+      "atlas": [
+        7,
+        1
+      ],
+      "name": "Toy Wand",
+      "kind": "accessory",
+      "desc": "From the magical girl on the poster. It still lights up.",
+      "effect": {
+        "equip": "weapon"
+      }
+    },
+    "hoodie": {
+      "atlas": [
+        0,
+        2
+      ],
+      "name": "Oversized Hoodie",
+      "kind": "accessory",
+      "desc": "Not yours. It still smells like someone.",
+      "effect": {
+        "equip": "body"
+      }
+    },
+    "bracelet": {
+      "atlas": [
+        1,
+        2
+      ],
+      "name": "Hospital Bracelet",
+      "kind": "accessory",
+      "desc": "Your name is printed on it. Spelled wrong.",
+      "effect": {
+        "equip": "accessory"
+      }
+    },
+    "moth_charm": {
+      "atlas": [
+        2,
+        2
+      ],
+      "name": "Moth Charm",
+      "kind": "accessory",
+      "desc": "Moths fly to the light. So do you, now.",
+      "effect": {
+        "equip": "accessory"
+      }
+    },
+    "little_bell": {
+      "atlas": [
+        3,
+        2
+      ],
+      "name": "Little Bell",
+      "kind": "accessory",
+      "desc": "It rings when nobody touches it.",
+      "effect": {
+        "equip": "accessory"
+      }
+    },
+    "violet_ribbon": {
+      "atlas": [
+        4,
+        2
+      ],
+      "name": "Violet Ribbon",
+      "kind": "accessory",
+      "desc": "The same violet as your dress.",
+      "effect": {
+        "equip": "accessory"
+      }
+    }
+  }
+}
