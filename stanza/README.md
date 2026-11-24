@@ -63,7 +63,10 @@ world/
 ├── room_layout.gd               com'è arredata la stanza (solo dati)
 ├── room.gd                      dipinge i livelli (pavimento, muri, oggetti, mobili)
 ├── room_fx.gd                   luci, sfarfallio, schermo acceso, raggio di luna (dal JSON)
-└── room_things.gd               le cose con cui si parla e quale c'è davanti a Lethe (solo logica)
+├── room_things.gd               le cose con cui si parla e quale c'è davanti a Lethe (solo logica)
+└── door_knock.gd                dopo un po' bussano alla porta: il colpo, la luce e due piedi sotto la
+                                 porta. Se Lethe va ad aprire una voce le chiede se è sveglia;
+                                 se no, dopo qualche colpo se ne vanno
 dialogue/
 ├── stanza.dialogue              cosa dicono le cose della stanza (Dialogue Manager): un cue per
 │                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
