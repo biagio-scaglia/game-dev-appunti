@@ -85,6 +85,11 @@ Nemici e boss → [[Nemici e boss]]. Missioni, collezionabili, minigiochi → [[
 - Una scheggia le resta in mano: è il primo stadio della [[La spada di vetro|spada di vetro]].
 
 ### Capitolo 1 — La foresta (la pianta secca) · ~45 min
+- **Zona 1, la radura della caduta** (in gioco, provvisoria): Lethe apre gli occhi sull'erba, le
+  schegge le brillano intorno. *"Grass. Cold, wet grass."* Obiettivo: *"Follow the path"*. Lo
+  specchietto viola, il primo ruscello del Lete (*"...I'm not thirsty."*, la riga si guasta: è una
+  bugia), un ponte, i rovi sul ramo a nord con una pietra antica dietro (si aprirà col gesto
+  Aprire). All'uscita: *"Somewhere ahead, something is white. Like bone. Like a dead tree."*
 - Si sveglia in una foresta viva, tranne un albero secco al centro: la pianta sotto la finestra.
 - Incontra l'[[Entità compagna]]: una piccola luce, forse fatta della luna della finestra.
   Dice di essere lì per aiutarla a tornare. **Dice sempre la verità?** (No → vedi sotto.)
