@@ -147,8 +147,18 @@ func test_talk_nella_stanza() -> void:
 	hero.facing = Vector2.UP
 	await tree.process_frame
 	assert_eq(talk.target, "food_tray", "il vassoio davanti")
-	assert_true(talk.icon.visible, "l'iconcina sopra il vassoio")
-	assert_true(talk.icon.position.y < RoomThings.rect_of(things, "food_tray").position.y + main.room.global_position.y + 1, "sopra, non sotto")
+	assert_true(talk.icon.visible, "compare l'iconcina")
+	assert_near(talk.icon.position.x, roundf(hero.global_position.x), 0.5, "sulla verticale di Lethe")
+	assert_true(talk.icon.position.y <= hero.global_position.y - 52.0, "sopra la sua testa")
+	# Si allontana: l'icona sparisce rimpicciolendo.
+	hero.global_position += Vector2(0, 120)
+	await wait_seconds(0.3)
+	assert_eq(talk.target, "", "niente davanti")
+	assert_false(talk.icon.visible, "l'icona sparisce")
+	hero.global_position -= Vector2(0, 120)
+	await tree.process_frame
+	await tree.process_frame     # process_frame arriva prima dei _process dei nodi
+	assert_true(talk.icon.visible, "torna davanti: ricompare")
 
 	var ev := InputEventAction.new()
 	ev.action = &"interact"
