@@ -106,6 +106,13 @@ func tick(delta: float) -> void:
 	knock()
 
 
+## Fa bussare presto (fra al massimo `seconds`), se non è ancora successo: lo usa il
+## prologo quando Lethe ha già guardato tutto, così non resta ad aspettare.
+func hurry(seconds := 3.0) -> void:
+	if not knocking and not knock_over:
+		_wait = minf(_wait, seconds)
+
+
 ## Un colpo alla porta: il suono, un piccolo tremolio, la luce che sobbalza.
 func knock() -> void:
 	series += 1
