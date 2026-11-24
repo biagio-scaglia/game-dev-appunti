@@ -30,6 +30,13 @@ var flags: Dictionary = {}
 ## Ogni colpo la mano stringe un po' di più; a zero il cuore è stretto del tutto.
 var heart_max := 4
 var heart := 4
+## L'esperienza: i nemici sciolti lasciano luce che Lethe raccoglie. Ogni livello costa più
+## del precedente (exp_to_next) e i premi si alternano: ai livelli pari il cuore regge una
+## stretta in più (fino a HEART_CAP), ai dispari la spada taglia di più (attack_bonus). A ogni
+## livello il cuore torna intero.
+var level := 1
+var xp := 0
+const HEART_CAP := 8
 
 
 func _init() -> void:
@@ -71,6 +78,50 @@ func hurt(amount: int) -> int:
 
 func heal(amount: int) -> void:
 	heart = mini(heart_max, heart + amount)
+
+
+## Quanta esperienza serve per passare dal livello `lv` al successivo: cresce più che
+## lineare (10, 28, 52, 80, 112...).
+static func exp_to_next(lv: int) -> int:
+	return roundi(10.0 * pow(lv, 1.5))
+
+
+## Quanto taglia in più la spada per il livello (uno ogni due livelli, dal 3).
+func attack_bonus() -> int:
+	return (level - 1) / 2
+
+
+## L'esperienza davvero presa da un nemico di livello `enemy_level`: piena se è alla pari o
+## più forte, sempre meno se Lethe è molto più in alto (non conviene morire e rifarli).
+func exp_from(amount: int, enemy_level: int) -> int:
+	var gap := level - enemy_level
+	if gap <= 1:
+		return amount
+	return maxi(1, roundi(amount * pow(0.5, gap - 1)))
+
+
+## Prende esperienza; ritorna quanti livelli ha guadagnato.
+func gain_exp(amount: int) -> int:
+	xp += amount
+	var gained := 0
+	while xp >= exp_to_next(level):
+		xp -= exp_to_next(level)
+		level += 1
+		gained += 1
+		if level % 2 == 0:
+			heart_max = mini(HEART_CAP, heart_max + 1)
+		heart = heart_max
+	return gained
+
+
+## Quante volte il cuore si è spezzato (per un segreto).
+func deaths() -> int:
+	return int(flags.get("deaths", 0))
+
+
+func add_death() -> int:
+	flags["deaths"] = deaths() + 1
+	return deaths()
 
 
 func is_dead() -> bool:
@@ -134,6 +185,8 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 		"flags": flags.duplicate(true),
 		"heart": heart,
 		"heart_max": heart_max,
+		"level": level,
+		"xp": xp,
 		"position": [position.x, position.y],
 		"sword_stage": sword_stage,
 		"saved_at": int(Time.get_unix_time_from_system()),
@@ -162,6 +215,8 @@ func load_save(data: Dictionary) -> void:
 		var id := String(saved.get(slot, equipped[slot]))
 		if id == "" or (owns(id) and Data.EQUIPMENT[id]["slot"] == slot):
 			equipped[slot] = id
+	level = maxi(1, int(data.get("level", 1)))
+	xp = maxi(0, int(data.get("xp", 0)))
 	heart_max = maxi(1, int(data.get("heart_max", 4)))
 	heart = clampi(int(data.get("heart", heart_max)), 1, heart_max)
 	var saved_flags = data.get("flags", {})
