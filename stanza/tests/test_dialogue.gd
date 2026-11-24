@@ -99,7 +99,7 @@ func test_il_riquadro_scrive_va_avanti_e_chiude() -> void:
 	var box := _box()
 	var done := {"ok": false}
 	box.finished.connect(func(): done["ok"] = true)
-	box.start(DIALOGUE, "door", [])
+	box.start(DIALOGUE, "dead_plant", [])
 	await _wait_line(box)
 	assert_true(box.box.visible, "il riquadro si vede")
 	assert_eq(box.line.character, "", "la prima riga è del narratore")
