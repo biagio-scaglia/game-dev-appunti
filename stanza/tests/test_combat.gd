@@ -478,7 +478,13 @@ func test_il_colpo_dopo_non_si_perde() -> void:
 	var hero := _hero(holder, Vector2(200, 200))
 	hero.facing = Vector2.RIGHT
 	hero.slash()
-	await wait_seconds(0.25)            # verso la fine del fendente, come chi gioca
+	# Verso la fine del fendente (gli ultimi due fotogrammi), come chi gioca.
+	var sprite: AnimatedSprite2D = hero.sprite
+	var last := sprite.sprite_frames.get_frame_count(sprite.animation) - 1
+	for i in 120:
+		if sprite.frame >= last - 1:
+			break
+		await tree.process_frame
 	assert_true(hero.is_attacking(), "il primo fendente è ancora in corso")
 	var ev := InputEventAction.new()
 	ev.action = &"slash"
@@ -499,16 +505,20 @@ func test_il_colpo_dopo_non_si_perde() -> void:
 	assert_eq(got["n"], 2, "e il secondo fendente parte appena finisce il primo")
 
 
-func test_la_barra_dell_esperienza() -> void:
+func test_l_esperienza_si_vede_quando_arriva() -> void:
 	var zone := await _zone()
-	var hud: CanvasLayer = zone.hud
-	assert_eq(hud.level_label.text, "LV 1", "il livello nel riquadro del cuore")
-	assert_near(hud.xp_fill, 0.0, 0.01, "barra vuota")
 	zone.gain_exp(5)
-	await wait_seconds(0.6)
-	assert_near(hud.xp_fill, 0.5, 0.02, "metà strada verso il livello 2")
+	var popups := zone.get_children().filter(func(n): return n is Label and n.text == "+5 EXP")
+	assert_eq(popups.size(), 1, "sopra Lethe sale +5 EXP")
+	assert_eq(zone.state.xp, 5, "e l'esperienza c'è")
 	zone.gain_exp(9)
-	await wait_seconds(0.8)
-	assert_eq(hud.level_label.text, "LV 2", "livello 2")
-	assert_near(hud.xp_fill, 4.0 / 28.0, 0.02, "e la barra riparte da capo")
+	assert_eq(zone.state.level, 2, "livello 2")
 	assert_eq(zone.hud.heart_max, 5, "col cuore più grande")
+	assert_false(zone.hud.box.get_children().any(func(n): return n is ProgressBar), "nel riquadro del cuore solo il cuore")
+
+
+func test_sotto_il_menu_di_pausa() -> void:
+	var zone := await _zone()
+	var menu_layer: int = zone.pause_menu.layer
+	assert_true(zone.hud.layer < menu_layer, "il cuore sta sotto il menu")
+	assert_true(zone.objective.layer < menu_layer, "anche l'obiettivo")
