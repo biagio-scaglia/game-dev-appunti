@@ -329,3 +329,186 @@ func test_la_spada_parte_subito() -> void:
 		await tree.process_frame
 	var ms := Time.get_ticks_msec() - start
 	assert_true(ms < 150, "la lama arriva subito (%d ms; prima erano più di 200)" % ms)
+
+
+func test_il_riquadro_del_cuore() -> void:
+	var zone := await _zone()
+	var box: PanelContainer = zone.hud.box
+	assert_true(box.position.y + box.size.y <= 360.0 and box.position.y > 240.0, "in basso")
+	assert_true(box.position.x < 40.0, "a sinistra")
+	assert_false(zone.objective.heart.visible, "di cuore ce n'è uno solo")
+	zone.talk.talk("mirror")
+	await wait_seconds(0.3)
+	assert_true(box.modulate.a < 0.1, "durante un dialogo si nasconde (il testo sta in basso)")
+
+
+# --- Esperienza, livelli, segreti ------------------------------------------------------------
+
+func test_la_curva_dei_livelli() -> void:
+	var costs := []
+	for lv in range(1, 6):
+		costs.append(GameState.exp_to_next(lv))
+	assert_eq(costs, [10, 28, 52, 80, 112], "ogni livello costa più del precedente")
+	var state := GameState.new()
+	assert_eq(state.gain_exp(9), 0, "non ancora")
+	assert_eq(state.gain_exp(1), 1, "livello 2")
+	assert_eq(state.heart_max, 5, "ai pari: il cuore regge di più")
+	assert_eq(state.attack_bonus(), 0, "la spada ancora no")
+	state.gain_exp(28)
+	assert_eq(state.level, 3, "livello 3")
+	assert_eq(state.heart_max, 5, "ai dispari il cuore no...")
+	assert_eq(state.attack_bonus(), 1, "...ma la spada taglia di più")
+	state.heart = 1
+	state.gain_exp(52)
+	assert_eq(state.heart, state.heart_max, "a ogni livello il cuore torna intero")
+	for i in 20:
+		state.gain_exp(500)
+	assert_eq(state.heart_max, GameState.HEART_CAP, "mai oltre il massimo")
+
+
+func test_niente_esperienza_facile() -> void:
+	var state := GameState.new()
+	assert_eq(state.exp_from(4, 1), 4, "alla pari: tutta")
+	state.level = 3
+	assert_eq(state.exp_from(4, 1), 2, "due livelli sopra: la metà")
+	state.level = 6
+	assert_eq(state.exp_from(4, 1), 1, "molto sopra: quasi niente (morire e rifarli non conviene)")
+
+
+func test_un_nemico_sciolto_lascia_luce() -> void:
+	var zone := await _zone()
+	var fly: CharacterBody2D = zone.enemies().filter(func(e): return e is Firefly)[0]
+	fly.drop_chance = 1.0
+	var before: int = zone.state.xp
+	var reward: int = fly.exp_reward
+	fly.hurt(99, &"sword", fly.global_position + Vector2(-5, 0))
+	await wait_seconds(1.2)
+	assert_eq(zone.state.xp, before + reward, "la luce arriva a Lethe: esperienza")
+	var apples: Array = zone.world.get_children().filter(func(n): return n is Area2D and n.get(&"id") == "apple")
+	assert_eq(apples.size(), 1, "e una mela per terra")
+	zone.state.heart = 2
+	apples[0].picked.emit("apple")
+	assert_eq(zone.state.heart, 3, "la mela cura")
+
+
+func test_il_tasto_della_spada() -> void:
+	var zone := await _zone()
+	zone.state.give("glass_sword")
+	zone.sync_abilities()
+	assert_eq(zone.slash_hint, null, "lontano dai nemici: niente")
+	var moth: Node2D = zone.enemies()[0]
+	zone.hero.global_position = moth.global_position + Vector2(60, 0)
+	await tree.process_frame
+	await tree.process_frame
+	assert_true(zone.slash_hint != null, "un nemico vicino: compare K")
+	var label: Label = zone.slash_hint.get_child(0).get_child(0)
+	assert_true(label.text.begins_with("K"), "dice il tasto")
+	zone._on_hero_attack(&"slash")
+	assert_eq(zone.slash_hint, null, "al primo fendente sparisce")
+	assert_true(zone.state.flag("slash_learned"), "e non torna")
+
+
+func test_il_segreto_della_decima_morte() -> void:
+	var zone := await _zone()
+	zone.state.flags["deaths"] = 9
+	var max_before: int = zone.state.heart_max
+	var got := {"secret": false}
+	zone.secret_shown.connect(func(): got["secret"] = true)
+	zone.die(0.05)
+	assert_true(await wait_signal(zone.respawned, 6.0), "si riparte")
+	assert_true(got["secret"], "la decima volta: il finto reset")
+	assert_eq(zone.state.deaths(), 10, "dieci")
+	assert_eq(zone.state.heart_max, max_before + 1, "e la mano molla un po'")
+	assert_true(zone.state.flag("secret_ten"), "segnato")
+
+
+func test_il_menu_mostra_cuore_e_livello() -> void:
+	var HeroCard := preload("res://menu/hero_card.gd")
+	var card := HeroCard.new()
+	tree.root.add_child(card)
+	_owned.append(card)
+	var state := GameState.new()
+	state.gain_exp(15)
+	state.heart = 3
+	card.refresh(state)
+	assert_eq(card.level_label.text, "Lv 2", "il livello")
+	assert_eq(card.hp.numbers(), "3/5", "il cuore")
+	assert_eq(card.xp.numbers(), "5/28", "l'esperienza verso il prossimo")
+
+
+# --- Come si sente il combattimento ---------------------------------------------------------------
+
+func test_i_numeri_del_danno() -> void:
+	var DamageNumber := preload("res://fx/damage_number.gd")
+	assert_eq(DamageNumber.color_for(1.5), DamageNumber.STRONG, "punto debole: rosa")
+	assert_eq(DamageNumber.color_for(0.5), DamageNumber.WEAK, "l'arma fa poco: grigio")
+	var holder := _holder()
+	var bramble := _enemy(holder, Bramble, Vector2(200, 200))
+	bramble.set_physics_process(false)
+	await tree.process_frame
+	bramble.hurt(2, &"sword", Vector2(180, 200))
+	var numbers := holder.get_children().filter(func(n): return n is Label and n.text == "3")
+	assert_eq(numbers.size(), 1, "il numero salta fuori (2 di spada x1.5 = 3)")
+	assert_eq(numbers[0].get_theme_color(&"font_color"), DamageNumber.STRONG, "rosa: la spada è giusta per il rovo")
+	await wait_seconds(0.9)
+	assert_false(is_instance_valid(numbers[0]), "e poi svanisce")
+
+
+func test_la_barretta_e_il_colpo_che_scompone() -> void:
+	var holder := _holder()
+	var hero := _hero(holder, Vector2(100, 200))
+	hero.set_physics_process(false)
+	var fly := _enemy(holder, Firefly, Vector2(300, 200), hero)
+	await tree.process_frame
+	fly.max_hp = 5
+	fly.hp = 5
+	assert_true(fly._bar_time <= 0.0, "intero: niente barretta")
+	fly.hurt(1, &"sword", Vector2(290, 200))
+	assert_true(fly._bar_time > 0.0, "colpito: la barretta sopra")
+	assert_true(fly.is_staggered(), "e scomposto per un attimo")
+	var at: Vector2 = fly.global_position
+	hero.global_position = fly.global_position + Vector2(20, 0)
+	await _frames(3)
+	assert_true(fly.state == Firefly.State.REVEAL or fly.global_position.distance_to(at) < 30.0,
+		"scomposto non insegue subito")
+
+
+func test_il_colpo_dopo_non_si_perde() -> void:
+	var holder := _holder()
+	var hero := _hero(holder, Vector2(200, 200))
+	hero.facing = Vector2.RIGHT
+	hero.slash()
+	await wait_seconds(0.25)            # verso la fine del fendente, come chi gioca
+	assert_true(hero.is_attacking(), "il primo fendente è ancora in corso")
+	var ev := InputEventAction.new()
+	ev.action = &"slash"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await tree.physics_frame
+	await tree.physics_frame
+	var up := InputEventAction.new()
+	up.action = &"slash"
+	Input.parse_input_event(up)
+	assert_true(hero._buffered > 0.0, "premuto durante il fendente: se lo ricorda")
+	var got := {"n": 0}
+	hero.attack_finished.connect(func(k): if k == &"slash": got["n"] += 1)
+	for i in 120:
+		await tree.physics_frame
+		if got["n"] >= 2:
+			break
+	assert_eq(got["n"], 2, "e il secondo fendente parte appena finisce il primo")
+
+
+func test_la_barra_dell_esperienza() -> void:
+	var zone := await _zone()
+	var hud: CanvasLayer = zone.hud
+	assert_eq(hud.level_label.text, "LV 1", "il livello nel riquadro del cuore")
+	assert_near(hud.xp_fill, 0.0, 0.01, "barra vuota")
+	zone.gain_exp(5)
+	await wait_seconds(0.6)
+	assert_near(hud.xp_fill, 0.5, 0.02, "metà strada verso il livello 2")
+	zone.gain_exp(9)
+	await wait_seconds(0.8)
+	assert_eq(hud.level_label.text, "LV 2", "livello 2")
+	assert_near(hud.xp_fill, 4.0 / 28.0, 0.02, "e la barra riparte da capo")
+	assert_eq(zone.hud.heart_max, 5, "col cuore più grande")
