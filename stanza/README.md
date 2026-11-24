@@ -9,6 +9,9 @@ fende con la spada di vetro dello specchio.
 
 ![La stanza](../docs/stanza.gif)
 
+I tasti non sono scritti a schermo: il gioco li spiegherà man mano, quando servono (vedi il vault,
+"Trama - bozza").
+
 | Tasto | Azione |
 | --- | --- |
 | WASD / frecce | cammina |
