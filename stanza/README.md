@@ -68,10 +68,14 @@ dialogue/
 ├── stanza.dialogue              cosa dicono le cose della stanza (Dialogue Manager): un cue per
 │                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
 ├── dialogue_box.gd              il riquadro: testo a macchina da scrivere, il viso di Lethe quando
-│                                pensa lei, le scelte col cuore, i suoni del carillon
+│                                pensa lei, le scelte col cuore, i suoni del carillon. Una riga
+│                                col tag [#wrong] non va: si guasta tutta, il riquadro sobbalza,
+│                                il carillon suona scordato
+├── text_effects.gd, text_fx.gd  gli effetti sul testo per le righe che non vanno: [glitch] (le
+│                                lettere diventano i segni del menu guasto), [shiver] (tremano a
+│                                scatti di un pixel), [flicker] (si spengono). I conti in text_fx.gd
 ├── talk.gd                      l'iconcina sopra la testa di Lethe quando ha qualcosa davanti, apre il
-│                                dialogo e ferma Lethe;
-│                                conta le visite (seen("id") nei dialoghi)
+│                                dialogo e ferma Lethe; conta le visite (seen("id") nei dialoghi)
 └── talk_icon.png                l'iconcina: un fumetto col cuore che batte (2 fotogrammi, blocchi 2x2)
 addons/dialogue_manager/         Dialogue Manager 4.2.0 di Nathan Hoad (MIT), senza i file C#
 fx/
