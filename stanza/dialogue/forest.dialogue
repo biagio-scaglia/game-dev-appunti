@@ -1,0 +1,39 @@
+# La foresta, capitolo 1 (forest/forest_zone.gd). Un cue per cosa con cui si parla (il
+# nome del tile), più arrive (l'atterraggio) ed exit (l'uscita della zona).
+
+~ arrive
+Grass. Cold, wet grass, under her cheek.
+Trees everywhere. Taller than the house. Taller than anything.
+Lethe: ...Where...?
+Something sharp is still in her hand.
+=> END
+
+~ mirror
+if seen("mirror") == 0
+	A small mirror, standing alone in the grass. A violet frame, like her dress.
+	It reflects the moon. Not her.
+	Lethe: Same glass as the one in my room...
+else
+	The moon in the mirror hasn't moved.
+=> END
+
+~ brambles
+Thorns, grown thick across the path. [shiver]Something glints behind them.[/shiver]
+Lethe: I can't get through. ...Not like this.
+=> END
+
+~ old_stone
+An old stone with a mark carved in it. It glows, a little.
+Lethe: An eye. Or a moon.
+=> END
+
+~ lethe
+Black water, very still. It doesn't reflect anything.
+It smells like sleep.
+Lethe: ...I'm not thirsty. [#wrong]
+=> END
+
+~ exit
+The path goes on, deeper into the trees.
+Somewhere ahead, something is white. Like bone. Like a dead tree.
+=> END
