@@ -69,6 +69,17 @@ forest/
                                  collisioni delle cose (dal JSON), la camera che segue Lethe e si
                                  ferma ai bordi, l'OST, il menu, i dialoghi (forest.dialogue),
                                  l'obiettivo, l'arrivo dalla caduta e l'uscita (per ora: titolo)
+enemies/
+├── enemy.gd                     la base dei nemici: vita, debolezze (spada/magia), il lampo bianco e
+│                                la spinta quando li colpisci, la morte che si scioglie in ombra, il
+│                                danno a Lethe quando la toccano
+├── shadow_moth.gd               la falena d'ombra: gira intorno a Lethe, si ferma (si sente) e si
+│                                butta; va alla luce della magia. Debole alla magia
+├── whispering_bramble.gd        il rovo che sussurra: fermo, sussurra una bugia di Lethe (si legge
+│                                sopra), trema e frusta lontano. Debole alla spada, blocca il passo
+├── false_firefly.gd             la lucciola falsa: sembra una lucciola, da vicino si apre (denti,
+│                                luce rossa) e insegue; poi torna a fare la lucciola
+└── sprites/                     i fogli (dal generatore in locale). Anteprima: ../docs/nemici.png
 prologue/
 ├── prologue.gd                  il regista del prologo nella stanza: il risveglio dopo la cutscene
 │                                (gli occhi che si aprono, un respiro, "Night."), lo specchio che
@@ -87,6 +98,9 @@ ui/
 ├── item_icons.gd                le icone degli oggetti (items/, 32x32) e i loro dati: cibo che cura,
 │                                luce per la magia, l'acqua del Lete, potenziamenti, cose da
 │                                raccogliere, chiavi, accessori. Anteprima: ../docs/oggetti.png
+├── heart_hud.gd                 la vita: un cuore in alto a destra che una mano stringe a ogni colpo
+│                                (heart_hud.png, 5 stadi), i puntini sotto, il battito più veloce
+│                                con poco cuore; con l'ultimo pezzo i bordi scuri e il battito
 ├── objective_banner.gd          l'obiettivo in alto a sinistra (cosa fare adesso, in una riga), col
 │                                cuore che batte; cambia scivolando, il numero si accende
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
@@ -96,6 +110,10 @@ main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista 
 audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
 audio/mirror_theme.wav           l'OST dello specchio: la melodia del titolo, lenta, su un'armonica di
                                  vetro, con un tappeto che luccica (loop di 53 s)
+audio/heart_*.wav, enemy_*.wav, moth_*.wav, bramble_*.wav, firefly_bite.wav
+                                 i suoni del combattimento: il cuore stretto, il battito, il cuore
+                                 che si spezza, i nemici colpiti e che si sciolgono, le ali, il
+                                 sussurro e la frusta del rovo, il morso della lucciola
 audio/forest_theme.wav           l'OST della foresta: Re dorico, arpa pizzicata, il motivo del titolo
                                  al flauto, grilli, vento e un gufo lontano (loop di 48 s)
 audio/mirror_hum.wav, sheet_rustle.wav, mirror_break.wav, fall_whoosh.wav, shard_glint.wav,
