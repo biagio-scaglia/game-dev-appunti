@@ -24,9 +24,16 @@ a [[Vibe e tono|iceberg]]. Chi gioca in superficie vede una stanza buia; chi gua
 - Niente doppioni: se un oggetto non racconta, si toglie.
 - Lo spazio vuoto è voluto: una stanza grande e quasi vuota è solitudine.
 
+## Parlare con le cose
+Ogni oggetto che racconta ha un dialogo (testi in `stanza/dialogue/stanza.dialogue`, in inglese, provvisori) →
+[[Godot e Dialogue Manager]]. I pensieri di Lethe hanno il suo viso; il resto è il narratore.
+- **Biglietto sul vassoio** (provvisorio): si può leggere. *"Please eat something. I'm not angry. I'll be right outside."*
+- **Specchio** (provvisorio): la prima volta si sceglie. Guardare nell'angolo scoperto ("That's me.")
+  = verità +1; "It's just old furniture." = bugia +1 → [[Sistema Karma]]. Poi non si sceglie più.
+
 ## Da decidere
 - Il giorno cerchiato: che data? Un anniversario? → [[Il mistero della ragazzina]]
-- Il biglietto sul vassoio: leggibile in gioco (interazione) o solo un dettaglio?
-- Lo specchio: si potrà scoprire? Con che conseguenze?
+- Chi ha scritto il biglietto sul vassoio?
+- Lo specchio: si potrà scoprire del tutto? Con che conseguenze?
 
 Collegato: [[Protagonista]], [[Ambientazione]], [[Il mistero della ragazzina]]
