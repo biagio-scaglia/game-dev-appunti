@@ -30,17 +30,7 @@ var heart_max := 4
 var icon: Sprite2D
 var pips: Control
 var box: PanelContainer
-## Il livello e la barra dell'esperienza (sotto i cuoricini).
-var level_label: Label
-var xp_bar: Control
-var level := 1
-var xp := 0
-var xp_next := 10
-## Quanto è piena la barra adesso (si muove verso xp / xp_next).
-var xp_fill := 0.0
-var _xp_flash := 0.0
-const XP_COLOR := Color(0.72, 0.55, 1.0)
-const XP_LIGHT := Color(0.9, 0.82, 1.0)
+
 var vignette: TextureRect
 var _time := 0.0
 var _beat_wait := 0.0
@@ -48,7 +38,7 @@ var _bump: Tween
 
 
 func _init() -> void:
-	layer = 41
+	layer = 6               # sotto il menu di pausa (10): il menu lo copre e lo scurisce
 
 
 func _ready() -> void:
@@ -84,26 +74,9 @@ func _ready() -> void:
 	icon.hframes = 5
 	icon.position = Vector2(FRAME, FRAME) / 2.0
 	holder.add_child(icon)
-	var right := VBoxContainer.new()
-	right.add_theme_constant_override(&"separation", 0)
-	right.alignment = BoxContainer.ALIGNMENT_CENTER
-	row.add_child(right)
 	pips = Control.new()
 	pips.draw.connect(_draw_pips)
-	right.add_child(pips)
-	var line := HBoxContainer.new()
-	line.add_theme_constant_override(&"separation", 4)
-	right.add_child(line)
-	level_label = Label.new()
-	level_label.add_theme_font_override(&"font", Style.FONT)
-	level_label.add_theme_font_size_override(&"font_size", 16)
-	level_label.add_theme_color_override(&"font_color", Style.ACCENT)
-	level_label.text = "LV 1"
-	line.add_child(level_label)
-	xp_bar = Control.new()
-	xp_bar.custom_minimum_size = Vector2(44, 16)
-	xp_bar.draw.connect(_draw_xp)
-	line.add_child(xp_bar)
+	row.add_child(pips)
 	_place()
 
 
@@ -118,47 +91,9 @@ func _box_style() -> StyleBox:
 ## Il riquadro si allarga coi cuoricini: lo si rimette nell'angolo in basso a sinistra.
 func _place() -> void:
 	var pip_w := PIP_SHAPE[0].length() * PIP_BLOCK
-	pips.custom_minimum_size = Vector2(heart_max * (pip_w + PIP_GAP) - PIP_GAP, PIP_SHAPE.size() * PIP_BLOCK + 2)
+	pips.custom_minimum_size = Vector2(heart_max * (pip_w + PIP_GAP) - PIP_GAP, FRAME)
 	box.reset_size()
 	box.position = Vector2(MARGIN.x, 360 - MARGIN.y - box.size.y)
-
-
-## Il livello e l'esperienza. `animate`: la barra si riempie piano (e se è salito di
-## livello, prima si riempie tutta e lampeggia).
-func show_xp(new_level: int, new_xp: int, next: int, animate := true) -> void:
-	var leveled := new_level > level
-	level = new_level
-	xp = new_xp
-	xp_next = maxi(1, next)
-	level_label.text = "LV %d" % level
-	var goal := clampf(float(xp) / xp_next, 0.0, 1.0)
-	if not animate or not is_node_ready():
-		xp_fill = goal
-		xp_bar.queue_redraw()
-		return
-	var t := create_tween()
-	if leveled:
-		t.tween_method(_set_fill, xp_fill, 1.0, 0.25)
-		t.tween_callback(func() -> void: _xp_flash = 0.6)
-		t.tween_method(_set_fill, 0.0, goal, 0.35)
-	else:
-		t.tween_method(_set_fill, xp_fill, goal, 0.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-
-func _set_fill(v: float) -> void:
-	xp_fill = v
-	xp_bar.queue_redraw()
-
-
-func _draw_xp() -> void:
-	var w := xp_bar.size.x
-	var y := 7.0
-	xp_bar.draw_rect(Rect2(0, y, w, 4), Color(0.05, 0.03, 0.09))
-	var fill := floorf(w * xp_fill / 2.0) * 2.0
-	if fill > 0.0:
-		var c := XP_LIGHT if _xp_flash > 0.0 and int(_xp_flash * 10.0) % 2 == 0 else XP_COLOR
-		xp_bar.draw_rect(Rect2(0, y, fill, 4), c)
-		xp_bar.draw_rect(Rect2(0, y, fill, 2), c.lightened(0.3))
 
 
 ## Nasconde il riquadro (piano) mentre c'è un dialogo, e lo rimette dopo.
@@ -212,9 +147,6 @@ func is_low() -> bool:
 
 func _process(delta: float) -> void:
 	_time += delta
-	if _xp_flash > 0.0:
-		_xp_flash -= delta
-		xp_bar.queue_redraw()
 	var bps := beats_per_second(heart, heart_max)
 	# Il battito: un piccolo gonfiarsi due volte (tum-tum), poi pausa.
 	var phase := fmod(_time * bps, 1.0)

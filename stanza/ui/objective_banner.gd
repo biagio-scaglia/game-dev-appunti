@@ -38,7 +38,7 @@ var _move: Tween
 
 
 func _init() -> void:
-	layer = 40
+	layer = 5               # sotto il menu di pausa (10)
 
 
 func _ready() -> void:
