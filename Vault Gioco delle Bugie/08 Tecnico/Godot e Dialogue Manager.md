@@ -26,9 +26,19 @@ stato: in gioco
   col cuore che batte come quello del menu (tum-tum, pausa). Compare con un piccolo salto, sparisce
   rimpicciolendo, e non la scurisce il buio della stanza. Tasto: E / Z / Invio
 
+## Le righe che non vanno (in gioco)
+Il testo si guasta dove la stanza (o Lethe) non dice la verità → [[Tema - Le bugie]].
+- Dentro una riga, a pezzi: `[glitch]` le lettere diventano per un attimo i segni del menu
+  guasto, in rosa, ogni tanto a raffica; `[shiver]` tremano a scatti di un pixel; `[flicker]`
+  si spengono e si riaccendono come una lampada che muore
+- Una riga intera col tag `[#wrong]`: si guasta e trema tutta, il riquadro sobbalza, le lamelle
+  del carillon suonano scordate. Per ora: **le bugie di Lethe** ("It's just old furniture",
+  "One more game. Then I'll sleep.", "I'm not tired.")
+- Tutto a pixel interi e a scatti, niente movimenti morbidi (è pixel art)
+
 ## Aperto
-- Effetti sul testo (tremolio, glitch come nel menu) per le righe "che non vanno"
-- Ritratti con più espressioni?
+- Ritratti con più espressioni? (es. il viso che si guasta sulle righe `[#wrong]`)
+- Le bugie che si guastano di più man mano che la spada di vetro cresce?
 
 ## Già pronto
 - L'intro dello studio, riusabile in ogni gioco: cartella `intro-studio/` del repo
