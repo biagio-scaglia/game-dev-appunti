@@ -6,6 +6,10 @@ extends CanvasLayer
 ##
 ## Tasti: interact (E, Z, Invio), ui_accept o clic: prima finisce di scrivere la riga, poi
 ## va avanti. Finché è aperto si prende tutto l'input (niente menu di pausa sotto).
+##
+## Le righe "che non vanno": dentro il testo [glitch], [shiver] e [flicker] (vedi
+## text_effects.gd); una riga intera col tag [#wrong] si guasta e trema tutta, il riquadro
+## sobbalza e le lamelle del carillon suonano scordate.
 ## Si crea con DialogueBox.new(), si aggiunge all'albero e si chiama start().
 
 signal finished
@@ -15,6 +19,7 @@ const HeartMenu := preload("res://ui/heart_menu.gd")
 const Sfx := preload("res://core/sfx.gd")
 const LABEL_SCENE := preload("res://addons/dialogue_manager/nodes/dialogue_label/dialogue_label.tscn")
 const BLIP := preload("res://audio/ui_move.wav")
+const TextEffects := preload("text_effects.gd")
 
 ## Il nome che ha il ritratto.
 const HERO_NAME := "Lethe"
@@ -26,6 +31,12 @@ const TEXT_SECONDS_PER_STEP := 0.025
 ## Una lamella di carillon ogni tante lettere, piano e acuta.
 const BLIP_EVERY := 3
 const BLIP_DB := -22.0
+## Il tag delle righe che non vanno, e come suonano: più basse e stonate.
+const WRONG_TAG := "wrong"
+const WRONG_PITCH := Vector2(0.55, 0.8)
+## Il sobbalzo del riquadro: scatti di pixel interi.
+const JOLT := [Vector2(3, 0), Vector2(-2, 1), Vector2(2, -1), Vector2(-1, 0), Vector2.ZERO]
+const JOLT_STEP := 0.04
 
 var resource: DialogueResource
 var game_states: Array = []
@@ -45,6 +56,9 @@ var choices_panel: PanelContainer
 var choices: VBoxContainer
 var _responses: Array = []
 var _blink := 0.0
+## La riga che si vede ora non va (tag [#wrong]).
+var wrong := false
+var _jolt: Tween
 
 
 func _init() -> void:
@@ -105,6 +119,10 @@ func _show_line(next_line: DialogueLine) -> void:
 	face.visible = face.texture != null
 	name_label.text = line.character
 	name_label.visible = not line.character.is_empty()
+	wrong = line.has_tag(WRONG_TAG)
+	if wrong:
+		line.text = "[shiver][glitch]%s[/glitch][/shiver]" % line.text
+		jolt()
 	text_label.dialogue_line = line
 	box.show()
 	if not line.text.is_empty():
@@ -114,6 +132,16 @@ func _show_line(next_line: DialogueLine) -> void:
 		_show_choices()
 	else:
 		waiting = true
+
+
+## Il riquadro sobbalza (a scatti di pixel interi) e torna al suo posto.
+func jolt() -> void:
+	if _jolt:
+		_jolt.kill()
+	_jolt = create_tween()
+	for step: Vector2 in JOLT:
+		_jolt.tween_callback(func() -> void: root.position = step)
+		_jolt.tween_interval(JOLT_STEP)
 
 
 func _show_choices() -> void:
@@ -148,7 +176,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _on_spoke(letter: String, index: int, _speed: float) -> void:
 	if sound and index % BLIP_EVERY == 0 and letter.strip_edges() != "":
-		Sfx.play(self, BLIP, randf_range(1.8, 2.1), BLIP_DB)
+		var pitch := randf_range(WRONG_PITCH.x, WRONG_PITCH.y) if wrong else randf_range(1.8, 2.1)
+		Sfx.play(self, BLIP, pitch, BLIP_DB)
 
 
 func _build() -> void:
@@ -193,6 +222,7 @@ func _build() -> void:
 	text_label.add_theme_font_size_override(&"normal_font_size", Style.FONT_SIZE)
 	text_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text_label.spoke.connect(_on_spoke)
+	TextEffects.install(text_label)
 	column.add_child(text_label)
 
 	# Il cuore in basso a destra: la riga è finita, si può andare avanti.
