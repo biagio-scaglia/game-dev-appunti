@@ -1,8 +1,9 @@
 extends Node
 ## Parlare con le cose della stanza. Ogni frame guarda cosa c'è davanti a Lethe (solo le
-## cose che hanno un cue in stanza.dialogue) e ci mette sopra un'iconcina: un fumetto col
-## cuore, che compare con un piccolo salto e ondeggia di un blocco. Con interact (E, Z,
-## Invio) apre il riquadro dei dialoghi e ferma Lethe finché non finisce.
+## cose che hanno un cue in stanza.dialogue); se c'è qualcosa, sopra la sua testa compare
+## un'iconcina: un fumetto col cuore che batte come quello del menu (tum-tum, pausa).
+## Compare con un piccolo salto e sparisce rimpicciolendo. Con interact (E, Z, Invio) apre
+## il riquadro dei dialoghi e ferma Lethe finché non finisce.
 ##
 ## Nei dialoghi si vedono: le variabili di GameState (truth, lies...) e seen("id"), quante
 ## volte ha già parlato con quella cosa.
@@ -11,16 +12,18 @@ signal talk_started(id: String)
 signal talk_finished(id: String)
 
 const DIALOGUE := preload("res://dialogue/stanza.dialogue")
+## Due fotogrammi in fila: cuore pieno, cuore stretto (come il cuore del menu).
 const ICON := preload("res://dialogue/talk_icon.png")
+const HeartMenu := preload("res://ui/heart_menu.gd")
 const DialogueBox := preload("dialogue_box.gd")
 const RoomThings := preload("res://world/room_things.gd")
 const InputSetup := preload("res://core/input_setup.gd")
 
-## L'icona: quanto sta sopra la cosa, di quanto ondeggia (un blocco da 2 px) e ogni quanto.
-const ICON_LIFT := 4.0
-const BOB := 2.0
-const BOB_SECONDS := 0.45
+## La punta dell'icona rispetto ai piedi: la testa di Lethe arriva a 52 px, più un blocco
+## di aria.
+const HEAD_HEIGHT := 54.0
 const POP_SECONDS := 0.18
+const HIDE_SECONDS := 0.1
 
 var room: Node2D
 var hero: Node2D
@@ -32,10 +35,11 @@ var target := ""
 ## {id: quante volte ci ha parlato}
 var visits := {}
 var box: CanvasLayer
-## L'icona sopra la cosa. Sta in un CanvasLayer che segue il mondo: il buio della stanza
-## (CanvasModulate) non la scurisce.
+## L'icona sopra la testa di Lethe. Sta in un CanvasLayer che segue il mondo: il buio
+## della stanza (CanvasModulate) non la scurisce.
 var icon: Sprite2D
-var _time := 0.0
+var _beat_step := 0
+var _beat_left := 0.0
 var _pop: Tween
 
 
@@ -47,6 +51,7 @@ func _ready() -> void:
 	add_child(layer)
 	icon = Sprite2D.new()
 	icon.texture = ICON
+	icon.hframes = 2
 	icon.offset = Vector2(0, -ICON.get_height() / 2.0)    # l'origine è in basso, sulla punta
 	icon.hide()
 	layer.add_child(icon)
@@ -72,7 +77,7 @@ func seen(id: String) -> int:
 func talk(id: String) -> void:
 	if is_talking():
 		return
-	_set_target("")
+	_set_target("", true)
 	hero.set(&"frozen", true)
 	box = DialogueBox.new()
 	box.finished.connect(_on_finished.bind(id))
@@ -81,16 +86,23 @@ func talk(id: String) -> void:
 	box.start(DIALOGUE, id, [self, state])
 
 
+## Dove sta la punta dell'icona: sopra la testa di Lethe. In cima alla stanza l'icona
+## non esce dallo schermo.
+func icon_anchor() -> Vector2:
+	var tip := hero.global_position - Vector2(0, HEAD_HEIGHT)
+	tip.y = maxf(tip.y, ICON.get_height() + 2.0)
+	return tip.round()
+
+
 func _process(delta: float) -> void:
-	_time += delta
 	var now := ""
 	if hero and not is_talking() and not get_tree().paused and not hero.call(&"is_attacking"):
 		var feet := hero.global_position - room.global_position
 		now = RoomThings.in_front(things, feet, hero.get(&"facing"))
 	_set_target(now)
-	if target != "":
-		var bob := BOB if fmod(_time, BOB_SECONDS * 2.0) < BOB_SECONDS else 0.0
-		icon.position = (_icon_anchor(target) - Vector2(0, bob)).round()
+	if icon.visible and hero:
+		icon.position = icon_anchor()
+		_beat(delta)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -99,27 +111,42 @@ func _unhandled_input(event: InputEvent) -> void:
 		talk(target)
 
 
-## Dove sta la punta dell'icona: a metà della cosa, appena sopra. Le cose sul muro
-## arrivano al bordo dello schermo: lì l'icona scende sulla cosa.
-func _icon_anchor(id: String) -> Vector2:
-	var rect := RoomThings.rect_of(things, id)
-	var tip := room.global_position + Vector2(rect.get_center().x, rect.position.y - ICON_LIFT)
-	tip.y = maxf(tip.y, ICON.get_height() + 2.0)
-	return tip
+## Il cuore nel fumetto batte col ritmo del cuore del menu.
+func _beat(delta: float) -> void:
+	_beat_left -= delta
+	if _beat_left > 0.0:
+		return
+	_beat_step = (_beat_step + 1) % HeartMenu.BEAT.size()
+	icon.frame = HeartMenu.BEAT[_beat_step][0]
+	_beat_left = HeartMenu.BEAT[_beat_step][1]
 
 
-func _set_target(id: String) -> void:
+## Cambia la cosa davanti. L'icona compare con un salto; sparisce rimpicciolendo (o subito,
+## con `at_once`: quando si apre il dialogo).
+func _set_target(id: String, at_once := false) -> void:
 	if id == target:
 		return
+	var was_shown := target != ""
 	target = id
-	icon.visible = id != ""
-	if id == "":
-		return
-	_time = 0.0
-	icon.position = _icon_anchor(id).round()
+	if id != "" and was_shown and icon.visible:
+		return            # da una cosa all'altra: l'icona resta dov'è, sopra la testa
 	if _pop:
 		_pop.kill()
-	icon.scale = Vector2(0.4, 0.4)
+	if id == "":
+		if at_once or not icon.visible:
+			icon.hide()
+			return
+		_pop = create_tween()
+		_pop.tween_property(icon, "scale", Vector2(0.3, 0.3), HIDE_SECONDS) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		_pop.tween_callback(icon.hide)
+		return
+	icon.position = icon_anchor()
+	icon.show()
+	icon.frame = 0
+	_beat_step = 0
+	_beat_left = HeartMenu.BEAT[0][1]
+	icon.scale = Vector2(0.3, 0.3)
 	_pop = create_tween()
 	_pop.tween_property(icon, "scale", Vector2.ONE, POP_SECONDS) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
