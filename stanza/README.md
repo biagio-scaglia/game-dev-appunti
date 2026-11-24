@@ -16,8 +16,8 @@ I tasti non sono scritti a schermo: il gioco li spiegherà man mano, quando serv
 | --- | --- |
 | WASD / frecce | cammina |
 | Shift | corri |
-| Spazio / J | magia (carica sulle mani, poi il proiettile parte verso dove guarda) |
-| K | spada di vetro (fende verso dove guarda) |
+| Spazio / J | magia (carica sulle mani, poi il proiettile parte verso dove guarda); solo quando Lethe sa un incantesimo |
+| K | spada di vetro (fende verso dove guarda); solo quando Lethe ha la spada in mano |
 | Tab | solo in debug: cambia lo stadio della spada |
 | Esc / X | menu di pausa (Esc, X o tasto destro: indietro) |
 | E / Z / Invio | parla con la cosa davanti (sopra la testa di Lethe compare un fumetto col cuore); nei dialoghi: avanti |
@@ -38,8 +38,14 @@ $GODOT --path . -s res://tools/capture_frames.gd -- <cartella> - res://title/tit
 ```
 studio_intro/                    l'intro dello studio (copiata da ../intro-studio, sottotitolo "presents")
 title/
-├── title_screen.gd / .tscn      il titolo: appare dal nero, menu Start / Quit, poi la stanza
+├── title_screen.gd / .tscn      il titolo: Lethe davanti alla porta chiusa, la luna da una parte e la
+│                                luce calda sotto la porta dall'altra. Appare dal nero, poi il menu
+│                                Continue (se c'è un salvataggio) / New Game / Talk to Someone / Quit
 │                                (Quit: lo schermo si rompe come in un incubo, poi si chiude)
+├── title_door.gd                la porta: luce sotto, vassoio davanti; ogni tanto bussano e sotto
+│                                compaiono i piedi
+├── care_note.gd                 le pagine calme: l'avviso sui contenuti (la prima volta) e
+│                                "Talk to Someone" coi numeri d'aiuto
 ├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
 ├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
@@ -129,6 +135,7 @@ core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
 ├── sfx.gd                       suoni usa-e-getta (si liberano da soli, suonano anche in pausa)
+├── settings_store.gd            le cose da ricordare che non sono un salvataggio (l'avviso già letto)
 └── input_setup.gd               crea le azioni di input se mancano
 tests/                           un file per modulo + mini runner headless
 ```
@@ -155,6 +162,10 @@ tests/                           un file per modulo + mini runner headless
 - **Spada di vetro**: fatta del vetro dello specchio coperto (vedi il vault, "La spada di vetro"):
   ogni bugia ne stacca una scheggia, e la lama cresce in tre stadi. Lethe usa la posa d'attacco con
   la scia del braccio in vetro azzurro (la magia viola è la verità, la spada no).
+- **All'inizio a mani vuote**: Lethe non sa incantesimi e non ha la spada (arrivano nella
+  foresta, vedi il vault, "Trama - bozza"): nella stanza Spazio / J e K non fanno niente, e nel
+  menu incantesimi ed equipaggiamento non ancora trovati sono "???". Addosso ha solo il vestito.
+  Lo stato della partita sa cosa ha imparato e trovato (`learn`, `give`) e lo salva.
 - **Menu di pausa**: come in RPG Maker, con il cuore del titolo come cursore. Oggetti, incantesimi
   (quale parte con Spazio / J), equipaggiamento con l'anteprima dei parametri, stato, salvataggi.
   In fondo una barra d'aiuto dice cosa fa quello che si guarda e quali tasti usare. Per ora
