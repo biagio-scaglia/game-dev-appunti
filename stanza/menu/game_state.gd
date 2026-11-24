@@ -26,6 +26,10 @@ var spell: String = Data.START_SPELL
 ## I segni di quello che è già successo nella storia (es. "knock_over", "mirror_calling"),
 ## e le cose guardate nella stanza ("looked": lista di id). Solo valori da JSON.
 var flags: Dictionary = {}
+## La vita è un cuore (vault: "Nemici e boss"): quante strette regge, e quante ne mancano.
+## Ogni colpo la mano stringe un po' di più; a zero il cuore è stretto del tutto.
+var heart_max := 4
+var heart := 4
 
 
 func _init() -> void:
@@ -57,6 +61,25 @@ func look(thing_id: String) -> int:
 
 func looked_count() -> int:
 	return (flags.get("looked", []) as Array).size()
+
+
+## Un colpo: il cuore perde `amount`. Ritorna quanto ne resta.
+func hurt(amount: int) -> int:
+	heart = maxi(0, heart - amount)
+	return heart
+
+
+func heal(amount: int) -> void:
+	heart = mini(heart_max, heart + amount)
+
+
+func is_dead() -> bool:
+	return heart <= 0
+
+
+## Quanto stringe la mano (0 = niente, heart_max = del tutto).
+func squeeze() -> int:
+	return heart_max - heart
 
 
 func knows(spell_id: String) -> bool:
@@ -109,6 +132,8 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 		"equipped": equipped.duplicate(),
 		"spell": spell,
 		"flags": flags.duplicate(true),
+		"heart": heart,
+		"heart_max": heart_max,
 		"position": [position.x, position.y],
 		"sword_stage": sword_stage,
 		"saved_at": int(Time.get_unix_time_from_system()),
@@ -137,6 +162,8 @@ func load_save(data: Dictionary) -> void:
 		var id := String(saved.get(slot, equipped[slot]))
 		if id == "" or (owns(id) and Data.EQUIPMENT[id]["slot"] == slot):
 			equipped[slot] = id
+	heart_max = maxi(1, int(data.get("heart_max", 4)))
+	heart = clampi(int(data.get("heart", heart_max)), 1, heart_max)
 	var saved_flags = data.get("flags", {})
 	flags = saved_flags.duplicate(true) if saved_flags is Dictionary else {}
 	var saved_spell := String(data.get("spell", Data.START_SPELL))
