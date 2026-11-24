@@ -4,7 +4,7 @@ extends CharacterBody2D
 ##   il proiettile verso dove guarda.
 ## - Spada di vetro dello specchio (K): la bugia. La lama compare dalla mano e fende verso
 ##   dove guarda; sword_stage (0 scheggia, 1 pugnale, 2 lama) cresce con le bugie.
-## Mentre attacca sta ferma. L'origine del nodo è ai piedi.
+## Mentre attacca o parla (`frozen`) sta ferma. L'origine del nodo è ai piedi.
 
 signal attack_finished(kind: StringName)
 
@@ -31,6 +31,8 @@ var facing := Vector2.DOWN
 ## L'attacco in corso: &"cast", &"slash" o vuoto.
 var attacking := &""
 var _launched := false
+## Ferma (sta parlando con qualcosa): niente movimento né attacchi.
+var frozen := false
 
 
 func _ready() -> void:
@@ -43,6 +45,11 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	if frozen:
+		velocity = Vector2.ZERO
+		if not is_attacking():
+			_play("idle")
+		return
 	if Input.is_action_just_pressed(&"cast"):
 		cast()
 	elif Input.is_action_just_pressed(&"slash"):
