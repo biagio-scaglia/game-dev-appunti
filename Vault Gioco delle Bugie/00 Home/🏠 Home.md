@@ -15,12 +15,17 @@ Mentire o dire la verità cambia il tuo potere (spada vs magia), la tua route e 
 ### 💡 Concept
 - [[Tema - Le bugie]]
 - [[Vibe e tono]]
+- [[Temi delicati - linee guida]]
 
 ### 🎮 Gameplay
 - [[Sistema a scelte (grafo)]]
 - [[Sistema Karma]]
 - [[Verità = Magia, Bugia = Spada]]
 - [[La spada di vetro]]
+- [[Nemici e boss]]
+- [[Cose da fare]]
+- [[Il Lete]]
+- [[I gesti]]
 - [[Route e finali]]
 
 ### 📜 Storia e Lore
