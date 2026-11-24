@@ -1,7 +1,8 @@
 # stanza
 
 Progetto Godot 4.7 del gioco (titolo provvisorio **Aletheia**, testi per ora in inglese): si apre
-con l'intro dello studio, poi la schermata del titolo, poi la stanza di un hikikomori di notte.
+con l'intro dello studio, poi la schermata del titolo, con New Game una breve cutscene, poi la
+stanza di un hikikomori di notte.
 La protagonista, Lethe, cammina in 8 direzioni, corre, lancia magie che illuminano la stanza e
 fende con la spada di vetro dello specchio.
 
@@ -51,6 +52,12 @@ title/
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
 └── art/                         finestra con tende e luna, pavimento, pannello del menu, cuore,
                                  ornamento (dal generatore in locale: griglia a 16 px, blocchi 2x2)
+opening/
+├── opening.gd / .tscn           la cutscene di New Game (~20 s, senza dialoghi): nero e bussano, il
+│                                calendario si barra fino al giorno cerchiato, sotto "tomorrow I'll
+│                                go out." e le sue eco sempre più sbiadite, nero e bussano, la stanza.
+│                                Un tasto chiede conferma, il secondo salta. Continue non ci passa
+└── calendar_page.gd             il foglio del calendario, disegnato in codice a blocchi di 2 pixel
 ui/
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
 │                                alla voce scelta batte un cuore. La usano il titolo e il menu di pausa
