@@ -17,6 +17,7 @@ fende con la spada di vetro dello specchio.
 | K | spada di vetro (fende verso dove guarda) |
 | Tab | solo in debug: cambia lo stadio della spada |
 | Esc / X | menu di pausa (Esc, X o tasto destro: indietro) |
+| E / Z / Invio | parla con la cosa davanti (sopra compare un fumetto col cuore); nei dialoghi: avanti |
 
 ## Comandi
 
@@ -61,7 +62,17 @@ world/
 ├── room_tileset.gd              costruisce il TileSet dal JSON, con le collisioni
 ├── room_layout.gd               com'è arredata la stanza (solo dati)
 ├── room.gd                      dipinge i livelli (pavimento, muri, oggetti, mobili)
-└── room_fx.gd                   luci, sfarfallio, schermo acceso, raggio di luna (dal JSON)
+├── room_fx.gd                   luci, sfarfallio, schermo acceso, raggio di luna (dal JSON)
+└── room_things.gd               le cose con cui si parla e quale c'è davanti a Lethe (solo logica)
+dialogue/
+├── stanza.dialogue              cosa dicono le cose della stanza (Dialogue Manager): un cue per
+│                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
+├── dialogue_box.gd              il riquadro: testo a macchina da scrivere, il viso di Lethe quando
+│                                pensa lei, le scelte col cuore, i suoni del carillon
+├── talk.gd                      l'iconcina sopra la cosa davanti, apre il dialogo e ferma Lethe;
+│                                conta le visite (seen("id") nei dialoghi)
+└── talk_icon.png                l'iconcina: un fumetto col cuore del menu (blocchi 2x2)
+addons/dialogue_manager/         Dialogue Manager 4.2.0 di Nathan Hoad (MIT), senza i file C#
 fx/
 ├── flicker.gd                   sfarfallio di una luce: tremolio + cali improvvisi
 ├── screen_glow.gd               lo schermo del PC che tremola, con la riga di scansione
