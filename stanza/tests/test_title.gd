@@ -120,7 +120,12 @@ func test_il_tremolio_lascia_solo_il_nome_e_poi_torna() -> void:
 	await tree.process_frame
 	var name_box: HBoxContainer = title.get_node("%TitleName")
 	name_box.flicker()
-	await wait_seconds(0.3)
+	# Si aspetta il momento in cui resta solo il nome (non un tempo fisso: in headless i
+	# frame possono essere lunghi e saltarlo).
+	for i in 200:
+		if name_box.before.modulate.a < 0.2 and name_box.word.modulate != Color.WHITE:
+			break
+		await tree.process_frame
 	assert_true(name_box.before.modulate.a < 0.2, "la A si spegne")
 	assert_true(name_box.after.modulate.a < 0.2, "IA si spegne")
 	assert_near(name_box.word.modulate.a, 1.0, 0.001, "LETHE resta")

@@ -11,6 +11,7 @@ const Main := preload("res://main.gd")
 
 func after() -> void:
 	Main.pending_save = {}
+	Main.from_opening = false
 	await super()
 
 

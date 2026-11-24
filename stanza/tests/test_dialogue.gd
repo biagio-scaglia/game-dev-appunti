@@ -120,7 +120,7 @@ func test_il_riquadro_scrive_va_avanti_e_chiude() -> void:
 
 func test_le_scelte() -> void:
 	var script := GDScript.new()
-	script.source_code = "extends RefCounted\nvar truth := 0\nvar lies := 0\nfunc seen(_id: String) -> int:\n\treturn 0\n"
+	script.source_code = "extends RefCounted\nvar truth := 0\nvar lies := 0\nvar mirror_calling := false\nvar call_visits := 0\nfunc seen(_id: String) -> int:\n\treturn 0\n"
 	script.reload()
 	var box := _box()
 	box.start(DIALOGUE, "covered_mirror", [script.new()])
