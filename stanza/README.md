@@ -79,7 +79,12 @@ enemies/
 │                                sopra), trema e frusta lontano. Debole alla spada, blocca il passo
 ├── false_firefly.gd             la lucciola falsa: sembra una lucciola, da vicino si apre (denti,
 │                                luce rossa) e insegue; poi torna a fare la lucciola
-└── sprites/                     i fogli (dal generatore in locale). Anteprima: ../docs/nemici.png
+├── sprites/                     i fogli (dal generatore in locale). Anteprima: ../docs/nemici.png
+│                                (tutti: numeri del danno, barretta della vita sopra, un attimo
+│                                scomposti dopo un colpo, luce che vola a Lethe come esperienza)
+items/pickup.gd                  un oggetto per terra (la mela che lascia un nemico): galleggia, luccica,
+                                 si prende passandoci sopra
+fx/damage_number.gd              il numero del danno: rosa sul punto debole, grigio se l'arma fa poco
 prologue/
 ├── prologue.gd                  il regista del prologo nella stanza: il risveglio dopo la cutscene
 │                                (gli occhi che si aprono, un respiro, "Night."), lo specchio che
@@ -98,9 +103,10 @@ ui/
 ├── item_icons.gd                le icone degli oggetti (items/, 32x32) e i loro dati: cibo che cura,
 │                                luce per la magia, l'acqua del Lete, potenziamenti, cose da
 │                                raccogliere, chiavi, accessori. Anteprima: ../docs/oggetti.png
-├── heart_hud.gd                 la vita: un cuore in alto a destra che una mano stringe a ogni colpo
-│                                (heart_hud.png, 5 stadi), i puntini sotto, il battito più veloce
-│                                con poco cuore; con l'ultimo pezzo i bordi scuri e il battito
+├── heart_hud.gd                 il riquadro in basso a sinistra: il cuore che una mano stringe a ogni
+│                                colpo (heart_hud.png, 5 stadi), i cuoricini, il livello e la barra
+│                                dell'esperienza; il battito più veloce con poco cuore, con l'ultimo
+│                                pezzo i bordi scuri. Si nasconde durante i dialoghi
 ├── objective_banner.gd          l'obiettivo in alto a sinistra (cosa fare adesso, in una riga), col
 │                                cuore che batte; cambia scivolando, il numero si accende
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
