@@ -17,7 +17,7 @@ fende con la spada di vetro dello specchio.
 | K | spada di vetro (fende verso dove guarda) |
 | Tab | solo in debug: cambia lo stadio della spada |
 | Esc / X | menu di pausa (Esc, X o tasto destro: indietro) |
-| E / Z / Invio | parla con la cosa davanti (sopra compare un fumetto col cuore); nei dialoghi: avanti |
+| E / Z / Invio | parla con la cosa davanti (sopra la testa di Lethe compare un fumetto col cuore); nei dialoghi: avanti |
 
 ## Comandi
 
@@ -69,9 +69,10 @@ dialogue/
 │                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
 ├── dialogue_box.gd              il riquadro: testo a macchina da scrivere, il viso di Lethe quando
 │                                pensa lei, le scelte col cuore, i suoni del carillon
-├── talk.gd                      l'iconcina sopra la cosa davanti, apre il dialogo e ferma Lethe;
+├── talk.gd                      l'iconcina sopra la testa di Lethe quando ha qualcosa davanti, apre il
+│                                dialogo e ferma Lethe;
 │                                conta le visite (seen("id") nei dialoghi)
-└── talk_icon.png                l'iconcina: un fumetto col cuore del menu (blocchi 2x2)
+└── talk_icon.png                l'iconcina: un fumetto col cuore che batte (2 fotogrammi, blocchi 2x2)
 addons/dialogue_manager/         Dialogue Manager 4.2.0 di Nathan Hoad (MIT), senza i file C#
 fx/
 ├── flicker.gd                   sfarfallio di una luce: tremolio + cali improvvisi
