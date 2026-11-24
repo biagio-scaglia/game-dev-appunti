@@ -25,6 +25,10 @@ stanza/characters/protagonista/sprites/anteprima_sprite.png*
 __pycache__/
 *.pyc
 
+# Reel e materiale per i social (scene Godot, video, copertine, immagini): restano solo in locale
+stanza/reel/
+brand/
+
 # Sistema
 Thumbs.db
 desktop.ini
