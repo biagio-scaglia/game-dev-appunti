@@ -6,6 +6,7 @@
 [ext_resource type="AudioStream" path="res://audio/stanza_theme.wav" id="4_theme"]
 [ext_resource type="PackedScene" path="res://menu/pause_menu.tscn" id="5_menu"]
 [ext_resource type="Script" path="res://dialogue/talk.gd" id="6_talk"]
+[ext_resource type="Script" path="res://world/door_knock.gd" id="7_knock"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_main")
@@ -23,6 +24,10 @@ script = ExtResource("2_room")
 
 [node name="Protagonista" parent="World" instance=ExtResource("3_hero")]
 unique_name_in_owner = true
+
+[node name="DoorKnock" type="Node2D" parent="World"]
+unique_name_in_owner = true
+script = ExtResource("7_knock")
 
 [node name="Music" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
