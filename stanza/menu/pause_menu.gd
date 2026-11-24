@@ -113,6 +113,7 @@ func open() -> void:
 	get_tree().paused = true
 	visible = true
 	party.hero.show_face(rng.randf() < AWAY_CHANCE)
+	party.hero.refresh(state)
 	party.whisper.text = Data.WHISPERS[rng.randi() % Data.WHISPERS.size()]
 	_show(&"")
 	commands.set_active(true)
@@ -253,6 +254,8 @@ func _refresh() -> void:
 	place_label.text = state.place
 	status_view.refresh(state, _sword_stage())
 	status_view.hero.show_face(party.hero.is_away())
+	party.hero.refresh(state)
+	status_view.hero.refresh(state)
 	items_view.refresh(_sword_stage(), state.owns("glass_sword"))
 	spells_view.refresh(state)
 	equip_view.refresh(state, _sword_stage())
