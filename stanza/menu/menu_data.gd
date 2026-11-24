@@ -72,16 +72,27 @@ const EQUIPMENT := {
 	"bracelet": {"slot": "accessory", "name": "Hospital Bracelet", "bonus": {"M.DEF": 2, "LUK": 1},
 		"desc": "Your name is printed on it. Spelled wrong."},
 }
-const START_EQUIPMENT := {"weapon": "glass_sword", "body": "black_dress", "accessory": ""}
+## All'inizio Lethe ha solo il vestito: niente spada (arriva con la scheggia dello specchio),
+## niente accessori. Il resto si trova nel gioco (vault: "Trama - bozza").
+const START_EQUIPMENT := {"weapon": "", "body": "black_dress", "accessory": ""}
+## Quello che ha sempre, anche in un salvataggio vecchio o rotto.
+const BASE_OWNED := ["black_dress"]
 
-## Gli incantesimi. Quelli non ancora imparati si vedono come "???".
+## Gli incantesimi. All'inizio non ne sa nessuno: si vedono tutti come "???". Il primo,
+## Truth Spark, arriva con la prima verità detta nella foresta.
 const SPELLS := [
-	{"id": "truth_spark", "name": "Truth Spark", "mp": 0, "learned": true,
+	{"id": "truth_spark", "name": "Truth Spark", "mp": 0,
 		"desc": "Gather light in your hands and throw it. It lights up the dark."},
-	{"id": "moonlight", "name": "Moonlight", "mp": 4, "learned": false, "desc": ""},
-	{"id": "mend", "name": "Mend", "mp": 3, "learned": false, "desc": ""},
+	{"id": "moonlight", "name": "Moonlight", "mp": 4,
+		"desc": "Open your hands to the moon. Everything nearby remembers the light."},
+	{"id": "mend", "name": "Mend", "mp": 3,
+		"desc": "Hold your own heart a little less tight."},
 ]
-const START_SPELL := "truth_spark"
+## Nessun incantesimo su Spazio / J all'inizio.
+const START_SPELL := ""
+## Come si vede quello che Lethe non ha ancora.
+const UNKNOWN := "???"
+const NOTHING := "(none)"
 
 ## In fondo alla pagina del gruppo, appena leggibile: una a caso ogni volta (anche nessuna).
 const WHISPERS := [
