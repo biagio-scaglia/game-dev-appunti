@@ -58,6 +58,17 @@ opening/
 │                                go out." e le sue eco sempre più sbiadite, nero e bussano, la stanza.
 │                                Un tasto chiede conferma, il secondo salta. Continue non ci passa
 └── calendar_page.gd             il foglio del calendario, disegnato in codice a blocchi di 2 pixel
+forest/
+├── zone_wake.tscn               la prima zona della foresta (40x24 celle, 2x2 schermi), dove Lethe
+│                                cade dallo specchio: bosco fitto intorno, il sentiero, il primo
+│                                ruscello del Lete col ponte, i rovi sul ramo a nord, lo specchio.
+│                                Scritta da tools/make_forest_zone.gd, poi si ritocca nell'editor
+│                                (pennello del terreno; le cose sono Sprite2D da spostare)
+├── zone_wake_layout.gd          i dati della zona: il terreno per vertici, le cose, le piante
+└── forest_zone.gd               la zona quando parte: notte, raggi di luna, lucciole, luci e
+                                 collisioni delle cose (dal JSON), la camera che segue Lethe e si
+                                 ferma ai bordi, l'OST, il menu, i dialoghi (forest.dialogue),
+                                 l'obiettivo, l'arrivo dalla caduta e l'uscita (per ora: titolo)
 prologue/
 ├── prologue.gd                  il regista del prologo nella stanza: il risveglio dopo la cutscene
 │                                (gli occhi che si aprono, un respiro, "Night."), lo specchio che
@@ -71,7 +82,7 @@ prologue/
 │                                fredda, scintille che salgono, ronzio di vetro, le crepe
 └── mirror_fall.gd               la caduta: il lenzuolo, lo specchio che cede, Lethe tirata nel
                                  vetro, le schegge che volano su, la scheggia nel buio (la spada
-                                 arriva qui), il cartello CHAPTER 1 / THE FOREST, poi il titolo
+                                 arriva qui), il cartello CHAPTER 1 / THE FOREST, poi la foresta
 ui/
 ├── item_icons.gd                le icone degli oggetti (items/, 32x32) e i loro dati: cibo che cura,
 │                                luce per la magia, l'acqua del Lete, potenziamenti, cose da
@@ -185,6 +196,7 @@ core/
 └── input_setup.gd               crea le azioni di input se mancano
 tests/                           un file per modulo + mini runner headless
 tools/make_forest_tileset.gd     riscrive world/forest/forest_tileset.tres dal JSON (con l'autotile)
+tools/make_forest_zone.gd        riscrive forest/zone_wake.tscn da zone_wake_layout.gd
 ```
 
 - **Luci**: la stanza è scurita da un `CanvasModulate`; schermo del PC, lampada, telefono e luna
