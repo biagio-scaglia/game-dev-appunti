@@ -42,12 +42,13 @@ static func step_mote(pos: Vector2, speed: float, phase: float, time: float, del
 	return pos
 
 
-## Il raggio: un trapezio dallo spiraglio in alto fino a terra, in diagonale.
+## Il raggio: un trapezio dallo spiraglio in alto fino a terra, in diagonale, dove sta Lethe
+## davanti alla porta.
 ## `spread` lo allarga (l'alone intorno al nucleo).
 func beam_polygon(spread := 0.0) -> PackedVector2Array:
 	return PackedVector2Array([
 		Vector2(size.x * (0.30 - spread * 0.3), 0), Vector2(size.x * (0.34 + spread * 0.3), 0),
-		Vector2(size.x * (0.62 + spread), size.y), Vector2(size.x * (0.44 - spread), size.y),
+		Vector2(size.x * (0.88 + spread), size.y), Vector2(size.x * (0.72 - spread), size.y),
 	])
 
 

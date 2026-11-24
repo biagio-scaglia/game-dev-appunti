@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" path="res://title/art/window.png" id="11_window"]
 [ext_resource type="Texture2D" path="res://title/art/divider.png" id="12_divider"]
 [ext_resource type="Texture2D" path="res://title/art/panel.png" id="13_panel"]
+[ext_resource type="Script" path="res://title/title_door.gd" id="14_door"]
 
 [sub_resource type="Gradient" id="glow_gradient"]
 colors = PackedColorArray(0.5, 0.32, 0.78, 0.22, 0.3, 0.18, 0.5, 0)
@@ -87,9 +88,14 @@ offset_bottom = 56.0
 mouse_filter = 2
 texture = ExtResource("11_window")
 
+[node name="Door" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(524, 300)
+script = ExtResource("14_door")
+
 [node name="Figure" type="Node2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(334, 346)
+position = Vector2(494, 354)
 script = ExtResource("7_figure")
 
 [node name="Vignette" type="TextureRect" parent="."]
@@ -196,15 +202,14 @@ script = ExtResource("3_menu")
 [node name="Footer" type="Label" parent="."]
 unique_name_in_owner = true
 layout_mode = 0
-offset_left = 400.0
+offset_left = 8.0
 offset_top = 338.0
-offset_right = 632.0
+offset_right = 240.0
 offset_bottom = 356.0
 theme_override_colors/font_color = Color(0.72, 0.66, 0.86, 1)
 theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 16
 text = "A GAME BY BIAGIO SCAGLIA"
-horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Black" type="ColorRect" parent="."]
