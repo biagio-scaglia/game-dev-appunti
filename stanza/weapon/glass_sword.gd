@@ -16,8 +16,9 @@ const ScreenShake := preload("../fx/screen_shake.gd")
 
 ## Fotogrammi in cui la lama taglia.
 const STRIKE_FRAMES := Vector2i(1, 3)
-## Raggio della zona colpita, per stadio (cresce con la lama).
-const REACH := [14.0, 19.0, 24.0]
+## Raggio della zona colpita, per stadio (cresce con la lama). Generoso: si deve sentire che
+## la lama prende quello che si vede toccare.
+const REACH := [24.0, 28.0, 32.0]
 ## Luce fredda: la lama riflette la luna.
 const LIGHT_COLOR := Color(0.72, 0.84, 1.0)
 
@@ -44,7 +45,7 @@ func _ready() -> void:
 	sprite.animation_finished.connect(func(): sprite.visible = false)
 	sprite.play(SwordFrames.animation(stage))
 	(shape.shape as CircleShape2D).radius = REACH[stage]   # la forma è locale: ogni spada ha la sua
-	shape.position = dir * REACH[stage] * 0.8
+	shape.position = dir * REACH[stage] * 0.7
 	hitbox.body_entered.connect(func(body): if _striking: _hit(body))
 	light = Glow.light(LIGHT_COLOR, 0.5 + 0.2 * stage, 40.0 + 10.0 * stage)
 	add_child(light)

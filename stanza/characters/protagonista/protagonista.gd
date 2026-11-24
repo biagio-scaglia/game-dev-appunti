@@ -9,6 +9,8 @@ extends CharacterBody2D
 ## stato della partita (all'inizio niente), da sola (test, reel) può tutto.
 
 signal attack_finished(kind: StringName)
+## Ha preso un colpo (da `from`, nel mondo): chi la ascolta toglie il cuore.
+signal damaged(amount: int, from: Vector2)
 
 const Frames := preload("protagonista_frames.gd")
 const Facing := preload("facing.gd")
@@ -23,6 +25,22 @@ const SWORD := preload("res://weapon/glass_sword.tscn")
 @export var launch_frame := 3
 ## Lo stadio della spada di vetro: cresce con le bugie (sistema del karma, da fare).
 @export_range(0, 2) var sword_stage := 0
+## Quanto fanno male la spada (più lo stadio) e la magia, prima delle debolezze dei nemici.
+const SWORD_DAMAGE := 2
+const MAGIC_DAMAGE := 3
+## Dopo un colpo: per quanto non ne prende altri (e lampeggia), la spinta all'indietro.
+const INVULNERABLE_TIME := 1.1
+const KNOCKBACK := 230.0
+const KNOCK_DRAG := 1300.0
+## La spada parte quasi subito (la magia ha bisogno di caricarsi: launch_frame).
+const SLASH_FRAME := 1
+## La mira assistita della spada: un nemico entro questa distanza, e non più di
+## AIM_ANGLE gradi da dove guarda, attira il fendente verso di sé.
+const AIM_RANGE := 72.0
+const AIM_ANGLE := 80.0
+## Il fermo quando la lama prende qualcosa: quanto dura e quanto rallenta tutto.
+const HITSTOP := 0.06
+const HITSTOP_SCALE := 0.08
 ## Dove sono le mani rispetto ai piedi: in alto e un po' avanti.
 const HAND_HEIGHT := 24.0
 const HAND_REACH := 14.0
@@ -38,6 +56,12 @@ var frozen := false
 ## Sa un incantesimo (Spazio / J) e ha la spada in mano (K).
 var can_cast := true
 var can_slash := true
+## Secondi di invulnerabilità che restano; la spinta di un colpo (si spegne da sola).
+var invulnerable := 0.0
+var knock := Vector2.ZERO
+## Dove va il fendente (verso il nemico della mira assistita, o dove guarda).
+var aim := Vector2.ZERO
+var _hitstop := false
 
 
 func _ready() -> void:
@@ -49,7 +73,13 @@ func _ready() -> void:
 	_play("idle")
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	_tick_hurt(delta)
+	if knock != Vector2.ZERO:
+		velocity = knock
+		move_and_slide()
+		knock = knock.move_toward(Vector2.ZERO, KNOCK_DRAG * delta)
+		return
 	if frozen:
 		velocity = Vector2.ZERO
 		if not is_attacking():
@@ -69,6 +99,25 @@ func _physics_process(_delta: float) -> void:
 	velocity = direction * (run_speed if running else walk_speed)
 	move_and_slide()
 	update_animation(direction, running)
+
+
+## Un colpo da `from`: ritorna falso se non l'ha preso (invulnerabile, o ferma a parlare).
+func hurt(amount: int, from: Vector2) -> bool:
+	if invulnerable > 0.0 or frozen:
+		return false
+	invulnerable = INVULNERABLE_TIME
+	var away := global_position - from
+	knock = (away.normalized() if away.length() > 0.1 else -facing) * KNOCKBACK
+	damaged.emit(amount, from)
+	return true
+
+
+func _tick_hurt(delta: float) -> void:
+	if invulnerable <= 0.0:
+		return
+	invulnerable = maxf(0.0, invulnerable - delta)
+	# Lampeggia a scatti (blocchi di 0.08 s), come i vecchi giochi.
+	sprite.visible = invulnerable <= 0.0 or int(invulnerable / 0.08) % 2 == 0
 
 
 func is_attacking() -> bool:
@@ -92,7 +141,40 @@ func cast() -> void:
 
 ## Fende con la spada di vetro verso dove guarda. Ignorato se sta già attaccando.
 func slash() -> void:
-	_start_attack(&"slash")
+	if _start_attack(&"slash"):
+		aim = aim_at_enemy()
+		if aim != Vector2.ZERO:
+			facing = Facing.dir8(aim, facing)       # si gira verso il nemico (8 direzioni)
+			_play("slash")
+
+
+## La mira assistita: la direzione verso il nemico più vicino davanti a lei (entro
+## AIM_RANGE e AIM_ANGLE), o zero se non c'è.
+func aim_at_enemy() -> Vector2:
+	var best := Vector2.ZERO
+	var best_d := AIM_RANGE
+	var hand := hand_position()
+	for enemy in get_tree().get_nodes_in_group(&"enemies"):
+		if enemy.get(&"dead"):
+			continue
+		var to: Vector2 = (enemy as Node2D).global_position + Vector2(0, -14) - hand
+		var d := to.length()
+		if d < best_d and absf(rad_to_deg(facing.angle_to(to))) <= AIM_ANGLE:
+			best_d = d
+			best = to.normalized()
+	return best
+
+
+## Il fermo del colpo: tutto quasi immobile per un attimo (si sente che ha preso).
+func hit_stop() -> void:
+	if _hitstop or not is_inside_tree():
+		return
+	_hitstop = true
+	var before := Engine.time_scale
+	Engine.time_scale = before * HITSTOP_SCALE
+	await get_tree().create_timer(HITSTOP, true, false, true).timeout
+	Engine.time_scale = before
+	_hitstop = false
 
 
 func hand_position() -> Vector2:
@@ -109,18 +191,24 @@ func _start_attack(kind: StringName) -> bool:
 
 
 func _on_frame_changed() -> void:
-	if not is_attacking() or _launched or sprite.frame < launch_frame:
+	var frame := launch_frame if attacking == &"cast" else SLASH_FRAME
+	if not is_attacking() or _launched or sprite.frame < frame:
 		return
 	_launched = true
 	match attacking:
 		&"cast":
 			var shot := PROJECTILE.instantiate()
 			shot.direction = facing.normalized()
+			shot.damage = MAGIC_DAMAGE
 			_spawn(shot, hand_position())
 		&"slash":
 			var sword := SWORD.instantiate()
-			sword.direction = facing.normalized()
+			sword.direction = aim if aim != Vector2.ZERO else facing.normalized()
 			sword.stage = sword_stage
+			sword.hit.connect(func(body: Node2D) -> void:
+				if body.has_method(&"hurt"):
+					body.hurt(SWORD_DAMAGE + sword_stage, &"sword", global_position)
+					hit_stop())
 			_spawn(sword, hand_position())
 
 
