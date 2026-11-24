@@ -43,7 +43,7 @@ vicino alla porta), sotto la porta c'è una striscia di luce con l'ombra di due 
 - Lega il vassoio (il biglietto: *"I'll be right outside"*) a qualcuno che c'è davvero.
 
 ## Da decidere
-- Il giorno cerchiato: che data? Un anniversario? → [[Il mistero della ragazzina]]
+- Il giorno cerchiato: **un giorno qualunque**, l'ultimo in cui è uscita (dietro, a matita: *"domani esco."*) → [[Trama - bozza]]
 - Chi ha scritto il biglietto sul vassoio? È la stessa voce che bussa? (Per ora la voce non ha nome.)
 - Quando bussano: a tempo (ora 35 s) o dopo che Lethe ha guardato certe cose (il vassoio, il calendario)?
 - Lo specchio: si potrà scoprire del tutto? Con che conseguenze?
