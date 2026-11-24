@@ -29,11 +29,13 @@ func _ready() -> void:
 	super()
 	max_hp = 2
 	hp = max_hp
+	exp_reward = 2
 	make_sprite(SHEET, 3, LIFT, false)
 	make_body(10.0, Vector2(0, -LIFT - 8))
 	light = Glow.light(WARM, 0.6, 34.0)
 	light.position = Vector2(0, -LIFT - 8)
 	add_child(light)
+	bar_height = LIFT + 22.0
 
 
 func is_hidden() -> bool:

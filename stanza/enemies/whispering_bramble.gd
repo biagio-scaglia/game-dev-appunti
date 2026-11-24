@@ -39,9 +39,12 @@ func _ready() -> void:
 	max_hp = 4
 	hp = max_hp
 	weakness = {&"sword": 1.5, &"magic": 0.5}
+	exp_reward = 4
+	drop_chance = 0.4
 	make_sprite(SHEET, 3, -10.0, false)
 	make_body(16.0, Vector2(0, -10))
 	hurt_shape.radius = REST_RADIUS
+	bar_height = 44.0
 	_lie = randi() % LIES.size()
 
 
@@ -96,13 +99,22 @@ func _whisper() -> void:
 	label.add_theme_color_override(&"font_color", Color(0.78, 0.66, 0.9, 0.9))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.size = Vector2(160, 20)
-	label.position = Vector2(-80, -64)
+	label.position = Vector2(-80, -100)       # sopra la barretta e i numeri del danno
 	label.z_index = 5
 	add_child(label)
 	var t := create_tween()
-	t.tween_property(label, "position:y", -84.0, 1.8)
+	t.tween_property(label, "position:y", -120.0, 1.8)
 	t.parallel().tween_property(label, "modulate:a", 0.0, 1.8).set_delay(0.6)
 	t.tween_callback(label.queue_free)
+
+
+## Colpito mentre frusta o trema: si ritira (la frusta si ferma, ricomincia da capo).
+func on_hurt(_kind: StringName) -> void:
+	if state in [State.SHIVER, State.LASH]:
+		hurtful = false
+		hurt_shape.radius = REST_RADIUS
+		sprite.position.x = 0.0
+		_go(State.COOLDOWN, COOLDOWN_TIME)
 
 
 func last_lie() -> String:

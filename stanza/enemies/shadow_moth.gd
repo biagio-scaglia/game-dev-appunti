@@ -36,8 +36,10 @@ func _ready() -> void:
 	max_hp = 3
 	hp = max_hp
 	weakness = {&"magic": 1.5, &"sword": 0.5}
+	exp_reward = 3
 	make_sprite(SHEET, 3, LIFT)
 	make_body(11.0, Vector2(0, -LIFT - 10))
+	bar_height = LIFT + 26.0
 	# Un filo di luce viola dagli occhi delle ali: al buio si vedono arrivare.
 	var eyes := Glow.light(Color(0.62, 0.5, 1.0), 0.45, 26.0)
 	eyes.position = Vector2(0, -LIFT - 10)
@@ -105,8 +107,7 @@ func on_hit_target() -> void:
 
 
 func on_hurt(_kind: StringName) -> void:
-	if state in [State.WINDUP, State.DIVE]:
-		_back_off()
+	_back_off()                      # colpita: smette quello che faceva e si allontana
 
 
 ## Gira intorno a `center` a distanza `radius`, avvicinandosi piano.
@@ -135,4 +136,9 @@ func _animate() -> void:
 	sprite.rotation = 0.0
 	var fps := 16.0 if state == State.WINDUP else 8.0
 	sprite.frame = int(_anim_time * fps) % 2
+	# L'avviso: prima di buttarsi si illumina a scatti (si vede arrivare).
+	if state == State.WINDUP and _flash <= 0.0:
+		sprite.modulate = Color(1.8, 1.5, 2.2) if int(_anim_time * 12.0) % 2 == 0 else Color.WHITE
+	elif _flash <= 0.0:
+		sprite.modulate = Color.WHITE
 	sprite.position.y = sin(_anim_time * 3.0) * 2.0           # galleggia

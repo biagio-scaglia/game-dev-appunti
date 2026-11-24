@@ -13,6 +13,12 @@ const Sparks := preload("res://fx/sparks.gd")
 const DropShadow := preload("res://fx/drop_shadow.gd")
 const HIT := preload("res://audio/enemy_hit.wav")
 const DIE := preload("res://audio/enemy_die.wav")
+const DamageNumber := preload("res://fx/damage_number.gd")
+## La barretta della vita sopra il nemico: quanto resta visibile dopo un colpo.
+const BAR_SHOW := 2.5
+const BAR_WIDTH := 20.0
+## Dopo un colpo il nemico è scomposto: per un attimo non attacca (si può incalzare).
+const STAGGER := 0.35
 
 const ENEMY_LAYER := 4
 const HERO_LAYER := 2
@@ -24,6 +30,11 @@ var hp := 3
 ## Quanto fa male ogni arma: {&"sword": 0.5, &"magic": 1.5}. Manca = 1.
 var weakness := {}
 var contact_damage := 1
+## Quanta esperienza lascia, e la probabilità di lasciare qualcosa da mangiare.
+var exp_reward := 2
+## Il livello del nemico (quello della zona): l'esperienza cala se Lethe è molto più in alto.
+var level := 1
+var drop_chance := 0.3
 ## Se toccarlo adesso fa male a Lethe.
 var hurtful := false
 ## Chi inseguire (Lethe). Lo mette la zona.
@@ -40,6 +51,11 @@ var hurt_shape: CircleShape2D
 var _flash := 0.0
 var _knock := Vector2.ZERO
 var _anim_time := 0.0
+var _bar_time := 0.0
+var _stagger := 0.0
+var bar: Node2D
+## Quanto in alto sta la barretta (sopra lo sprite).
+var bar_height := 40.0
 
 
 func _init() -> void:
@@ -52,6 +68,10 @@ func _init() -> void:
 func _ready() -> void:
 	home = global_position
 	hp = max_hp
+	bar = Node2D.new()
+	bar.z_index = 15
+	bar.draw.connect(_draw_bar)
+	add_child(bar)
 
 
 ## Il corpo (dove lo colpiscono) e la zona che fa male a Lethe, cerchi intorno all'origine.
@@ -100,6 +120,10 @@ func hurt(amount: int, kind: StringName, from: Vector2) -> int:
 	var dmg := damage_from(amount, kind)
 	hp -= dmg
 	_flash = FLASH_TIME
+	_bar_time = BAR_SHOW
+	_stagger = STAGGER
+	DamageNumber.spawn(get_parent(), global_position + Vector2(0, -bar_height), dmg,
+		float(weakness.get(kind, 1.0)))
 	var away := global_position - from
 	_knock = (away.normalized() if away.length() > 0.1 else Vector2.UP) * 230.0
 	if sound:
@@ -165,9 +189,15 @@ func _physics_process(delta: float) -> void:
 	if _flash > 0.0:
 		_flash -= delta
 		sprite.modulate = Color(3, 3, 3) if _flash > 0.0 else Color.WHITE
+	if _bar_time > 0.0:
+		_bar_time -= delta
+		bar.queue_redraw()
 	if _knock != Vector2.ZERO:
 		global_position += _knock * delta
 		_knock = _knock.move_toward(Vector2.ZERO, KNOCK_DRAG * delta)
+		return
+	if _stagger > 0.0:
+		_stagger -= delta
 		return
 	behave(delta)
 	if hurtful and target and hurtbox:
@@ -185,6 +215,21 @@ func behave(_delta: float) -> void:
 ## Ha fatto male a Lethe (es. la falena si allontana).
 func on_hit_target() -> void:
 	pass
+
+
+func is_staggered() -> bool:
+	return _stagger > 0.0
+
+
+## La barretta: vuota scura, piena rosa, a blocchi di 2 pixel; si spegne piano.
+func _draw_bar() -> void:
+	if _bar_time <= 0.0 or dead:
+		return
+	var a := clampf(_bar_time / 0.5, 0.0, 1.0)
+	var left := Vector2(-BAR_WIDTH / 2.0, -bar_height - 6.0)
+	bar.draw_rect(Rect2(left - Vector2(2, 2), Vector2(BAR_WIDTH + 4, 6)), Color(0.05, 0.03, 0.08, 0.85 * a))
+	var fill := floorf(BAR_WIDTH * clampf(float(hp) / max_hp, 0.0, 1.0) / 2.0) * 2.0
+	bar.draw_rect(Rect2(left, Vector2(fill, 2)), Color(0.92, 0.42, 0.55, a))
 
 
 ## Lethe è a meno di `radius`?
