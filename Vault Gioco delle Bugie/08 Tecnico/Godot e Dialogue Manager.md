@@ -1,23 +1,33 @@
 ---
 tags: [tecnico, godot]
-stato: da verificare
+stato: in gioco
 ---
 # Godot e Dialogue Manager
 
 ## Motore
-- **Godot**
+- **Godot** 4.7
 
 ## Il problema
 - Il gioco è a scelte → serve un [[Sistema a scelte (grafo)]]
 - Godot lo regge? Worst case: no → **evitare backend custom** (costi = $$)
 
-## Soluzione proposta
-- Usare l'addon **Dialogue Manager** per Godot (negli appunti "Dialog Manager 2" `[?]`)
-  - Verificare la versione compatibile con la versione di Godot che useremo (per Godot 4 esiste la serie più recente dell'addon)
-  - Permette dialoghi ramificati, condizioni e variabili → il `karma` del [[Sistema Karma]] può stare lì
+## Soluzione (in gioco)
+- Addon **Dialogue Manager** 4.2.0 (Nathan Hoad, MIT), la serie per Godot 4.7: in `stanza/addons/dialogue_manager/`
+  - Dialoghi ramificati, condizioni e variabili: le scelte cambiano già `truth` / `lies` (il [[Sistema Karma]])
+  - I testi stanno in `stanza/dialogue/stanza.dialogue`: un "cue" per oggetto, col nome del suo tile.
+    Un oggetto con un cue diventa interagibile da solo.
+
+## A livello grafico (deciso)
+- Riquadro in basso con la finestra e il font del menu di pausa, testo a macchina da scrivere
+  con le lamelle del carillon
+- Il viso di Lethe a sinistra quando pensa lei; il narratore senza ritratto
+- Le scelte in una finestrella sopra, a destra, con il cuore che batte come cursore
+- Sopra la cosa davanti a Lethe: un'iconcina, un fumetto col cuore del menu, che compare con un
+  piccolo salto e ondeggia. Non la scurisce il buio della stanza. Tasto: E / Z / Invio
 
 ## Aperto
-- Come impostare i dialoghi **a livello grafico**? (box, ritratti, effetti)
+- Effetti sul testo (tremolio, glitch come nel menu) per le righe "che non vanno"
+- Ritratti con più espressioni?
 
 ## Già pronto
 - L'intro dello studio, riusabile in ogni gioco: cartella `intro-studio/` del repo
