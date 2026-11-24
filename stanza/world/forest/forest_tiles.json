@@ -1,0 +1,1846 @@
+{
+  "tile": 32,
+  "tiles": {
+    "grass": {
+      "atlas": [
+        1,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "grass",
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "grass_b": {
+      "atlas": [
+        2,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "grass",
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probability": 0.3
+    },
+    "grass_c": {
+      "atlas": [
+        3,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "grass",
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probability": 0.15
+    },
+    "grass_d": {
+      "atlas": [
+        4,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "grass",
+      "corners": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "probability": 0.2
+    },
+    "thicket_b": {
+      "atlas": [
+        3,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "probability": 0.6
+    },
+    "thicket_c": {
+      "atlas": [
+        4,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "probability": 0.6
+    },
+    "thicket_edge": {
+      "atlas": [
+        5,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "tree": {
+      "atlas": [
+        5,
+        0
+      ],
+      "size": [
+        2,
+        3
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    "pine": {
+      "atlas": [
+        3,
+        0
+      ],
+      "size": [
+        2,
+        3
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    "dead_tree": {
+      "atlas": [
+        0,
+        0
+      ],
+      "size": [
+        3,
+        4
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          24,
+          10
+        ],
+        "color": [
+          0.7,
+          0.78,
+          1.0
+        ],
+        "energy": 0.4,
+        "radius": 70
+      },
+      "solid_cells": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    "big_rock": {
+      "atlas": [
+        7,
+        0
+      ],
+      "size": [
+        2,
+        2
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "log": {
+      "atlas": [
+        2,
+        4
+      ],
+      "size": [
+        2,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "mirror": {
+      "atlas": [
+        9,
+        0
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          16,
+          22
+        ],
+        "color": [
+          0.6,
+          0.8,
+          1.0
+        ],
+        "energy": 0.6,
+        "radius": 60
+      },
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "bush": {
+      "atlas": [
+        2,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "rock": {
+      "atlas": [
+        6,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "stump": {
+      "atlas": [
+        1,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "fern": {
+      "atlas": [
+        8,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "tall_grass": {
+      "atlas": [
+        2,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "flowers": {
+      "atlas": [
+        9,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          16
+        ],
+        "color": [
+          0.6,
+          0.75,
+          1.0
+        ],
+        "energy": 0.2,
+        "radius": 30
+      }
+    },
+    "mushrooms": {
+      "atlas": [
+        0,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          18
+        ],
+        "color": [
+          0.45,
+          0.95,
+          0.85
+        ],
+        "energy": 0.55,
+        "radius": 50
+      },
+      "flicker": [
+        0.1,
+        0.8,
+        0.0
+      ]
+    },
+    "roots": {
+      "atlas": [
+        0,
+        12
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "bridge_h": {
+      "atlas": [
+        6,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "bridge_v": {
+      "atlas": [
+        9,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "bridge_h_w": {
+      "atlas": [
+        8,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "bridge_h_e": {
+      "atlas": [
+        7,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "bridge_v_n": {
+      "atlas": [
+        0,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "bridge_v_s": {
+      "atlas": [
+        1,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "brambles": {
+      "atlas": [
+        4,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true,
+      "gesture": "open"
+    },
+    "brambles_open": {
+      "atlas": [
+        5,
+        4
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "root_floor": {
+      "atlas": [
+        7,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "root_floor_b": {
+      "atlas": [
+        8,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "root_wall": {
+      "atlas": [
+        1,
+        4
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "wall",
+      "solid": true
+    },
+    "root_hole": {
+      "atlas": [
+        9,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false
+    },
+    "glow_root": {
+      "atlas": [
+        0,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          16
+        ],
+        "color": [
+          0.6,
+          0.48,
+          1.0
+        ],
+        "energy": 0.6,
+        "radius": 60
+      },
+      "flicker": [
+        0.12,
+        1.2,
+        0.0
+      ]
+    },
+    "old_stone": {
+      "atlas": [
+        0,
+        4
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          16,
+          26
+        ],
+        "color": [
+          0.6,
+          0.48,
+          1.0
+        ],
+        "energy": 0.3,
+        "radius": 30
+      },
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "path_c": {
+      "atlas": [
+        1,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "path_n": {
+      "atlas": [
+        9,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        0,
+        1,
+        1
+      ]
+    },
+    "path_s": {
+      "atlas": [
+        2,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    "path_w": {
+      "atlas": [
+        5,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        1,
+        0,
+        1
+      ]
+    },
+    "path_e": {
+      "atlas": [
+        4,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        0,
+        1,
+        0
+      ]
+    },
+    "path_nw": {
+      "atlas": [
+        1,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    "path_ne": {
+      "atlas": [
+        0,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    "path_sw": {
+      "atlas": [
+        4,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    "path_se": {
+      "atlas": [
+        3,
+        11
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    "path_inw": {
+      "atlas": [
+        6,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        1,
+        1,
+        1
+      ]
+    },
+    "path_ine": {
+      "atlas": [
+        5,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        0,
+        1,
+        1
+      ]
+    },
+    "path_isw": {
+      "atlas": [
+        8,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        1,
+        0,
+        1
+      ]
+    },
+    "path_ise": {
+      "atlas": [
+        7,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        1,
+        1,
+        0
+      ]
+    },
+    "path_d1": {
+      "atlas": [
+        2,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        1,
+        0,
+        0,
+        1
+      ]
+    },
+    "path_d2": {
+      "atlas": [
+        3,
+        10
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": false,
+      "terrain": "path",
+      "corners": [
+        0,
+        1,
+        1,
+        0
+      ]
+    },
+    "lethe_c": {
+      "atlas": [
+        5,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "lethe_n": {
+      "atlas": [
+        3,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_s": {
+      "atlas": [
+        6,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_w": {
+      "atlas": [
+        9,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_e": {
+      "atlas": [
+        8,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_nw": {
+      "atlas": [
+        5,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_ne": {
+      "atlas": [
+        4,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_sw": {
+      "atlas": [
+        8,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_se": {
+      "atlas": [
+        7,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_inw": {
+      "atlas": [
+        0,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_ine": {
+      "atlas": [
+        9,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_isw": {
+      "atlas": [
+        2,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_ise": {
+      "atlas": [
+        1,
+        9
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_d1": {
+      "atlas": [
+        6,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "lethe_d2": {
+      "atlas": [
+        7,
+        8
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "floor",
+      "solid": true,
+      "terrain": "lethe",
+      "corners": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_c": {
+      "atlas": [
+        3,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "canopy_n": {
+      "atlas": [
+        1,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_s": {
+      "atlas": [
+        4,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_w": {
+      "atlas": [
+        7,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        1,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_e": {
+      "atlas": [
+        6,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        0,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_nw": {
+      "atlas": [
+        3,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_ne": {
+      "atlas": [
+        2,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_sw": {
+      "atlas": [
+        6,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_se": {
+      "atlas": [
+        5,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_inw": {
+      "atlas": [
+        8,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        1,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_ine": {
+      "atlas": [
+        7,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        0,
+        1,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_isw": {
+      "atlas": [
+        0,
+        7
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_ise": {
+      "atlas": [
+        9,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        1,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_d1": {
+      "atlas": [
+        4,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        1,
+        0,
+        0,
+        1
+      ],
+      "shapes": [
+        [
+          0,
+          0,
+          16,
+          16
+        ],
+        [
+          16,
+          16,
+          16,
+          16
+        ]
+      ]
+    },
+    "canopy_d2": {
+      "atlas": [
+        5,
+        6
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "wall",
+      "solid": true,
+      "terrain": "canopy",
+      "corners": [
+        0,
+        1,
+        1,
+        0
+      ],
+      "shapes": [
+        [
+          16,
+          0,
+          16,
+          16
+        ],
+        [
+          0,
+          16,
+          16,
+          16
+        ]
+      ]
+    }
+  }
+}
