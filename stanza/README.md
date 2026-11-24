@@ -58,12 +58,39 @@ opening/
 │                                go out." e le sue eco sempre più sbiadite, nero e bussano, la stanza.
 │                                Un tasto chiede conferma, il secondo salta. Continue non ci passa
 └── calendar_page.gd             il foglio del calendario, disegnato in codice a blocchi di 2 pixel
+prologue/
+├── prologue.gd                  il regista del prologo nella stanza: il risveglio dopo la cutscene
+│                                (gli occhi che si aprono, un respiro, "Night."), lo specchio che
+│                                chiama quando chi bussava se n'è andato e Lethe ha guardato 5 cose
+│                                (la musica della stanza si spegne, parte quella dello specchio),
+│                                "Not yet." che lo fa brillare di più, e la caduta. In alto
+│                                l'obiettivo: "Look around the room (n/5)", poi la porta, poi lo
+│                                specchio (guardato tutto, bussano subito). Tutto nei flag
+│                                della partita, così si salva
+├── mirror_glow.gd               l'angolo scoperto dello specchio acceso: vetro che pulsa, luce
+│                                fredda, scintille che salgono, ronzio di vetro, le crepe
+└── mirror_fall.gd               la caduta: il lenzuolo, lo specchio che cede, Lethe tirata nel
+                                 vetro, le schegge che volano su, la scheggia nel buio (la spada
+                                 arriva qui), il cartello CHAPTER 1 / THE FOREST, poi il titolo
 ui/
+├── item_icons.gd                le icone degli oggetti (items/, 32x32) e i loro dati: cibo che cura,
+│                                luce per la magia, l'acqua del Lete, potenziamenti, cose da
+│                                raccogliere, chiavi, accessori. Anteprima: ../docs/oggetti.png
+├── objective_banner.gd          l'obiettivo in alto a sinistra (cosa fare adesso, in una riga), col
+│                                cuore che batte; cambia scivolando, il numero si accende
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
 │                                alla voce scelta batte un cuore. La usano il titolo e il menu di pausa
 └── fonts/                       Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
 audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
+audio/mirror_theme.wav           l'OST dello specchio: la melodia del titolo, lenta, su un'armonica di
+                                 vetro, con un tappeto che luccica (loop di 53 s)
+audio/forest_theme.wav           l'OST della foresta: Re dorico, arpa pizzicata, il motivo del titolo
+                                 al flauto, grilli, vento e un gufo lontano (loop di 48 s)
+audio/mirror_hum.wav, sheet_rustle.wav, mirror_break.wav, fall_whoosh.wav, shard_glint.wav,
+wake_up.wav                      i suoni del prologo: il ronzio dello specchio, il lenzuolo, il vetro
+                                 che cede (con il respiro all'indietro), la caduta, la scheggia, il
+                                 risveglio
 audio/title_theme.wav            l'OST del titolo: il lamento di un giullare, valzer lento in Re minore
                                  su un carillon stonato, con sonagli e un bordone col tritono (44 s, loop)
 audio/ui_move.wav, ui_confirm.wav  i suoni del menu (lamelle di carillon)
@@ -75,17 +102,26 @@ audio/magic_*.wav                i suoni della magia: il luccichio della carica,
                                  il rintocco di vetro dell'impatto
 world/
 ├── room_tiles.png / .json       atlante dei tile e i suoi dati (dal generatore)
-├── room_tileset.gd              costruisce il TileSet dal JSON, con le collisioni
+├── room_tileset.gd              costruisce il TileSet dal JSON, con le collisioni (anche per altri
+│                                atlanti: "solid_cells" = solo quelle celle bloccano)
 ├── room_layout.gd               com'è arredata la stanza (solo dati)
 ├── room.gd                      dipinge i livelli (pavimento, muri, oggetti, mobili)
 ├── room_fx.gd                   luci, sfarfallio, schermo acceso, raggio di luna (dal JSON)
 ├── room_things.gd               le cose con cui si parla e quale c'è davanti a Lethe (solo logica)
+├── forest/                      i tile della foresta del capitolo 1 (dal generatore in locale), 80:
+│                                erba, bosco fitto, sentiero e Lete con l'autotile "a angoli" (bordi,
+│                                angoli interni, diagonali: si dipingono col terreno nell'editor,
+│                                forest_tileset.tres), ponti sul Lete, rovi che si aprono col gesto,
+│                                alberi e abeti (bloccano solo al tronco), l'albero secco, rocce,
+│                                funghi e fiori che fanno luce, lo specchio dove si salva, e il
+│                                dungeon tra le radici. Anteprime: ../docs/foresta.png, foresta_radici.png
 └── door_knock.gd                dopo un po' bussano alla porta: il colpo, la luce e due piedi sotto la
                                  porta. Se Lethe va ad aprire una voce le chiede se è sveglia;
                                  se no, dopo qualche colpo se ne vanno
 dialogue/
 ├── stanza.dialogue              cosa dicono le cose della stanza (Dialogue Manager): un cue per
 │                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
+├── prologue.dialogue            il narratore del prologo: il risveglio, lo specchio che chiama
 ├── dialogue_box.gd              il riquadro: testo a macchina da scrivere, il viso di Lethe quando
 │                                pensa lei, le scelte col cuore, i suoni del carillon. Una riga
 │                                col tag [#wrong] non va: si guasta tutta, il riquadro sobbalza,
@@ -94,7 +130,8 @@ dialogue/
 │                                lettere diventano i segni del menu guasto), [shiver] (tremano a
 │                                scatti di un pixel), [flicker] (si spengono). I conti in text_fx.gd
 ├── talk.gd                      l'iconcina sopra la testa di Lethe quando ha qualcosa davanti, apre il
-│                                dialogo e ferma Lethe; conta le visite (seen("id") nei dialoghi)
+│                                dialogo e ferma Lethe; conta le visite (seen("id") nei dialoghi).
+│                                La prima volta accanto al fumetto c'è il tasto (E)
 └── talk_icon.png                l'iconcina: un fumetto col cuore che batte (2 fotogrammi, blocchi 2x2)
 addons/dialogue_manager/         Dialogue Manager 4.2.0 di Nathan Hoad (MIT), senza i file C#
 fx/
@@ -104,8 +141,10 @@ fx/
 ├── sparks.gd                    scintille di magia (scia e scoppio), quadratini da 2 pixel
 ├── screen_shake.gd              un piccolo tremolio dello schermo all'impatto
 ├── drop_shadow.gd               l'ombra sotto i piedi, a blocchi di 2 pixel come gli sprite
-└── screen_shatter.gd            lo schermo che si rompe: crepe a ragnatela, frammenti che cadono
-                                 nel buio, la musica che muore come un nastro, "Wake up, Lethe."
+├── screen_shatter.gd            lo schermo che si rompe (Quit, Game End): crepe a ragnatela,
+│                                frammenti che cadono nel buio, la musica che muore come un nastro
+└── mirror_shatter.gd            lo specchio che si rompe (la caduta): schegge lunghe quasi verticali
+                                 che si girano a onda e volano su, strisce di luce che salgono
 characters/protagonista/
 ├── facing.gd                    8 direzioni -> riga dello sheet + specchio (solo logica)
 ├── protagonista_frames.gd       animazioni dagli sheet (idle, walk, run, attack, slash x 5 direzioni)
@@ -145,6 +184,7 @@ core/
 ├── settings_store.gd            le cose da ricordare che non sono un salvataggio (l'avviso già letto)
 └── input_setup.gd               crea le azioni di input se mancano
 tests/                           un file per modulo + mini runner headless
+tools/make_forest_tileset.gd     riscrive world/forest/forest_tileset.tres dal JSON (con l'autotile)
 ```
 
 - **Luci**: la stanza è scurita da un `CanvasModulate`; schermo del PC, lampada, telefono e luna
