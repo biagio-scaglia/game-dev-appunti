@@ -45,6 +45,28 @@ Si combatte **in tempo reale**, come già in gioco: la magia (Spazio / J) e la
   vicino si apre (corpo nero, occhi rossi, denti, luce rossa) e insegue; se scappi torna a fare
   la lucciola. 2 colpi qualsiasi.
 
+## Crescere (in gioco)
+- **Esperienza**: un nemico sciolto lascia luce (puntini viola che volano a Lethe). Falena 3,
+  rovo 4, lucciola 2. A volte lascia una **mela notturna** che luccica per terra (cura 1).
+- **Livelli**: ognuno costa più del precedente (10, 28, 52, 80, 112...). I premi si alternano:
+  ai **pari** il cuore regge una stretta in più (fino a 8), ai **dispari** la spada taglia di più.
+  A ogni livello il cuore torna intero. *"LV 2 — Her heart holds a little more."*
+- **Niente grinding**: da nemici di due o più livelli sotto si prende sempre meno (metà, poi un
+  quarto...). Morire e rifarli non conviene.
+- **L'interfaccia**: in basso a sinistra, nel riquadro come quelli dei menu: il cuore piccolo con
+  la mano, i cuoricini, **LV** e la barra dell'esperienza (si riempie piano, lampeggia al
+  livello nuovo). Nel menu di pausa: livello, HEART ed EXP veri.
+- **Il tasto**: la prima volta che un nemico si avvicina compare **"K Swing the shard"** accanto
+  al cuore; sparisce al primo fendente.
+- **Come si sente**: numeri del danno (rosa grande sul punto debole, grigi se l'arma fa poco),
+  la barretta della vita sopra il nemico colpito, il nemico un attimo **scomposto** (si incalza),
+  il colpo dopo che **non si perde** (premuto verso la fine di un fendente, parte subito dopo), la
+  falena che **si illumina** prima di buttarsi.
+- **Il segreto delle 10 morti**: alla decima volta che il cuore si spezza, un **finto reset**:
+  tutto si spegne, torna il titolo ALETHEIA, le lettere intorno cadono e resta **LETHE**.
+  *"Ten times. She keeps waking up."* Bussano: *"Lethe? ...Are you awake?"* E la mano molla un
+  po': il cuore regge una stretta in più. (Chi fa fatica viene aiutato, senza dirglielo.)
+
 ## Le due armi e i nemici
 Alcuni nemici si battono meglio con la luce, altri col vetro: servono tutte e due, ma la route
 decide quale è più forte.
