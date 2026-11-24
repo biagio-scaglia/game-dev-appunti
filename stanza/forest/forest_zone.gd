@@ -154,7 +154,6 @@ func _ready() -> void:
 	hud.sound = sound
 	add_child(hud)
 	hud.show_heart(state.heart, state.heart_max)
-	hud.show_xp(state.level, state.xp, state.exp_to_next(state.level), false)
 	exit_area.body_entered.connect(_on_exit)
 	if sound:
 		Music.play_loop(music)
@@ -334,7 +333,7 @@ func _fly_motes(from: Vector2, amount: int) -> void:
 
 func gain_exp(amount: int) -> void:
 	var levels: int = state.gain_exp(amount)
-	hud.show_xp(state.level, state.xp, state.exp_to_next(state.level))
+	_float_text(hero.global_position + Vector2(0, -58), "+%d EXP" % amount, Color(0.8, 0.66, 1.0))
 	if sound:
 		Sfx.play(self, CHIME, 1.8, -10.0)
 	if levels > 0:
@@ -347,10 +346,26 @@ func gain_exp(amount: int) -> void:
 		leveled_up.emit(state.level)
 
 
+## Una scritta piccola che sale da `at` (nel mondo) e svanisce (l'esperienza presa).
+func _float_text(at: Vector2, text: String, color: Color) -> Label:
+	var label := _label(text, color)
+	label.add_theme_color_override(&"font_outline_color", Color(0.06, 0.03, 0.1))
+	label.add_theme_constant_override(&"outline_size", 4)
+	label.size = Vector2(80, 20)
+	label.z_index = 20
+	add_child(label)
+	label.global_position = at - Vector2(40, 10)
+	var t := create_tween().set_parallel()
+	t.tween_property(label, "position:y", label.position.y - 16.0, 0.8).set_trans(Tween.TRANS_QUAD) 		.set_ease(Tween.EASE_OUT)
+	t.tween_property(label, "modulate:a", 0.0, 0.4).set_delay(0.6)
+	t.chain().tween_callback(label.queue_free)
+	return label
+
+
 ## Una scritta che compare in alto al centro e se ne va (il livello).
 func _toast(title: String, line: String) -> void:
 	var layer := CanvasLayer.new()
-	layer.layer = 45
+	layer.layer = 8
 	add_child(layer)
 	var box := VBoxContainer.new()
 	box.position = Vector2(0, 52)
@@ -394,7 +409,7 @@ func _check_slash_hint() -> void:
 
 func show_slash_hint() -> void:
 	slash_hint = CanvasLayer.new()
-	slash_hint.layer = 42
+	slash_hint.layer = 7
 	add_child(slash_hint)
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override(&"panel", preload("res://menu/menu_style.gd").window_style())
