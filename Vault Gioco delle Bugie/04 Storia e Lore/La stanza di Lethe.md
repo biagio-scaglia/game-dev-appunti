@@ -31,9 +31,21 @@ Ogni oggetto che racconta ha un dialogo (testi in `stanza/dialogue/stanza.dialog
 - **Specchio** (provvisorio): la prima volta si sceglie. Guardare nell'angolo scoperto ("That's me.")
   = verità +1; "It's just old furniture." = bugia +1 → [[Sistema Karma]]. Poi non si sceglie più.
 
+## Bussano alla porta (in gioco, provvisorio)
+Dopo un po' che Lethe è nella stanza, una volta sola, qualcuno bussa. Si sente il colpo (più forte
+vicino alla porta), sotto la porta c'è una striscia di luce con l'ombra di due piedi.
+- Se Lethe va alla porta, una voce (senza nome) chiede: *"Lethe? ...Are you awake?"*
+  - **"I'm awake."** → verità +1. La voce: *"There's dinner on the tray. Please eat something."*
+  - **"I'm asleep."** → bugia +1 (la riga si guasta). *"...Okay. Goodnight, then."*
+  - **Stare zitta** → niente karma. *"The voice doesn't ask again."*
+- Se non ci va, dopo quattro colpi i piedi se ne vanno e la luce si spegne.
+- Dopo: *"They'll come back tomorrow. They always do."* (la frase che si spegne).
+- Lega il vassoio (il biglietto: *"I'll be right outside"*) a qualcuno che c'è davvero.
+
 ## Da decidere
 - Il giorno cerchiato: che data? Un anniversario? → [[Il mistero della ragazzina]]
-- Chi ha scritto il biglietto sul vassoio?
+- Chi ha scritto il biglietto sul vassoio? È la stessa voce che bussa? (Per ora la voce non ha nome.)
+- Quando bussano: a tempo (ora 35 s) o dopo che Lethe ha guardato certe cose (il vassoio, il calendario)?
 - Lo specchio: si potrà scoprire del tutto? Con che conseguenze?
 
 Collegato: [[Protagonista]], [[Ambientazione]], [[Il mistero della ragazzina]]
