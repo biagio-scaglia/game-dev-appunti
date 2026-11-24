@@ -6,6 +6,8 @@ extends CanvasLayer
 ## show_text() cambia l'obiettivo: il vecchio scivola via a sinistra, il nuovo entra con un
 ## piccolo suono. Se cambia solo il numero (es. 2/5 -> 3/5) la riga non si muove: il testo
 ## si accende un attimo. Testo vuoto = niente obiettivo (la riga sparisce).
+## Dove c'è la vita a cuore (heart_hud.gd, in alto a sinistra) il cuoricino non serve:
+## `show_heart` falso e la riga si sposta accanto al cuore grande (`at`).
 
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const HEART := preload("res://title/art/heart.png")
@@ -21,6 +23,9 @@ const SLIDE := 12.0
 
 ## Falso nei test: niente suono.
 var sound := true
+## Dove sta la riga, e se ha il suo cuoricino davanti (da decidere prima di aggiungerla).
+var at := AT
+var show_heart := true
 var text := ""
 var row: HBoxContainer
 var label: Label
@@ -55,11 +60,11 @@ func _ready() -> void:
 	strip.texture = texture
 	strip.stretch_mode = TextureRect.STRETCH_SCALE
 	strip.position = Vector2(0, 0)
-	strip.size = Vector2(300, 30)
+	strip.size = Vector2(300 + at.x, at.y * 2 + 18)
 	strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(strip)
 	row = HBoxContainer.new()
-	row.position = AT
+	row.position = at
 	row.add_theme_constant_override(&"separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(row)
@@ -67,6 +72,7 @@ func _ready() -> void:
 	heart.texture = _frames[0]
 	heart.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 	row.add_child(heart)
+	heart.visible = show_heart
 	label = Label.new()
 	label.add_theme_font_override(&"font", FONT)
 	label.add_theme_font_size_override(&"font_size", 16)
@@ -104,15 +110,15 @@ func show_text(new_text: String) -> void:
 		return
 	if old != "":
 		_move.tween_property(row, "modulate:a", 0.0, 0.2)
-		_move.parallel().tween_property(row, "position:x", AT.x - SLIDE, 0.2)
+		_move.parallel().tween_property(row, "position:x", at.x - SLIDE, 0.2)
 	_move.tween_callback(func() -> void:
 		label.text = new_text
 		label.modulate = Color.WHITE
-		row.position.x = AT.x + SLIDE
+		row.position.x = at.x + SLIDE
 		if sound:
 			Sfx.play(self, PING, 0.7, -10.0))
 	_move.tween_property(row, "modulate:a", 1.0, 0.35)
-	_move.parallel().tween_property(row, "position:x", AT.x, 0.35).set_trans(Tween.TRANS_QUAD) \
+	_move.parallel().tween_property(row, "position:x", at.x, 0.35).set_trans(Tween.TRANS_QUAD) \
 		.set_ease(Tween.EASE_OUT)
 	_move.parallel().tween_property(strip, "modulate:a", 1.0, 0.35)
 
