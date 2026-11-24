@@ -49,6 +49,8 @@ var _beat_left := 0.0
 var _pop: Tween
 ## Mostra il tasto accanto al fumetto, finché non si parla la prima volta.
 var key_hint := false
+## Il dialogo delle cose (stanza.dialogue nella stanza; un altro nelle zone, con setup_with).
+var dialogue: Resource = DIALOGUE
 var hint_label: Label
 
 
@@ -83,6 +85,17 @@ func setup(room_node: Node2D, hero_node: Node2D, game_state: RefCounted) -> void
 	things = RoomThings.build(room.data, DIALOGUE.get_cues())
 
 
+## Come setup(), ma fuori dalla stanza: `origin` è il nodo a cui sono relativi i
+## rettangoli di `thing_list` ({id, rect}), e `resource` il dialogo con un cue per id.
+func setup_with(origin: Node2D, hero_node: Node2D, game_state: RefCounted, thing_list: Array[Dictionary],
+		resource: Resource) -> void:
+	room = origin
+	hero = hero_node
+	state = game_state
+	things = thing_list
+	dialogue = resource
+
+
 func is_talking() -> bool:
 	return is_instance_valid(box)
 
@@ -94,14 +107,14 @@ func seen(id: String) -> int:
 
 ## Apre il dialogo della cosa `id` (anche senza averla davanti: lo usano i test).
 func talk(id: String) -> void:
-	say(DIALOGUE, id)
+	say(dialogue, id)
 
 
 ## Apre il cue `cue` di un dialogo qualsiasi, fermando Lethe finché non finisce.
 func say(resource: Resource, cue: String) -> void:
 	if is_talking():
 		return
-	if resource == DIALOGUE:
+	if resource == dialogue:
 		key_hint = false        # ha parlato con una cosa: il tasto l'ha capito
 	hint_label.hide()
 	_set_target("", true)
