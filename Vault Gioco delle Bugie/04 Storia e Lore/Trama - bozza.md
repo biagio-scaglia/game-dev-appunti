@@ -62,6 +62,10 @@ Gli abitanti si accorgono quando manca, il vassoio è lì ogni sera, la voce tor
 Nemici e boss → [[Nemici e boss]]. Missioni, collezionabili, minigiochi → [[Cose da fare]].
 
 ### Prologo — La stanza (c'è già) · ~20 min
+- **Cutscene di New Game** (in gioco, ~20 s, niente dialoghi): nero, bussano tre volte. Il calendario
+  al buio: i giorni si barrano uno alla volta fino all'11, il 12 viene cerchiato, poi niente. Sotto,
+  a matita: *"tomorrow I'll go out."*, e sotto ancora la stessa frase, sempre più sbiadita (una per
+  ogni giorno dopo). Nero, bussano di nuovo. Poi la stanza. Continue non la mostra.
 - Notte. Lethe gira per la stanza, guarda le cose, le cose le parlano → [[La stanza di Lethe]].
 - Bussano alla porta. Risponde, mente o sta zitta: è la **prima scelta** del gioco.
 - Poi l'angolo di vetro scoperto dello specchio brilla della luce della luna. Lethe tira via il
