@@ -23,6 +23,28 @@ Si combatte **in tempo reale**, come già in gioco: la magia (Spazio / J) e la
   all'ultimo specchio dove ha salvato. *Death is a lie* → [[Titolo del gioco]]. (Ogni volta
   la stanza è un po' diversa: il vassoio cambia, il biglietto dice un'altra cosa.)
 
+## In gioco (capitolo 1, zona 1)
+- **La vita a cuore**: 4 strette. In alto a destra il cuore, e la mano che a ogni colpo si chiude di
+  più (le dita una alla volta, poi il pollice); sotto, i puntini. Con l'ultimo pezzo i bordi dello
+  schermo si scuriscono e si sente il battito. Dopo un colpo Lethe lampeggia e viene spinta via.
+- **La morte**: il cuore si spezza, nero, *"Death is a lie."* in rosso, e Lethe si risveglia davanti
+  allo specchio (*"The mirror is cold against her back. She's still here."*), col cuore intero.
+  Allo specchio ci si **riposa**: il cuore torna intero e da lì si riparte. (Il risveglio nel letto
+  della stanza resta l'idea per dopo.)
+- **Danni**: spada 2 (+ lo stadio), magia 3. Debole = x1.5, resiste = x0.5.
+- **Colpire dev'essere facile, schivare la sfida**: la spada parte quasi subito dal tasto, la lama
+  prende un cerchio largo davanti a Lethe, e c'è una **mira assistita** (un nemico vicino e più o
+  meno davanti attira il fendente: Lethe si gira verso di lui). Quando la lama prende qualcosa,
+  un attimo di **fermo** (hit-stop) e il nemico vola via.
+- **Falena d'ombra**: gira intorno, si ferma sbattendo le ali (si sente: si schiva), si butta.
+  Va alla luce della magia e si dimentica di Lethe. Magia x1.5, spada x0.5 (3 colpi di spada).
+- **Rovo che sussurra**: fermo, blocca il passo. Quando passi **sussurra una bugia di Lethe** che
+  si legge sopra (*"You're fine." "Nobody noticed." "Just one more day."*), trema, e frusta lontano.
+  Spada x1.5 (2 colpi), magia x0.5.
+- **Lucciola falsa** (nuova, a tema: **una luce che mente**): sembra una delle lucciole vere; da
+  vicino si apre (corpo nero, occhi rossi, denti, luce rossa) e insegue; se scappi torna a fare
+  la lucciola. 2 colpi qualsiasi.
+
 ## Le due armi e i nemici
 Alcuni nemici si battono meglio con la luce, altri col vetro: servono tutte e due, ma la route
 decide quale è più forte.
