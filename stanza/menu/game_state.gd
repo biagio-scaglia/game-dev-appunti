@@ -23,6 +23,9 @@ var owned: Array[String] = []
 var equipped: Dictionary = Data.START_EQUIPMENT.duplicate()
 ## L'incantesimo su Spazio / J ("" = nessuno).
 var spell: String = Data.START_SPELL
+## I segni di quello che è già successo nella storia (es. "knock_over", "mirror_calling"),
+## e le cose guardate nella stanza ("looked": lista di id). Solo valori da JSON.
+var flags: Dictionary = {}
 
 
 func _init() -> void:
@@ -33,6 +36,27 @@ func _init() -> void:
 static func format_time(seconds: float) -> String:
 	var s := int(seconds)
 	return "%02d:%02d:%02d" % [s / 3600, s / 60 % 60, s % 60]
+
+
+func flag(key: String) -> bool:
+	return bool(flags.get(key, false))
+
+
+func set_flag(key: String, value := true) -> void:
+	flags[key] = value
+
+
+## Segna una cosa della stanza come guardata. Quante cose diverse ha guardato.
+func look(thing_id: String) -> int:
+	var looked: Array = flags.get("looked", [])
+	if not thing_id in looked:
+		looked.append(thing_id)
+	flags["looked"] = looked
+	return looked.size()
+
+
+func looked_count() -> int:
+	return (flags.get("looked", []) as Array).size()
 
 
 func knows(spell_id: String) -> bool:
@@ -84,6 +108,7 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 		"owned": owned.duplicate(),
 		"equipped": equipped.duplicate(),
 		"spell": spell,
+		"flags": flags.duplicate(true),
 		"position": [position.x, position.y],
 		"sword_stage": sword_stage,
 		"saved_at": int(Time.get_unix_time_from_system()),
@@ -112,6 +137,8 @@ func load_save(data: Dictionary) -> void:
 		var id := String(saved.get(slot, equipped[slot]))
 		if id == "" or (owns(id) and Data.EQUIPMENT[id]["slot"] == slot):
 			equipped[slot] = id
+	var saved_flags = data.get("flags", {})
+	flags = saved_flags.duplicate(true) if saved_flags is Dictionary else {}
 	var saved_spell := String(data.get("spell", Data.START_SPELL))
 	spell = saved_spell if knows(saved_spell) else Data.START_SPELL
 
