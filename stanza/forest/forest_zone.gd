@@ -112,6 +112,8 @@ var _lies_before := 0
 
 
 func _ready() -> void:
+	get_tree().paused = false                   # una scena nuova parte sempre in movimento
+	Layout = Zones.layout(zone_id)
 	data = ForestTileset.load_data()
 	var night := CanvasModulate.new()
 	night.color = NIGHT
