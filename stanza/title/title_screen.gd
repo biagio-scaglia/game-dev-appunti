@@ -5,7 +5,9 @@ extends Control
 ##
 ## La prima volta che si gioca, prima di tutto, l'avviso sui contenuti (care_note.gd). Poi
 ## dal nero compaiono la scena, il titolo e il sottotitolo, poi il menu:
-## Continue (solo se c'è un salvataggio) / New Game / Talk to Someone / Quit.
+## Continue (solo se c'è un salvataggio) / New Game / Settings / Talk to Someone / Quit.
+## Settings: volume, musica, schermo intero, scuotimento, velocità del testo, e cancellare i
+## file (settings_page.gd, file_eraser.gd: cancellare non va come dovrebbe).
 ## Un tasto durante l'apparizione la salta. New Game: dissolvenza al nero, la cutscene
 ## (opening/), poi la stanza. Continue: dissolvenza al nero, poi la stanza. Talk to Someone: la pagina coi numeri d'aiuto. Quit: lo schermo si rompe
 ## come in un incubo (fx/screen_shatter.gd), poi si chiude.
@@ -41,10 +43,11 @@ const SaveView := preload("res://menu/save_view.gd")
 const Settings := preload("res://core/settings_store.gd")
 const Main := preload("res://main.gd")
 const CareNote := preload("care_note.gd")
+const SettingsPage := preload("settings_page.gd")
 const FOREST := "res://forest/zone_wake.tscn"
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
-const MENU := [[&"continue", "Continue"], [&"start", "New Game"], [&"help", "Talk to Someone"],
-	[&"quit", "Quit"]]
+const MENU := [[&"continue", "Continue"], [&"start", "New Game"], [&"settings", "Settings"],
+	[&"help", "Talk to Someone"], [&"quit", "Quit"]]
 ## Il flag delle impostazioni: l'avviso è già stato letto.
 const WARNING_FLAG := "content_warning_seen"
 ## Di quanti pixel sale il titolo mentre compare.
@@ -70,9 +73,13 @@ var _revealed := false
 var _leaving := false
 var _reveal: Tween
 var note: Control
+var settings_page: Control
+## Durante le impostazioni è stato cancellato un file (alla chiusura: bussano).
+var _erased := false
 
 
 func _ready() -> void:
+	Settings.apply()
 	title_name.setup(game_title, hidden_name)
 	tagline_label.text = tagline
 	menu.setup(menu_entries(), FONT, 16)
@@ -82,6 +89,10 @@ func _ready() -> void:
 	note = CareNote.new()
 	add_child(note)
 	note.closed.connect(_on_note_closed)
+	settings_page = SettingsPage.new()
+	add_child(settings_page)
+	settings_page.closed.connect(_on_settings_closed)
+	settings_page.file_erased.connect(func(_slot: int) -> void: _erased = true)
 	_hide_all()
 	_breathe(glow)
 	if show_warning and not Settings.has_flag(WARNING_FLAG):
@@ -193,7 +204,7 @@ func _show_menu() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _revealed or _leaving or note.is_open():
+	if _revealed or _leaving or note.is_open() or settings_page.is_open():
 		return
 	var pressed := (event is InputEventKey or event is InputEventJoypadButton \
 		or event is InputEventMouseButton) and event.is_pressed() and not event.is_echo()
@@ -210,10 +221,34 @@ func _on_chosen(id: StringName) -> void:
 		&"start":
 			Main.pending_save = {}
 			start_game()
+		&"settings":
+			open_settings()
 		&"help":
 			open_help()
 		&"quit":
 			quit_game()
+
+
+## Settings: la pagina sopra il titolo; il menu aspetta sotto.
+func open_settings() -> void:
+	if _leaving or settings_page.is_open():
+		return
+	menu.set_active(false)
+	settings_page.open()
+
+
+## Chiuse le impostazioni: "Continue" c'è ancora? (si può aver cancellato l'ultimo file)
+## E se un file se n'è andato, qualcuno bussa.
+func _on_settings_closed() -> void:
+	menu.setup(menu_entries(), FONT, 16)
+	_center_menu()
+	menu.set_active(true)
+	menu.focus_id(&"settings")
+	if _erased:
+		_erased = false
+		await get_tree().create_timer(0.8).timeout
+		if is_inside_tree():
+			door.knock()
 
 
 ## Talk to Someone: la pagina coi numeri; il menu aspetta sotto.
