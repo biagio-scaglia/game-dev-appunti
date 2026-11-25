@@ -1,0 +1,67 @@
+# I test del gioco (stanza/tests, più di 200) a ogni push e pull request.
+# Scarica Godot (in cache dopo la prima volta), importa il progetto (un checkout nuovo non ha
+# la cartella .godot) e lancia il runner: esce con 1 se almeno un test fallisce, e il job
+# diventa rosso. Il log completo resta tra gli artefatti del job.
+
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      GODOT_VERSION: "4.7.2"
+      GODOT: ${{ github.workspace }}/.godot-bin/Godot_v4.7.2-stable_linux.x86_64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Godot in cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: .godot-bin
+          key: godot-${{ env.GODOT_VERSION }}-linux
+
+      - name: Scarica Godot
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p .godot-bin
+          curl -sSfL -o godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip -d .godot-bin
+          chmod +x "$GODOT"
+
+      - name: Versione
+        run: '"$GODOT" --headless --version'
+
+      - name: Importa il progetto
+        working-directory: stanza
+        timeout-minutes: 10
+        run: '"$GODOT" --headless --path . --import > import.log 2>&1 || (cat import.log; exit 1)'
+
+      - name: Test
+        working-directory: stanza
+        timeout-minutes: 15
+        run: '"$GODOT" --headless --audio-driver Dummy --path . -s res://tests/run_tests.gd > test.log 2>&1'
+
+      - name: Risultato
+        if: always()
+        working-directory: stanza
+        run: |
+          grep -E "FAIL|SCRIPT ERROR" -A3 test.log || echo "Nessun test fallito."
+          tail -n 3 test.log
+
+      - name: Log completo
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log
+          path: |
+            stanza/test.log
+            stanza/import.log
