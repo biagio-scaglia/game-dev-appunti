@@ -206,6 +206,46 @@ func test_salva_e_carica_posizione_e_spada() -> void:
 	assert_false(menu.is_open(), "caricare chiude il menu")
 
 
+func test_caricare_chiede_di_ricaricare_la_scena_del_posto() -> void:
+	var menu := _menu(_hero())
+	menu.state.place = "The Forest"
+	menu.open()
+	menu.choose(&"save")
+	menu.save_view.slot_chosen.emit(1)
+	menu.back()
+	menu.back()
+	var got: Array = []
+	menu.loaded.connect(got.append)
+	menu.open()
+	menu.choose(&"load")
+	menu.save_view.slot_chosen.emit(1)
+	assert_eq(got.size(), 1, "chi ospita il menu lo sa (e ricarica la scena)")
+	assert_eq(String(got[0].get("place")), "The Forest", "col salvataggio giusto")
+	assert_eq(preload("res://main.gd").scene_for_save(got[0]), "res://forest/zone_wake.tscn",
+		"si torna nella foresta")
+	assert_eq(preload("res://main.gd").scene_for_save({"place": "Her Room"}), "res://main.tscn",
+		"o nella stanza")
+
+
+func test_nella_foresta_il_menu_non_ha_i_suoni_della_stanza() -> void:
+	var menu := _menu()
+	menu.state.place = "The Forest"
+	menu.open()
+	for i in 6:
+		assert_eq(menu.ambience.play_random(), &"glass", "nella foresta c'è solo lo specchio")
+	menu.reactions.save_event_chance = 1.0
+	for i in 12:
+		var event: StringName = menu.reactions.after_save(1, null)
+		assert_false(event in [&"knock", &"watched"], "niente porta né telefono dopo un salvataggio")
+	menu.back()
+	menu.state.place = "Her Room"
+	menu.open()
+	var heard := {}
+	for i in 20:
+		heard[menu.ambience.play_random()] = true
+	assert_true(heard.has(&"knock") or heard.has(&"phone"), "nella stanza sì")
+
+
 func test_caricare_uno_slot_vuoto_non_fa_niente() -> void:
 	var hero := _hero()
 	hero.global_position = Vector2(5, 5)
