@@ -2,6 +2,8 @@ extends Node
 ## Mentre il menu è aperto, ogni tanto un oggetto della stanza fa rumore da solo: bussano
 ## alla porta, il telefono vibra, lo specchio si incrina, il carillon suona tre note,
 ## l'orologio si ferma. Piano, e mai lo stesso due volte di fila.
+## Solo le cose che ci sono dove sta Lethe (use_place): nella foresta la porta, il telefono,
+## il carillon e l'orologio non ci sono, resta lo specchio.
 ## I suoni li fa tools/audio/make_menu_sfx.py (in locale).
 
 signal played(kind: StringName)
@@ -14,6 +16,10 @@ const SOUNDS := {
 	&"music_box": preload("res://audio/menu_music_box.wav"),
 	&"clock": preload("res://audio/menu_clock.wav"),
 }
+## Quali suoni ci sono in ogni posto (state.place). Un posto che manca: tutti.
+const PLACE_SOUNDS := {
+	"The Forest": [&"glass"],
+}
 const MIN_WAIT := 8.0
 const MAX_WAIT := 20.0
 const VOLUME_DB := -12.0
@@ -22,6 +28,17 @@ var rng := RandomNumberGenerator.new()
 var running := false
 var _wait := 0.0
 var _last := &""
+## I suoni del posto dove sta Lethe.
+var kinds: Array = SOUNDS.keys()
+
+
+func use_place(place: String) -> void:
+	kinds = PLACE_SOUNDS.get(place, SOUNDS.keys())
+
+
+## C'è questo suono, qui? (le reazioni del menu lo chiedono prima di usarlo)
+func has_sound(kind: StringName) -> bool:
+	return kind in kinds
 
 
 func start() -> void:
@@ -44,8 +61,10 @@ func _process(delta: float) -> void:
 
 
 func play_random() -> StringName:
-	var kinds := SOUNDS.keys().filter(func(k): return k != _last)
-	var kind: StringName = kinds[rng.randi() % kinds.size()]
+	var choices := kinds.filter(func(k): return k != _last)
+	if choices.is_empty():
+		choices = kinds                 # un solo suono: si ripete, pazienza
+	var kind: StringName = choices[rng.randi() % choices.size()]
 	play(kind)
 	return kind
 
