@@ -68,11 +68,6 @@ func test_il_cuore_nello_stato() -> void:
 
 
 func test_il_disegno_del_cuore() -> void:
-	assert_eq(HeartHud.stage_for(4, 4), 0, "intero")
-	assert_eq(HeartHud.stage_for(3, 4), 1, "la mano lo tocca")
-	assert_eq(HeartHud.stage_for(1, 4), 3, "la mano lo stringe")
-	assert_eq(HeartHud.stage_for(0, 4), 4, "stretto del tutto")
-	assert_eq(HeartHud.stage_for(5, 6), 1, "con un cuore più grande, piano piano")
 	assert_true(HeartHud.beats_per_second(1, 4) > HeartHud.beats_per_second(4, 4), "con poco cuore batte in fretta")
 
 
@@ -263,7 +258,9 @@ func test_un_colpo_stringe_il_cuore() -> void:
 	var zone := await _zone()
 	zone.hero.hurt(1, zone.hero.global_position + Vector2(10, 0))
 	assert_eq(zone.state.heart, zone.state.heart_max - 1, "un pezzo di cuore in meno")
-	assert_eq(zone.hud.icon.frame, 1, "la mano lo tocca")
+	var full: Array = zone.hud.pips.map(func(p): return p.full)
+	assert_eq(full.count(true), zone.state.heart_max - 1, "un cuore della fila si è rotto")
+	assert_false(full[-1], "l'ultimo")
 
 
 func test_morire_e_risvegliarsi_allo_specchio() -> void:
@@ -384,7 +381,7 @@ func test_la_spada_parte_subito() -> void:
 
 func test_il_riquadro_del_cuore() -> void:
 	var zone := await _zone()
-	var box: PanelContainer = zone.hud.box
+	var box: Control = zone.hud.box
 	assert_true(box.position.y + box.size.y <= 360.0 and box.position.y > 240.0, "in basso")
 	assert_true(box.position.x < 40.0, "a sinistra")
 	assert_false(zone.objective.heart.visible, "di cuore ce n'è uno solo")
@@ -565,7 +562,8 @@ func test_l_esperienza_si_vede_quando_arriva() -> void:
 	zone.gain_exp(9)
 	assert_eq(zone.state.level, 2, "livello 2")
 	assert_eq(zone.hud.heart_max, 5, "col cuore più grande")
-	assert_false(zone.hud.box.get_children().any(func(n): return n is ProgressBar), "nel riquadro del cuore solo il cuore")
+	assert_eq(zone.hud.pips.size(), 5, "un cuore in più nella fila")
+	assert_false(zone.hud.box.get_children().any(func(n): return n is ProgressBar), "nella fila solo i cuori")
 
 
 func test_sotto_il_menu_di_pausa() -> void:
