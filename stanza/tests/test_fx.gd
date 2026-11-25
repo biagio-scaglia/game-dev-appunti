@@ -3,6 +3,7 @@ extends "res://tests/base_test.gd"
 
 const Flicker := preload("res://fx/flicker.gd")
 const ScreenGlow := preload("res://fx/screen_glow.gd")
+const Main := preload("res://main.gd")
 const MoonBeam := preload("res://fx/moon_beam.gd")
 const Music := preload("res://core/music.gd")
 const ROOM := preload("res://world/room.gd")
@@ -71,3 +72,28 @@ func test_la_musica_va_in_loop() -> void:
 	assert_eq(stream.loop_mode, AudioStreamWAV.LOOP_FORWARD, "loop attivo")
 	assert_true(stream.loop_end > stream.mix_rate * 20, "loop di tutto il brano (oltre 20 s)")
 	assert_true(player.playing, "suona")
+
+
+func test_nel_bosco_il_raggio_fa_una_pozza_di_luce() -> void:
+	var beam := MoonBeam.new()
+	beam.pool = true
+	tree.root.add_child(beam)
+	_owned.append(beam)
+	assert_true(beam.light != null, "una luce vera dove tocca terra")
+	assert_true(beam.light.position.distance_to(beam.foot()) < 0.5, "proprio lì")
+	var plain := MoonBeam.new()
+	tree.root.add_child(plain)
+	_owned.append(plain)
+	assert_true(plain.light == null, "nella stanza no")
+
+
+func test_nel_bosco_i_raggi_partono_da_sopra_la_mappa() -> void:
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true}}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	var beams := zone.get_children().filter(func(n): return n is MoonBeam)
+	assert_eq(beams.size(), 3, "tre raggi")
+	for beam in beams:
+		var full_from: float = beam.position.y + beam.length * beam.fade_until
+		assert_true(full_from <= 0.0, "il pezzo che sfuma sta fuori dalla mappa: salendo non sparisce")
+	Main.pending_save = {}
