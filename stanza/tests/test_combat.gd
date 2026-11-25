@@ -448,9 +448,9 @@ func test_il_tasto_della_spada() -> void:
 	zone.hero.global_position = moth.global_position + Vector2(60, 0)
 	await tree.process_frame
 	await tree.process_frame
-	assert_true(zone.slash_hint != null, "un nemico vicino: compare K")
+	assert_true(zone.slash_hint != null, "un nemico vicino: compare il tasto")
 	var label: Label = zone.slash_hint.get_child(0).get_child(0)
-	assert_true(label.text.begins_with("K"), "dice il tasto")
+	assert_true(label.text.begins_with("Space"), "dice il tasto")
 	zone._on_hero_attack(&"slash")
 	assert_eq(zone.slash_hint, null, "al primo fendente sparisce")
 	assert_true(zone.state.flag("slash_learned"), "e non torna")
