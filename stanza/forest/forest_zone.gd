@@ -69,6 +69,8 @@ const PLACE := "The Forest"
 const NIGHT := Color(0.4, 0.45, 0.62)
 const TILE := 32
 const GOAL_PATH := "Follow the path"
+## Da quanto sopra il bordo della mappa partono i raggi di luna.
+const BEAM_ABOVE := 90.0
 ## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
 const TALKS := ["mirror", "brambles", "old_stone"]
 
@@ -108,8 +110,18 @@ func _ready() -> void:
 	_build_things()
 	_light_decor()
 	for at in Layout.BEAMS:
+		# Il raggio scende da sopra la mappa (lo spiraglio non si vede mai): così salendo
+		# non si arriva al pezzo che sfuma e non sparisce.
 		var beam := MoonBeam.new()
-		beam.position = at - Vector2(50, 200)
+		beam.length = at.y + BEAM_ABOVE
+		beam.slant = beam.length * 0.25
+		beam.top_width = 14.0
+		beam.fade_until = BEAM_ABOVE * 0.9 / beam.length   # pieno già prima del bordo
+		beam.position = at - Vector2(beam.slant, beam.length)
+		beam.pool = true                         # nel bosco la luna fa una pozza sul prato
+		beam.unshaded = true
+		beam.color = Color(0.55, 0.67, 1.0, 0.085)
+		beam.dust_amount = 34
 		beam.z_index = 1
 		add_child(beam)
 	for at in Layout.FIREFLIES:
