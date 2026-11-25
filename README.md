@@ -1,5 +1,7 @@
 # game-dev-appunti
 
+[![Test](https://github.com/biagio-scaglia/game-dev-appunti/actions/workflows/test.yml/badge.svg)](https://github.com/biagio-scaglia/game-dev-appunti/actions/workflows/test.yml)
+
 Il mio gioco in pixel art, fatto con Godot 4.7, e i pezzi riusabili che ne escono.
 
 **Aletheia** (titolo provvisorio, sottotitolo *Death is a Lie*) è un action RPG breve-medio, a scelte, sulle
@@ -35,6 +37,9 @@ cd stanza
 $GODOT --path .                                          # gioca
 $GODOT --headless --path . -s res://tests/run_tests.gd   # i test (più di 200)
 ```
+
+Gli stessi test girano da soli su GitHub a ogni push e pull request
+([.github/workflows/test.yml](.github/workflows/test.yml)): se uno fallisce, il job diventa rosso.
 
 I tasti non sono scritti a schermo: il gioco li spiega quando servono.
 
