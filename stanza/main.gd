@@ -35,7 +35,6 @@ func _ready() -> void:
 	if not pending_save.is_empty():
 		state.load_save(pending_save)
 		hero.global_position = GameState.saved_position(pending_save)
-		hero.set("sword_stage", int(pending_save.get("sword_stage", 0)))
 		pending_save = {}
 	# Magia e spada solo se Lethe le ha (all'inizio no). Si riguarda quando si chiude il menu:
 	# lì si può cambiare l'arma.
@@ -87,6 +86,7 @@ static func resume_save(data: Dictionary) -> void:
 func sync_abilities() -> void:
 	hero.can_cast = state.can_cast()
 	hero.can_slash = state.can_slash()
+	hero.sword_stage = state.sword_stage()     # la spada cresce con le bugie
 
 
 func _process(delta: float) -> void:
