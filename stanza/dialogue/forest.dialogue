@@ -8,6 +8,30 @@ Lethe: ...Where...?
 Something sharp is still in her hand.
 => END
 
+# Selene scende dalla luna (forest_zone.gd, meet_selene): la prima scelta del capitolo.
+# La verità accende la magia (learn_truth); la bugia no, ma la spada la sente.
+~ selene_meet
+A light comes down through the leaves. Small, curved. Like a piece of the moon.
+It stops in front of her face. It hums.
+Selene: Oh. You're awake. Good.
+Selene: I'm Selene. I came down from your window. The moon in it.
+Lethe: ...My window?
+Selene: I've been watching your room for a long time. Every night, the same night.
+Selene: Are you hurt?
+- I'm fine.
+	Lethe: I'm fine. [#wrong]
+	set lies += 1
+	Selene: ...Okay. If you say so.
+	The glass in her hand catches the light. Like it heard her.
+- My hand. The glass cut me.
+	Lethe: My hand. The glass... it cut me.
+	set truth += 1
+	do learn_truth()
+	Something warm opens in her palm. Not glass. Light.
+	Selene: See? When you say it, it shines.
+Selene: Come on. There's a path. I'll stay close.
+=> END
+
 ~ mirror
 if seen("mirror") == 0
 	A small mirror, standing alone in the grass. A violet frame, like her dress.
@@ -35,10 +59,27 @@ An old stone with a mark carved in it. It glows, a little.
 Lethe: An eye. Or a moon.
 => END
 
+# Il ruscello del Lete. Con Selene: la sua prima bugia ("just a sip"), e una seconda
+# occasione per la prima verità (se a Selene Lethe ha mentito, la magia arriva qui).
 ~ lethe
 Black water, very still. It doesn't reflect anything.
 It smells like sleep.
-Lethe: ...I'm not thirsty. [#wrong]
+if not selene_met()
+	Lethe: ...I'm not thirsty. [#wrong]
+elif seen("lethe") == 0
+	Selene: That's the Lethe. It runs through everything here.
+	Selene: Just a sip. It stops hurting. [#wrong]
+	- I'm not thirsty.
+		Lethe: ...I'm not thirsty. [#wrong]
+		set lies += 1
+		Selene: ...Right. Neither am I.
+	- It scares me.
+		Lethe: It scares me. It's too quiet.
+		set truth += 1
+		do learn_truth()
+		Selene: ...Yeah. Me too, a little.
+else
+	The water doesn't move. Selene stays close to her shoulder.
 => END
 
 ~ exit
