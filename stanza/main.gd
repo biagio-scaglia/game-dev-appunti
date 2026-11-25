@@ -11,6 +11,7 @@ const GameState := preload("menu/game_state.gd")
 const Prologue := preload("prologue/prologue.gd")
 const TITLE := "res://title/title_screen.tscn"
 const FOREST := "res://forest/zone_wake.tscn"
+const ROOM := "res://main.tscn"
 
 @onready var room: Node2D = %Room
 @onready var hero: CharacterBody2D = %Protagonista
@@ -41,6 +42,7 @@ func _ready() -> void:
 	sync_abilities()
 	pause_menu.closed.connect(sync_abilities)
 	pause_menu.setup(state, hero, music)
+	pause_menu.loaded.connect(resume_save)
 	talk.setup(room, hero, state)
 	# Bussano alla porta: i dialoghi sanno se c'è qualcuno (knocking) e possono rispondere.
 	knock.setup(room)
@@ -64,6 +66,22 @@ func _on_prologue_finished() -> void:
 	pending_save = state.to_save(Vector2.ZERO, int(hero.get("sword_stage")))
 	if is_inside_tree() and get_tree().current_scene == self:
 		get_tree().change_scene_to_file(FOREST)
+
+
+## La scena del posto di un salvataggio (la stanza o la foresta).
+static func scene_for_save(data: Dictionary) -> String:
+	return FOREST if String(data.get("place", "")) == "The Forest" else ROOM
+
+
+## Riprende un salvataggio da capo: la scena del suo posto si ricarica, così tornano anche
+## le cose che non stanno nello stato del menu (i nemici sconfitti, lo specchio, gli eventi).
+## Lo usano la stanza e la foresta quando si carica dal menu di pausa.
+static func resume_save(data: Dictionary) -> void:
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree == null or tree.current_scene == null:
+		return
+	pending_save = data
+	tree.change_scene_to_file.call_deferred(scene_for_save(data))
 
 
 func sync_abilities() -> void:
