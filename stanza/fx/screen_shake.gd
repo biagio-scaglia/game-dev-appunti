@@ -7,6 +7,8 @@ extends Node
 ## Se ne parte un altro mentre questo trema, il nuovo prende il suo posto (e la sua
 ## posizione di riposo), così la vista torna sempre dov'era.
 
+const Settings := preload("res://core/settings_store.gd")
+
 var strength := 2.0
 var duration := 0.18
 var _time := 0.0
@@ -15,6 +17,9 @@ var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	if not bool(Settings.value("shake")):      # tolto nelle impostazioni
+		queue_free()
+		return
 	_base = get_viewport().canvas_transform
 	for other in get_tree().get_nodes_in_group(&"screen_shake"):
 		_base = other._base                # la vera posizione di riposo
