@@ -310,6 +310,8 @@ func drop(id: String, at: Vector2) -> Node2D:
 	item.id = id
 	item.position = at
 	item.picked.connect(_on_picked)
+	if ItemIcons.info(id).get("effect", {}).has("heal"):
+		item.wanted = func() -> bool: return state.heart < state.heart_max   # a cuore pieno resta lì
 	world.add_child.call_deferred(item)
 	return item
 
