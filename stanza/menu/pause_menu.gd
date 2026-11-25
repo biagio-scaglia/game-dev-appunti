@@ -105,6 +105,16 @@ func setup(game_state: GameState, hero_node: Node2D, music_player: AudioStreamPl
 	music = music_player
 
 
+## Si può aprire adesso? No se il gioco è già fermo, e no durante una scena (una
+## cutscene, la caduta nello specchio, la morte, il passaggio tra le zone): lì Lethe è
+## ferma o guidata. Aprirlo dietro una scena metterebbe il gioco in pausa sotto di lei, e
+## la scena dopo partirebbe ferma (lo schermo nero dopo lo specchio).
+func can_open() -> bool:
+	if get_tree().paused or _open:
+		return false
+	return not (hero and (hero.get(&"frozen") == true or hero.get(&"scripted") == true))
+
+
 func is_open() -> bool:
 	return _open
 
@@ -194,7 +204,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _open:
-		if event.is_action_pressed(&"menu") and not get_tree().paused:
+		if event.is_action_pressed(&"menu") and can_open():
 			get_viewport().set_input_as_handled()
 			open()
 		return
