@@ -13,6 +13,8 @@ var play_time := 0.0
 ## Il calendario è fermo al giorno cerchiato: è sempre il giorno 1.
 var day := 1
 var place := "Her Room"
+## In quale zona del posto (la foresta ne ha più d'una: forest/zones.gd). "" = la prima.
+var zone := ""
 var truth := 0
 var lies := 0
 ## Gli incantesimi imparati (id).
@@ -208,6 +210,7 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 		"play_time": play_time,
 		"day": day,
 		"place": place,
+		"zone": zone,
 		"truth": truth,
 		"lies": lies,
 		"learned": learned.duplicate(),
@@ -231,6 +234,7 @@ func load_save(data: Dictionary) -> void:
 	play_time = float(data.get("play_time", 0.0))
 	day = int(data.get("day", 1))
 	place = String(data.get("place", place))
+	zone = String(data.get("zone", ""))
 	truth = int(data.get("truth", 0))
 	lies = int(data.get("lies", 0))
 	learned.clear()
