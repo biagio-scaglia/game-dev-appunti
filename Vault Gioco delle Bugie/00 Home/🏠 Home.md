@@ -26,6 +26,7 @@ Mentire o dire la verità cambia il tuo potere (spada vs magia), la tua route e 
 - [[Cose da fare]]
 - [[Il Lete]]
 - [[I gesti]]
+- [[Il dungeon delle radici]]
 - [[Route e finali]]
 
 ### 📜 Storia e Lore
