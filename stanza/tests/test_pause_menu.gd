@@ -386,3 +386,27 @@ func test_le_bugie_sono_occhi() -> void:
 	menu.back()
 	menu.choose(&"status")
 	assert_eq(eyes.open_eyes(), eyes.MAX_SLOTS, "con tante bugie il filo è tutto occhi aperti")
+
+
+func test_durante_una_scena_il_menu_non_si_apre() -> void:
+	var script := GDScript.new()
+	script.source_code = "extends Node2D\nvar sword_stage := 0\nvar frozen := false\nvar scripted := false\n"
+	script.reload()
+	var hero := Node2D.new()
+	hero.set_script(script)
+	tree.root.add_child(hero)
+	_owned.append(hero)
+	var menu := _menu(hero)
+	hero.frozen = true                        # la caduta nello specchio, una cutscene...
+	var esc := InputEventAction.new()
+	esc.action = &"menu"
+	esc.pressed = true
+	menu._unhandled_input(esc)
+	assert_false(menu.is_open(), "Esc durante una scena non apre il menu")
+	assert_false(tree.paused, "e il gioco non si ferma sotto la scena")
+	hero.frozen = false
+	hero.scripted = true
+	assert_false(menu.can_open(), "nemmeno quando la guida una cutscene")
+	hero.scripted = false
+	menu._unhandled_input(esc)
+	assert_true(menu.is_open(), "finita la scena, sì")

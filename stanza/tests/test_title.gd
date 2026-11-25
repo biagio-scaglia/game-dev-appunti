@@ -370,3 +370,22 @@ func test_cancellare_un_file_e_continue_sparisce() -> void:
 	page.close()
 	await wait_seconds(0.5)
 	assert_false(title.menu.has_node("continue"), "e Continue non c'è più")
+
+
+func test_un_secondo_tasto_non_cambia_la_scelta() -> void:
+	Engine.time_scale = 4.0
+	SaveStore.write(1, {"saved_at": 10, "truth": 3})
+	var title := _title()
+	await tree.process_frame
+	title.skip_reveal()
+	await tree.process_frame
+	var menu: VBoxContainer = title.get_node("%Menu")
+	var quits := {"n": 0}
+	title.quit_requested.connect(func(): quits["n"] += 1)
+	menu.get_node("continue").pressed.emit()
+	assert_eq(menu.get_node("start").focus_mode, Control.FOCUS_NONE, "scelto: le altre voci si spengono")
+	title._on_chosen(&"start")                     # Spazio di nuovo, su New Game
+	title._on_chosen(&"quit")                      # e poi su Quit
+	assert_true(await wait_signal(title.start_requested, 3.0), "parte")
+	assert_eq(int(Main.pending_save.get("truth", 0)), 3, "è ancora Continue: il salvataggio non si perde")
+	assert_eq(quits["n"], 0, "e non si chiude il gioco")
