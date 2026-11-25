@@ -14,6 +14,8 @@ const Style := preload("menu_style.gd")
 const DENY_SOUND := preload("res://audio/menu_deny.wav")
 const STOP_WORDS := ["STOP.", "DON'T.", "NO."]
 const SAVE_EVENTS := [&"knock", &"stolen_file", &"watched"]
+## Il suono che serve a un evento: se dove sta Lethe non c'è (la porta nella foresta), niente.
+const EVENT_SOUND := {&"knock": &"knock", &"watched": &"phone"}
 ## Il file salvato, per un attimo: non è il suo.
 const STOLEN_TEXT := "File %d   ????   Day 0   ??:??:??"
 
@@ -81,9 +83,15 @@ func after_save(slot: int, button: Button, event := &"") -> StringName:
 	if event == &"":
 		if rng.randf() >= save_event_chance:
 			return &""
-		event = SAVE_EVENTS[rng.randi() % SAVE_EVENTS.size()]
+		var events := SAVE_EVENTS.filter(_event_fits)
+		event = events[rng.randi() % events.size()]
 	_run_save_event(event, slot, button)
 	return event
+
+
+## L'evento ha senso qui: il suo suono c'è (o non ne ha bisogno).
+func _event_fits(event: StringName) -> bool:
+	return not EVENT_SOUND.has(event) or ambience == null or ambience.has_sound(EVENT_SOUND[event])
 
 
 func _run_save_event(event: StringName, slot: int, button: Button) -> void:
