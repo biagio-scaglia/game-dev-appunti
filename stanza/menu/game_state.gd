@@ -86,6 +86,24 @@ static func exp_to_next(lv: int) -> int:
 	return roundi(10.0 * pow(lv, 1.5))
 
 
+## Lo stadio della spada di vetro (0 scheggia, 1 pugnale, 2 lama): ogni bugia stacca una
+## scheggia dallo specchio (vault: "La spada di vetro"). Da SWORD_LIES[0] bugie è un pugnale,
+## da SWORD_LIES[1] una lama.
+const SWORD_LIES := [2, 5]
+
+
+static func sword_stage_for(lie_count: int) -> int:
+	var stage := 0
+	for need in SWORD_LIES:
+		if lie_count >= need:
+			stage += 1
+	return stage
+
+
+func sword_stage() -> int:
+	return sword_stage_for(lies)
+
+
 ## Quanto taglia in più la spada per il livello (uno ogni due livelli, dal 3).
 func attack_bonus() -> int:
 	return (level - 1) / 2
