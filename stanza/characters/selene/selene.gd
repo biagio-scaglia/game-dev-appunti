@@ -4,10 +4,16 @@ extends Node2D
 ## e la segue con calma; fa un po' di luce intorno (al buio del bosco è una lampada) e
 ## lascia una scia di pulviscolo. Ha un occhio solo, come la luna del titolo, che sbatte.
 ## Mente anche lei, a volte (per proteggere Lethe): lo fa il dialogo, non questo nodo.
+## Durante il gioco dice battute brevi sopra la testa (bark), senza fermare niente: il primo
+## nemico sciolto, il cuore che stringe, la mela... Ognuna con una chiave si dice una volta.
 ##
 ## Disegnata qui (SHAPE), a blocchi di PX pixel: niente immagini.
 
 const Glow := preload("res://core/glow.gd")
+const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
+## Il colore delle sue battute: pallido come lei.
+const VOICE := Color(0.82, 0.86, 1.0)
+const BARK_TIME := 2.8
 
 ## La falce, 9 x 9: O contorno, h luna, s ombra della luna, e l'occhio.
 const SHAPE := [
@@ -42,6 +48,9 @@ var _time := 0.0
 var _blink := 0.0
 var _eye_open := true
 var _glow_boost := 0.0
+var _bark: Label
+## Le battute già dette (chiave -> vero).
+var said := {}
 
 
 func _ready() -> void:
@@ -68,16 +77,59 @@ func snap() -> void:
 	global_position = goal()
 
 
+## Nascosta e ferma finché non scende (appena creata sarebbe nell'angolo della mappa, e
+## volerebbe verso Lethe: sembrerebbe scendere due volte).
+func wait_hidden() -> void:
+	following = false
+	visible = false
+
+
 ## Scende dal cielo fino al suo posto accanto a Lethe (la prima volta). `pace` per i test.
 func descend(pace := 1.0) -> void:
 	following = false
 	var to := goal()
 	global_position = to + Vector2(-30, -240)
+	visible = true
 	var t := create_tween()
 	t.tween_property(self, "global_position", to, 2.2 * pace).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	await t.finished
 	following = true
 	glow_up()
+
+
+## Una battuta breve sopra di lei. Con `key` la dice una volta sola (ritorna falso se l'ha
+## già detta). Una nuova copre quella di prima.
+func bark(text: String, key := "", time := BARK_TIME) -> bool:
+	if key != "":
+		if said.has(key):
+			return false
+		said[key] = true
+	if is_instance_valid(_bark):
+		_bark.queue_free()
+	_bark = Label.new()
+	_bark.text = text
+	_bark.add_theme_font_override(&"font", FONT)
+	_bark.add_theme_font_size_override(&"font_size", 16)
+	_bark.add_theme_color_override(&"font_color", VOICE)
+	_bark.add_theme_color_override(&"font_outline_color", Color(0.06, 0.04, 0.12))
+	_bark.add_theme_constant_override(&"outline_size", 4)
+	_bark.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_bark.size = Vector2(220, 20)
+	_bark.position = Vector2(-110, -34)
+	_bark.z_index = 30
+	_bark.modulate.a = 0.0
+	add_child(_bark)
+	glow_up()
+	var t := _bark.create_tween()
+	t.tween_property(_bark, "modulate:a", 1.0, 0.2)
+	t.tween_interval(time)
+	t.tween_property(_bark, "modulate:a", 0.0, 0.4)
+	t.tween_callback(_bark.queue_free)
+	return true
+
+
+func bark_text() -> String:
+	return _bark.text if is_instance_valid(_bark) else ""
 
 
 ## Un attimo di luce in più (quando arriva, quando Lethe dice la verità).
