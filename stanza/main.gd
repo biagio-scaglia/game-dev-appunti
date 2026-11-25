@@ -11,6 +11,7 @@ const GameState := preload("menu/game_state.gd")
 const Prologue := preload("prologue/prologue.gd")
 const WorldGrey := preload("fx/world_grey.gd")
 const TITLE := "res://title/title_screen.tscn"
+const Zones := preload("forest/zones.gd")
 const FOREST := "res://forest/zone_wake.tscn"
 const ROOM := "res://main.tscn"
 
@@ -74,7 +75,9 @@ func _on_prologue_finished() -> void:
 
 ## La scena del posto di un salvataggio (la stanza o la foresta).
 static func scene_for_save(data: Dictionary) -> String:
-	return FOREST if String(data.get("place", "")) == "The Forest" else ROOM
+	if String(data.get("place", "")) == "The Forest":
+		return Zones.scene(String(data.get("zone", Zones.FIRST)))
+	return ROOM
 
 
 ## Riprende un salvataggio da capo: la scena del suo posto si ricarica, così tornano anche
