@@ -130,6 +130,7 @@ func open() -> void:
 		t.tween_property(music, "pitch_scale", MUSIC_PITCH, 0.6)
 		t.tween_property(music, "volume_db", _music_db - MUSIC_DROP_DB, 0.6)
 	glitcher.start()
+	ambience.use_place(state.place)
 	ambience.start()
 	opened.emit()
 
