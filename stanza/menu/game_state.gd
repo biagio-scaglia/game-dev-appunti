@@ -92,6 +92,20 @@ static func exp_to_next(lv: int) -> int:
 const SWORD_LIES := [2, 5]
 
 
+## Il mondo che si svuota: quanto è grigio (0 colori pieni, GREY_MAX quasi tutto grigio).
+## Conta quante bugie ci sono in più delle verità: dire la verità ridà colore.
+const GREY_PER_LIE := 0.12
+const GREY_MAX := 0.85
+
+
+static func grey_for(truth_count: int, lie_count: int) -> float:
+	return clampf((lie_count - truth_count) * GREY_PER_LIE, 0.0, GREY_MAX)
+
+
+func grey_amount() -> float:
+	return grey_for(truth, lies)
+
+
 static func sword_stage_for(lie_count: int) -> int:
 	var stage := 0
 	for need in SWORD_LIES:
