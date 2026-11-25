@@ -124,7 +124,7 @@ func _ready() -> void:
 	hero.set("sword_stage", int(Main.pending_save.get("sword_stage", 0)))
 	Main.pending_save = {}
 	_add_camera()
-	respawn_point = spawn.global_position
+	respawn_point = mirror_point() if state.flag("rested") else spawn.global_position
 	hero.damaged.connect(_on_hero_damaged)
 	hero.attack_finished.connect(_on_hero_attack)
 	spawn_enemies()
