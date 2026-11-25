@@ -137,6 +137,7 @@ func _ready() -> void:
 	add_child(pause_menu)
 	pause_menu.setup(state, hero, music)
 	pause_menu.closed.connect(sync_abilities)
+	pause_menu.loaded.connect(Main.resume_save)
 	sync_abilities()
 	talk = Talk.new()
 	talk.name = "Talk"
