@@ -6,6 +6,8 @@ extends "res://tests/base_test.gd"
 const ZONE := "res://forest/zone_wake.tscn"
 const Main := preload("res://main.gd")
 const Layout := preload("res://forest/zone_wake_layout.gd")
+const ZoneLayout := preload("res://forest/zone_layout.gd")
+const Zones := preload("res://forest/zones.gd")
 const TILE := 32
 
 
@@ -128,7 +130,9 @@ func test_l_uscita() -> void:
 		await tree.process_frame
 	assert_true(zone.talk.is_talking(), "la camera guarda avanti, e racconta la strada che continua")
 	await _drive(zone.talk)
-	assert_true(await wait_signal(zone.exited, 3.0), "poi la zona finisce")
+	assert_true(await wait_signal(zone.traveled, 3.0), "poi si va nella radura dell'albero")
+	assert_eq(String(Main.pending_save.get("zone")), "tree", "verso la zona dell'albero")
+	assert_eq(String(Main.pending_save.get("entry")), "west", "entrando da ovest")
 
 
 func test_dal_prologo_e_da_continue() -> void:
@@ -151,15 +155,25 @@ func test_dal_prologo_e_da_continue() -> void:
 	assert_true(armed.hero.can_slash, "nella foresta la spada funziona")
 
 
-func test_la_mappa() -> void:
-	var v := Layout.vertices()
-	assert_eq(v.size(), Layout.SIZE.y + 1, "una riga di vertici in più delle celle")
-	assert_eq(Layout.cell_terrain(v, Layout.SPAWN)[0], "", "Lethe arriva sull'erba")
-	for x in range(Layout.EXIT.position.x, Layout.EXIT.end.x):
-		assert_true(Layout.cell_terrain(v, Vector2i(x, 11))[0] != "canopy", "l'uscita è aperta")
+func test_le_mappe() -> void:
 	var data := preload("res://world/forest/forest_tileset.gd").load_data()
-	for entry in Layout.THINGS + Layout.DECOR:
-		assert_true(data["tiles"].has(entry[0]), "%s è un tile" % entry[0])
+	for zone_id in Zones.SCENES:
+		var layout: GDScript = Zones.layout(zone_id)
+		var v := ZoneLayout.vertices(layout)
+		var size: Vector2i = ZoneLayout.value(layout, "SIZE")
+		assert_eq(v.size(), size.y + 1, "%s: una riga di vertici in più delle celle" % zone_id)
+		assert_true(ZoneLayout.cell_terrain(v, ZoneLayout.value(layout, "SPAWN"))[0] in ["", "path"],
+			"%s: si arriva sull'erba o sul sentiero" % zone_id)
+		for exit in ZoneLayout.value(layout, "EXITS"):
+			var cells: Rect2i = exit[0]
+			var mid := cells.position + cells.size / 2
+			assert_true(ZoneLayout.cell_terrain(v, mid)[0] != "canopy", "%s: l'uscita verso %s è aperta" % [zone_id, exit[1]])
+			var there: GDScript = Zones.layout(exit[1])
+			assert_true(ZoneLayout.value(there, "ENTRIES", {}).has(exit[2]), "%s: dall'altra parte c'è l'entrata %s" % [zone_id, exit[2]])
+		for entry in ZoneLayout.value(layout, "ENTRIES", {}).values():
+			assert_eq(ZoneLayout.cell_terrain(v, entry)[0] in ["", "path"], true, "%s: l'entrata è libera" % zone_id)
+		for entry in ZoneLayout.value(layout, "THINGS") + ZoneLayout.value(layout, "DECOR"):
+			assert_true(data["tiles"].has(entry[0]), "%s: %s è un tile" % [zone_id, entry[0]])
 
 
 # --- Selene ------------------------------------------------------------------------------
@@ -242,7 +256,7 @@ func test_la_cutscene_ridà_i_comandi() -> void:
 	await cut.begin()
 	assert_true(zone.hero.scripted, "durante la scena Lethe non si comanda")
 	assert_true(cut._top.size.y > 0.0, "le bande nere")
-	await cut.pan_to(zone.hero.global_position + Vector2(100, 0), 0.5)
+	await cut.pan_to(zone.hero.global_position + Vector2(400, 0), 0.5)
 	assert_true(zone.camera.offset.x > 50.0, "la camera guarda altrove")
 	cut.emote(zone.hero, "!")
 	await cut.walk(zone.hero, zone.hero.global_position + Vector2(20, 0))
@@ -272,3 +286,91 @@ func test_selene_scende_una_volta_sola_dall_alto() -> void:
 	assert_eq(appearances, 1, "compare una volta")
 	assert_true(first_seen.y < zone.hero.global_position.y - 150.0, "e compare in alto, sopra Lethe (scende dal cielo)")
 	assert_true(absf(first_seen.x - zone.hero.global_position.x) < 80.0, "non in un angolo della mappa")
+
+
+# --- La radura dell'albero secco ---------------------------------------------------------
+
+func _tree_zone(flags := {}) -> Node2D:
+	var all_flags := {"forest_arrived": true, "talk_learned": true, "selene_met": true}
+	all_flags.merge(flags, true)
+	Main.pending_save = {"place": "The Forest", "zone": "tree", "entry": "west", "flags": all_flags}
+	var zone := add_scene("res://forest/zone_tree.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	return zone
+
+
+func test_la_radura_dell_albero_la_prima_volta() -> void:
+	Engine.time_scale = 6.0
+	var zone := await _tree_zone()
+	assert_eq(zone.zone_id, "tree", "la zona dell'albero")
+	var entry: Vector2i = zone.layout_value("ENTRIES")["west"]
+	assert_true(zone.hero.global_position.distance_to(ZoneLayout.cell_center(entry)) < 1.0, "si arriva da ovest")
+	var deadline := Time.get_ticks_msec() + 4000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_true(zone.talk.is_talking(), "la camera va sull'albero, e Lethe lo riconosce")
+	await _drive(zone.talk)
+	assert_true(await wait_signal(zone.story.arrived, 4.0), "la scena finisce")
+	assert_true(zone.state.flag("tree_arrived"), "una volta sola")
+	assert_eq(zone.objective.text, zone.story.GOAL_TREE, "l'obiettivo: l'albero")
+	assert_eq(zone.state.zone, "tree", "lo stato sa in che zona è")
+
+
+func test_l_albero_e_il_buco_tra_le_radici() -> void:
+	var zone := await _tree_zone({"tree_arrived": true})
+	var ids: Array = zone.talk.things.map(func(t): return t["id"])
+	assert_true("dead_tree" in ids and "root_hole" in ids, "si parla con l'albero e col buco")
+	zone.talk.talk("dead_tree")
+	await _drive(zone.talk, 0)
+	assert_eq(zone.state.truth, 1, "\"I don't remember\": una verità")
+	assert_eq(zone.objective.text, zone.story.GOAL_ROOTS, "ora: scendere tra le radici")
+	zone.talk.talk("root_hole")
+	await _drive(zone.talk, 0)
+	assert_true(zone.state.flag("roots_entered"), "si scende")
+
+
+func test_da_una_zona_all_altra_e_ritorno() -> void:
+	Engine.time_scale = 4.0
+	var zone := await _tree_zone({"tree_arrived": true})
+	zone.state.flags["defeated"] = ["moth_0"]          # una falena della prima zona
+	zone._on_exit(zone.hero)
+	assert_true(await wait_signal(zone.traveled, 3.0), "da ovest si torna indietro")
+	assert_eq(String(Main.pending_save.get("zone")), "wake", "nella prima zona")
+	assert_eq(String(Main.pending_save.get("entry")), "east", "dall'entrata est")
+	assert_eq(Main.scene_for_save(Main.pending_save), "res://forest/zone_wake.tscn", "Continue sa dove andare")
+	Main.pending_save["entry"] = "east"
+	var wake := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	var east: Vector2i = wake.layout_value("ENTRIES")["east"]
+	assert_true(wake.hero.global_position.distance_to(ZoneLayout.cell_center(east)) < 1.0, "si arriva da est")
+	assert_eq(wake.enemies().size(), Layout.ENEMIES.size() - 1, "la falena sconfitta resta sconfitta")
+	assert_eq(zone.enemy_key(0).begins_with("tree:"), true, "i nemici dell'albero hanno il nome della zona")
+
+
+func test_una_zona_nuova_parte_sempre_in_movimento() -> void:
+	tree.paused = true                         # come se il menu fosse rimasto aperto prima
+	var zone := await _zone()
+	assert_false(tree.paused, "la foresta non parte ferma (lo schermo nero dopo lo specchio)")
+
+
+func test_la_camera_delle_scene_non_esce_dalla_mappa() -> void:
+	var zone := await _zone()
+	var cut: Node = zone.story.cut
+	var b: Rect2 = zone.bounds()
+	var p: Vector2 = cut.clamp_to_limits(b.end + Vector2(500, 500))
+	assert_true(p.x <= b.end.x - 320.0 + 0.5 and p.y <= b.end.y - 180.0 + 0.5, "oltre il bordo non si guarda")
+	p = cut.clamp_to_limits(Vector2(-500, -500))
+	assert_true(p.x >= 320.0 - 0.5 and p.y >= 180.0 - 0.5, "nemmeno dall'altra parte")
+
+
+func test_vicino_al_bordo_la_camera_guarda_dalla_parte_giusta() -> void:
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "selene_met": true},
+		"position": [1150.0, 360.0]}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	var cut: Node = zone.story.cut
+	cut.pace = 0.05
+	await cut.begin()
+	await cut.pan_to(zone.hero.global_position + Vector2(240, 0), 1.0)
+	assert_true(zone.camera.offset.x >= -0.5, "vicino al bordo destro non torna indietro (offset %s)" % zone.camera.offset)
+	await cut.end()
