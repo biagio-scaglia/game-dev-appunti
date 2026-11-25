@@ -615,12 +615,18 @@ func respawn() -> void:
 func rest() -> void:
 	state.heal(state.heart_max)
 	hud.show_heart(state.heart, state.heart_max)
-	for sprite in thing_nodes():
-		if sprite.get_meta(&"tile") == "mirror":
-			respawn_point = sprite.global_position + Vector2(0, 20)
+	respawn_point = mirror_point()
 	state.set_flag("rested")
 	if sound:
 		Sfx.play(self, GLINT, 1.0, -8.0)
+
+
+## Dove ci si risveglia davanti allo specchio (lo Spawn, se lo specchio non c'è).
+func mirror_point() -> Vector2:
+	for sprite in thing_nodes():
+		if sprite.get_meta(&"tile") == "mirror":
+			return sprite.global_position + Vector2(0, 20)
+	return spawn.global_position
 
 
 # --- L'arrivo e l'uscita -------------------------------------------------------------------
