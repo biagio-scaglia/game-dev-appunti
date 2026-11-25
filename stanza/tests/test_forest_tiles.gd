@@ -104,3 +104,23 @@ func test_la_musica_del_bosco() -> void:
 	var theme: AudioStreamWAV = load("res://audio/forest_theme.wav")
 	assert_true(theme != null, "c'è")
 	assert_near(theme.get_length(), 48.0, 0.1, "16 battute a 80 bpm")
+
+
+func test_i_tile_nuovi_del_bosco() -> void:
+	var tiles: Dictionary = ForestTileset.load_data()["tiles"]
+	for t in ["birch", "hollow_log", "rock_b", "sapling", "reeds", "lily", "pebbles", "leaf_litter",
+			"moonflower", "glow_moss"]:
+		assert_true(tiles.has(t), "c'è %s" % t)
+	assert_true(tiles["moonflower"].has("light") and tiles["glow_moss"].has("light"), "fiori di luna e muschio fanno luce")
+	assert_true(tiles["hollow_log"].has("light"), "e i funghi sul tronco cavo")
+	assert_false(tiles["reeds"]["solid"] or tiles["lily"]["solid"], "canne e ninfee non bloccano")
+	var birch: Dictionary = tiles["birch"]
+	assert_false(RoomTileset.is_solid_cell(birch, Vector2i(0, 0)), "sotto la chioma della betulla si passa")
+	assert_true(RoomTileset.is_solid_cell(birch, Vector2i(1, 2)), "il tronco blocca")
+
+
+func test_le_cose_della_zona_esistono_tutte() -> void:
+	var tiles: Dictionary = ForestTileset.load_data()["tiles"]
+	var Layout := preload("res://forest/zone_wake_layout.gd")
+	for entry in Layout.THINGS + Layout.DECOR:
+		assert_true(tiles.has(entry[0]), "%s è un tile" % entry[0])
