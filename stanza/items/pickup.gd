@@ -3,6 +3,8 @@ extends Area2D
 ## ui/item_icons.gd che galleggia piano, un luccichio a intermittenza (così si distingue
 ## dal fondo: i fiorellini dell'erba non brillano), un'ombra. Lethe ci passa sopra e lo
 ## prende (`picked`). Dopo un po' lampeggia e sparisce, se nessuno lo prende.
+## `wanted` dice se adesso serve (la mela a cuore pieno no): se non serve resta a terra, e
+## si prende appena serve, anche se Lethe ci sta già sopra.
 
 signal picked(id: String)
 
@@ -14,6 +16,8 @@ const BLINK_FROM := 4.0
 const GLINT_EVERY := 1.3
 
 var id := "apple"
+## Serve adesso? (chi lo lascia per terra lo decide: la zona guarda il cuore)
+var wanted := func() -> bool: return true
 var sprite: Sprite2D
 var _time := 0.0
 var _glint: Node2D
@@ -57,6 +61,10 @@ func _process(delta: float) -> void:
 		visible = int(left * 8.0) % 2 == 0
 	if left <= 0.0:
 		queue_free()
+		return
+	if monitoring:
+		for body in get_overlapping_bodies():   # ci stava sopra quando non serviva
+			_on_body(body)
 
 
 ## Il luccichio: una crocetta di luce che si apre e si chiude, ogni GLINT_EVERY secondi.
@@ -76,7 +84,7 @@ func _draw_glint() -> void:
 
 
 func _on_body(body: Node2D) -> void:
-	if _taken or not body.has_method(&"hurt"):
+	if _taken or not body.has_method(&"hurt") or not wanted.call():
 		return
 	_taken = true
 	picked.emit(id)
