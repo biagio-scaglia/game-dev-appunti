@@ -92,11 +92,11 @@ func test_la_barra_d_aiuto_spiega_voce_e_tasti() -> void:
 	var menu := _menu()
 	menu.open()
 	assert_eq(menu.help_text(), "Things you found in the room.", "aiuto della prima voce")
-	assert_eq(menu.keys_label.text, "Enter: choose    Esc: close", "tasti sulle voci")
+	assert_eq(menu.keys_label.text, "Space: choose    Esc: close", "tasti sulle voci")
 	menu.commands.get_node("equip").grab_focus()
 	assert_eq(menu.help_text(), "Change what Lethe holds and wears.", "l'aiuto segue il cuore")
 	menu.choose(&"equip")
-	assert_eq(menu.keys_label.text, "Enter: choose    Esc: back", "tasti in una pagina")
+	assert_eq(menu.keys_label.text, "Space: choose    Esc: back", "tasti in una pagina")
 
 
 func test_equipaggiare_un_arma_cambia_i_parametri() -> void:
