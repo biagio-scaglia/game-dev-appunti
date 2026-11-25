@@ -16,10 +16,11 @@ Ogni bugia stacca una scheggia dallo specchio: la lama cresce e si incrina.
 | 1 | **Pugnale** | Più lunga, due crepe |
 | 2 | **Lama** | Lunga, piena di crepe |
 
-In gioco ora lo stadio è un'opzione della protagonista (`sword_stage`); nelle build di debug **Tab** lo
-cambia per provarlo. Quando ci sarà il [[Sistema Karma]], lo stadio verrà dalle bugie dette.
+**Cresce con le bugie** (in gioco): da **2 bugie** è un pugnale, da **5** una lama. Quando cresce
+compare *"The shard grows."* / *"Another lie. Another piece of the mirror."*. Nelle build di debug
+**F2** cambia lo stadio per provarlo.
 
-## Com'è il colpo (tasto K)
+## Com'è il colpo (Spazio)
 - Lethe usa la posa d'attacco, ma la scia del braccio è **vetro azzurro**, non magia viola: la magia è
   la verità, la spada no.
 - La lama compare dalla mano e **luccica di luna**, fende verso dove guarda lasciando una scia di vetro,
