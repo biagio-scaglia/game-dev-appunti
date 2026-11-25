@@ -103,15 +103,27 @@ func _show_ui(shown: bool) -> void:
 			node.visible = shown
 
 
-## La camera guarda `world_point` (resta dentro i bordi della zona da sola).
+## La camera guarda `world_point`, ma non oltre i bordi della zona (i limiti della camera
+## fermano lo scorrimento, non lo spostamento: senza, si vedrebbe il nero fuori dalla mappa).
 func pan_to(world_point: Vector2, time := 1.0) -> void:
 	if camera == null:
 		return
+	# Lo spostamento parte da dove la camera sta davvero (vicino al bordo è già ferma al
+	# limite), non da Lethe.
 	var holder: Node2D = camera.get_parent()
-	var goal: Vector2 = world_point - holder.global_position - camera.position
+	var base := clamp_to_limits(holder.global_position + camera.position)
+	var goal: Vector2 = clamp_to_limits(world_point) - base
 	var t := create_tween()
 	t.tween_property(camera, "offset", goal, time * pace).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	await t.finished
+
+
+## Il punto più vicino a `world_point` dove la camera può stare senza mostrare il fuori.
+func clamp_to_limits(world_point: Vector2) -> Vector2:
+	var half := camera.get_viewport_rect().size / camera.zoom / 2.0
+	var lo := Vector2(camera.limit_left, camera.limit_top) + half
+	var hi := Vector2(camera.limit_right, camera.limit_bottom) - half
+	return Vector2(clampf(world_point.x, lo.x, maxf(lo.x, hi.x)), clampf(world_point.y, lo.y, maxf(lo.y, hi.y)))
 
 
 ## La camera torna su Lethe.
