@@ -35,6 +35,8 @@ var exp_reward := 2
 ## Il livello del nemico (quello della zona): l'esperienza cala se Lethe è molto più in alto.
 var level := 1
 var drop_chance := 0.3
+## Quanto lo spinge via un colpo (pixel al secondo). 0 = ha le radici (il rovo).
+var knockback := 230.0
 ## Se toccarlo adesso fa male a Lethe.
 var hurtful := false
 ## Chi inseguire (Lethe). Lo mette la zona.
@@ -125,7 +127,7 @@ func hurt(amount: int, kind: StringName, from: Vector2) -> int:
 	DamageNumber.spawn(get_parent(), global_position + Vector2(0, -bar_height), dmg,
 		float(weakness.get(kind, 1.0)))
 	var away := global_position - from
-	_knock = (away.normalized() if away.length() > 0.1 else Vector2.UP) * 230.0
+	_knock = (away.normalized() if away.length() > 0.1 else Vector2.UP) * knockback
 	if sound:
 		Sfx.play(get_parent(), HIT, randf_range(0.9, 1.1), -4.0)
 	var sparks := Sparks.burst(8 if kind == &"magic" else 5)
