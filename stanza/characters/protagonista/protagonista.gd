@@ -1,8 +1,9 @@
 extends CharacterBody2D
-## La protagonista: cammina in 8 direzioni, corre con Shift, e attacca in due modi.
-## - Magia (Spazio o J): la verità. Prima la carica sulle mani, poi a metà attacco parte
+## La protagonista: cammina in 8 direzioni, corre da sola se si tiene una direzione (o
+## subito con Shift), e attacca in due modi (tasti: core/input_setup.gd).
+## - Magia (Q): la verità. Prima la carica sulle mani, poi a metà attacco parte
 ##   il proiettile verso dove guarda.
-## - Spada di vetro dello specchio (K): la bugia. La lama compare dalla mano e fende verso
+## - Spada di vetro dello specchio (Spazio, il tasto unico): la bugia. La lama compare dalla mano e fende verso
 ##   dove guarda; sword_stage (0 scheggia, 1 pugnale, 2 lama) cresce con le bugie.
 ## Mentre attacca o parla (`frozen`) sta ferma. L'origine del nodo è ai piedi.
 ## `can_cast` e `can_slash` dicono se la magia e la spada ci sono già: nel gioco le decide lo
@@ -21,6 +22,8 @@ const SWORD := preload("res://weapon/glass_sword.tscn")
 
 @export var walk_speed := 70.0
 @export var run_speed := 130.0
+## Dopo quanti secondi con una direzione tenuta si mette a correre da sola (0 = mai).
+@export var auto_run_after := 0.4
 ## Fotogramma dell'attacco in cui parte il colpo (il proiettile o il fendente).
 @export var launch_frame := 3
 ## Lo stadio della spada di vetro: cresce con le bugie (sistema del karma, da fare).
@@ -67,6 +70,8 @@ var attack_bonus := 0
 ## Un fendente premuto mentre ne finisce un altro: parte appena può (per BUFFER secondi).
 const BUFFER := 0.25
 var _buffered := 0.0
+## Da quanto tiene una direzione (per la corsa da sola).
+var _held := 0.0
 
 
 func _ready() -> void:
@@ -102,12 +107,19 @@ func _physics_process(delta: float) -> void:
 		sword_stage = (sword_stage + 1) % 3       # solo per provare gli stadi
 	if is_attacking():
 		velocity = Vector2.ZERO
+		_held = 0.0
 		return
 	var direction := Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
-	var running := Input.is_action_pressed(&"run")
+	_held = _held + delta if direction != Vector2.ZERO else 0.0
+	var running := Input.is_action_pressed(&"run") or is_auto_running()
 	velocity = direction * (run_speed if running else walk_speed)
 	move_and_slide()
 	update_animation(direction, running)
+
+
+## Tiene una direzione da abbastanza: corre senza Shift.
+func is_auto_running() -> bool:
+	return auto_run_after > 0.0 and _held >= auto_run_after
 
 
 ## Un colpo da `from`: ritorna falso se non l'ha preso (invulnerabile, o ferma a parlare).
