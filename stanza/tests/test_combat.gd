@@ -237,7 +237,7 @@ func test_la_spada_e_la_magia_colpiscono() -> void:
 # --- Nella foresta -----------------------------------------------------------------------------
 
 func _zone() -> Node2D:
-	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true}}
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "selene_met": true}}
 	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
 	await tree.process_frame
 	return zone
@@ -294,7 +294,7 @@ func test_morire_e_risvegliarsi_allo_specchio() -> void:
 
 func test_i_nemici_sconfitti_restano_sconfitti_dopo_un_salvataggio() -> void:
 	var Layout := preload("res://forest/zone_wake_layout.gd")
-	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true,
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "selene_met": true,
 		"defeated": ["moth_0", "bramble_3"]}}
 	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
 	await tree.process_frame
@@ -311,7 +311,7 @@ func test_i_nemici_sconfitti_restano_sconfitti_dopo_un_salvataggio() -> void:
 
 
 func test_dopo_lo_specchio_si_riparte_dallo_specchio_anche_dopo_un_salvataggio() -> void:
-	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "rested": true}}
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "rested": true, "selene_met": true}}
 	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
 	await tree.process_frame
 	assert_true(zone.respawn_point.distance_to(zone.mirror_point()) < 1.0, "lo specchio")
@@ -587,3 +587,18 @@ func test_a_cuore_pieno_la_mela_resta_per_terra() -> void:
 	assert_false(is_instance_valid(apple) and not apple.is_queued_for_deletion(),
 		"appena serve si prende, anche standoci già sopra")
 	assert_eq(zone.state.heart, zone.state.heart_max, "e cura")
+
+
+func test_la_spada_cresce_con_le_bugie() -> void:
+	assert_eq(GameState.sword_stage_for(0), 0, "scheggia")
+	assert_eq(GameState.sword_stage_for(GameState.SWORD_LIES[0]), 1, "pugnale")
+	assert_eq(GameState.sword_stage_for(GameState.SWORD_LIES[1]), 2, "lama")
+	var zone := await _zone()
+	zone.state.give("glass_sword")
+	zone.sync_abilities()
+	assert_eq(zone.hero.sword_stage, 0, "all'inizio scheggia")
+	zone.state.lies = GameState.SWORD_LIES[0]
+	zone.sync_abilities()
+	assert_eq(zone.hero.sword_stage, 1, "due bugie: pugnale")
+	var toasts := zone.get_children().filter(func(n): return n is CanvasLayer and n.layer == 8)
+	assert_true(toasts.size() >= 1, "e lo si vede")

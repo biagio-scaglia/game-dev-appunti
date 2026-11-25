@@ -88,7 +88,7 @@ func test_nel_bosco_il_raggio_fa_una_pozza_di_luce() -> void:
 
 
 func test_nel_bosco_i_raggi_partono_da_sopra_la_mappa() -> void:
-	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true}}
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "selene_met": true}}
 	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
 	await tree.process_frame
 	var beams := zone.get_children().filter(func(n): return n is MoonBeam)
