@@ -48,6 +48,7 @@ const GLINT := preload("res://audio/shard_glint.wav")
 const FONT := preload("res://ui/fonts/kenpixel_high_square.ttf")
 const TITLE := "res://title/title_screen.tscn"
 const HeartHud := preload("res://ui/heart_hud.gd")
+const WorldGrey := preload("res://fx/world_grey.gd")
 const ScreenShake := preload("res://fx/screen_shake.gd")
 const HURT := preload("res://audio/heart_hurt.wav")
 const BREAK := preload("res://audio/heart_break.wav")
@@ -177,6 +178,10 @@ func _ready() -> void:
 	hud = HeartHud.new()
 	hud.sound = sound
 	add_child(hud)
+	var grey := WorldGrey.new()                 # le bugie spengono i colori del bosco
+	grey.name = "WorldGrey"
+	add_child(grey)
+	grey.setup(state)
 	hud.show_heart(state.heart, state.heart_max)
 	exit_area.body_entered.connect(_on_exit)
 	story = ForestStory.new()
