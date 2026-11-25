@@ -58,6 +58,7 @@ func _ready() -> void:
 	InputSetup.ensure_actions()
 	var layer := CanvasLayer.new()
 	layer.name = "IconLayer"
+	layer.layer = 2                         # sopra il filtro grigio del mondo (livello 1)
 	layer.follow_viewport_enabled = true
 	add_child(layer)
 	icon = Sprite2D.new()
