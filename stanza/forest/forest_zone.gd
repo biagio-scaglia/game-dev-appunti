@@ -53,6 +53,10 @@ const KNOCK := preload("res://audio/menu_knock.wav")
 const Pickup := preload("res://items/pickup.gd")
 const ItemIcons := preload("res://ui/item_icons.gd")
 const InputSetup := preload("res://core/input_setup.gd")
+const Selene := preload("res://characters/selene/selene.gd")
+const MenuData := preload("res://menu/menu_data.gd")
+## L'incantesimo della prima verità.
+const FIRST_SPELL := "truth_spark"
 ## Alla decima volta che il cuore si spezza: il segreto (un finto reset).
 const SECRET_DEATHS := 10
 ## Il livello dei nemici di questa zona.
@@ -97,6 +101,8 @@ var data: Dictionary
 ## Falso nei test: niente suoni.
 var sound := true
 var _leaving := false
+## Selene, la compagna (dopo che è scesa dalla luna).
+var selene: Node2D
 
 
 func _ready() -> void:
@@ -134,7 +140,6 @@ func _ready() -> void:
 	var saved := GameState.saved_position(Main.pending_save)
 	hero.global_position = saved if state.flag("forest_arrived") and saved != Vector2.ZERO \
 		else spawn.global_position
-	hero.set("sword_stage", int(Main.pending_save.get("sword_stage", 0)))
 	Main.pending_save = {}
 	_add_camera()
 	respawn_point = mirror_point() if state.flag("rested") else spawn.global_position
@@ -171,8 +176,12 @@ func _ready() -> void:
 	exit_area.body_entered.connect(_on_exit)
 	if sound:
 		Music.play_loop(music)
+	if state.flag("selene_met"):
+		spawn_selene().snap()
 	if not state.flag("forest_arrived"):
 		arrive()
+	elif not state.flag("selene_met"):
+		meet_selene.call_deferred()        # un salvataggio di prima che arrivasse Selene
 	else:
 		objective.show_text(GOAL_PATH)
 
@@ -181,6 +190,54 @@ func sync_abilities() -> void:
 	hero.can_cast = state.can_cast()
 	hero.can_slash = state.can_slash()
 	hero.attack_bonus = state.attack_bonus()
+	var stage: int = state.sword_stage()        # la spada cresce con le bugie
+	var grew: bool = stage > int(hero.sword_stage) and state.can_slash() and is_node_ready()
+	hero.sword_stage = stage
+	if grew:
+		_toast(["", "The shard grows.", "The glass is a blade now."][stage],
+			"Another lie. Another piece of the mirror.")
+		if sound:
+			Sfx.play(self, GLINT, 0.7, -4.0)
+
+
+# --- Selene ------------------------------------------------------------------------------
+
+func spawn_selene() -> Node2D:
+	if selene == null:
+		selene = Selene.new()
+		selene.name = "Selene"
+		selene.target = hero
+		add_child(selene)
+	return selene
+
+
+## Selene scende dalla luna, tra le foglie, e parla con Lethe (la prima scelta del capitolo).
+func meet_selene(pace := 1.0) -> void:
+	hero.set(&"frozen", true)
+	spawn_selene()
+	if sound:
+		Sfx.play(self, GLINT, 1.3, -6.0)
+	await selene.descend(pace)
+	talk.say(DIALOGUE, "selene_meet")
+
+
+## Per i dialoghi: Selene c'è già?
+func selene_met() -> bool:
+	return state.flag("selene_met")
+
+
+## La prima verità: nel palmo si accende la luce (la magia). Dai dialoghi.
+func learn_truth() -> void:
+	if state.knows(FIRST_SPELL):
+		return
+	state.learn(FIRST_SPELL)
+	sync_abilities()
+	if selene:
+		selene.glow_up()
+	if sound:
+		Sfx.play(self, GLINT, 1.6, -4.0)
+	_toast(String(MenuData.spell(FIRST_SPELL).get("name", "Light")),
+		"%s  Throw the light" % InputSetup.LABELS[&"cast"])
 
 
 ## Il rettangolo della zona, in pixel.
@@ -679,6 +736,9 @@ func _on_talk_finished(id: String) -> void:
 	if id in TALKS or id == "lethe":
 		state.set_flag("talk_learned")
 	if id == "arrive":
+		meet_selene()
+	if id == "selene_meet":
+		state.set_flag("selene_met")
 		objective.show_text(GOAL_PATH)
 	if id == "exit":
 		_leave()
