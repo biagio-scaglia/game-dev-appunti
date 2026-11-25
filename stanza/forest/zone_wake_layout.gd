@@ -50,6 +50,17 @@ const DECOR := [
 	["fern", Vector2i(23, 7)], ["tall_grass", Vector2i(9, 6)], ["tall_grass", Vector2i(27, 9)],
 	["tall_grass", Vector2i(14, 16)], ["tall_grass", Vector2i(36, 16)], ["roots", Vector2i(13, 9)],
 	["roots", Vector2i(30, 12)],
+	# Le rive del Lete: canne, e ninfee sull'acqua.
+	["reeds", Vector2i(23, 6)], ["reeds", Vector2i(23, 15)], ["reeds", Vector2i(26, 8)],
+	["reeds", Vector2i(26, 16)], ["lily", Vector2i(24, 7)], ["lily", Vector2i(25, 15)],
+	["lily", Vector2i(24, 18)],
+	# I fiori di luna dove cadono i raggi; il muschio che fa luce nei posti bui.
+	["moonflower", Vector2i(8, 5)], ["moonflower", Vector2i(21, 8)], ["moonflower", Vector2i(31, 8)],
+	["glow_moss", Vector2i(3, 11)], ["glow_moss", Vector2i(16, 20)], ["glow_moss", Vector2i(36, 6)],
+	# Sassi sul sentiero, foglie cadute, alberelli.
+	["pebbles", Vector2i(18, 12)], ["pebbles", Vector2i(30, 11)], ["leaf_litter", Vector2i(7, 6)],
+	["leaf_litter", Vector2i(20, 13)], ["leaf_litter", Vector2i(33, 11)], ["sapling", Vector2i(5, 6)],
+	["sapling", Vector2i(29, 9)], ["sapling", Vector2i(37, 14)],
 ]
 ## I nemici: [tipo, cella]. Falene vicino al sentiero e al Lete, rovi ai lati del sentiero
 ## (mai sopra: non chiudono la strada), lucciole false tra le lucciole vere.
