@@ -9,6 +9,7 @@ extends Node2D
 const Music := preload("core/music.gd")
 const GameState := preload("menu/game_state.gd")
 const Prologue := preload("prologue/prologue.gd")
+const WorldGrey := preload("fx/world_grey.gd")
 const TITLE := "res://title/title_screen.tscn"
 const FOREST := "res://forest/zone_wake.tscn"
 const ROOM := "res://main.tscn"
@@ -52,6 +53,9 @@ func _ready() -> void:
 	add_child(prologue)
 	prologue.setup(room, hero, talk, knock, state, music)
 	prologue.finished.connect(_on_prologue_finished)
+	var grey := WorldGrey.new()                 # le bugie spengono i colori
+	add_child(grey)
+	grey.setup(state)
 	Music.play_loop(music)
 	if from_opening:
 		from_opening = false
