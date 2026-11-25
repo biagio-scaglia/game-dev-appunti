@@ -15,6 +15,9 @@ signal opened
 signal closed
 ## Game End -> To Title, a schermo già rotto (prima di cambiare scena).
 signal title_requested
+## Si è caricato un salvataggio (stato e posizione sono già ripresi): chi ospita il menu
+## ricarica la scena del suo posto (Main.resume_save).
+signal loaded(data: Dictionary)
 
 const Data := preload("menu_data.gd")
 const Style := preload("menu_style.gd")
@@ -290,6 +293,7 @@ func _on_slot(slot: int) -> void:
 		hero.set("sword_stage", int(data.get("sword_stage", 0)))
 	sfx_confirm.play()
 	close()
+	loaded.emit(data)
 
 
 ## Game End -> To Title: lo schermo si rompe come al Quit del titolo, poi il titolo.
