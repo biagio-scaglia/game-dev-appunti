@@ -1,11 +1,13 @@
 extends VBoxContainer
 ## Lo stato di Lethe: la sua riga, poi parametri (con l'equipaggiamento), equipaggiamento,
-## incantesimo su Q e karma (verità e bugie).
+## incantesimo su Q e karma: le verità sono un numero, le bugie no (lie_eyes.gd: un filo
+## spinato con un occhio rosso aperto per ogni bugia).
 
 const Style := preload("menu_style.gd")
 const Data := preload("menu_data.gd")
 const Equipment := preload("equipment.gd")
 const HeroCard := preload("hero_card.gd")
+const LieEyes := preload("lie_eyes.gd")
 
 var hero: HeroCard
 var _params := {}
@@ -13,6 +15,7 @@ var _slots := {}
 var spell_label: Label
 var truth_label: Label
 var lies_label: Label
+var lie_eyes: Control
 
 
 func _init() -> void:
@@ -46,11 +49,19 @@ func _init() -> void:
 	gear.add_child(Style.label("Truth", Style.ACCENT))
 	truth_label = Style.label("")
 	gear.add_child(truth_label)
-	gear.add_child(Style.label("Lies", Style.ACCENT))
-	lies_label = Style.label("")
-	gear.add_child(lies_label)
 	columns.add_child(gear)
 	add_child(columns)
+	# Le bugie: sotto tutto, su una riga loro. Il numero c'è ma non si vede.
+	var lies_row := HBoxContainer.new()
+	lies_row.add_theme_constant_override(&"separation", 16)
+	lies_row.add_child(Style.label("Lies", Style.ACCENT))
+	lie_eyes = LieEyes.new()
+	lie_eyes.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	lies_row.add_child(lie_eyes)
+	lies_label = Style.label("")
+	lies_label.visible = false
+	lies_row.add_child(lies_label)
+	add_child(lies_row)
 
 
 func refresh(state: RefCounted, sword_stage: int) -> void:
@@ -62,6 +73,7 @@ func refresh(state: RefCounted, sword_stage: int) -> void:
 	spell_label.text = Data.spell(state.spell).get("name", Data.NOTHING)
 	truth_label.text = str(state.truth)
 	lies_label.text = str(state.lies)
+	lie_eyes.set_count(state.lies)
 
 
 func param_text(param: String) -> String:
