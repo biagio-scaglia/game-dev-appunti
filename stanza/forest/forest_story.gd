@@ -9,7 +9,10 @@ extends Node
 ## - le battute di Selene durante il gioco (bark): il primo colpo preso, il cuore quasi
 ##   finito, il primo nemico sciolto, il livello, la mela, il silenzio dopo una bugia.
 ##   Ognuna una volta sola (flag "bark_<chiave>", si salva);
-## - l'uscita: la camera guarda avanti, verso l'albero bianco.
+## - l'uscita della prima zona: la camera guarda avanti, verso l'albero bianco;
+## - la radura dell'albero secco (zona "tree"): la prima volta la camera va sull'albero, la
+##   luna che ci cade sopra; Lethe lo riconosce. Il buco tra le radici porta giù (il dungeon:
+##   per ora il capitolo finisce lì).
 ##
 ## Sta tra gli extra_states dei dialoghi: forest.dialogue chiama selene_met() e learn_truth().
 ## `pace` accorcia le attese (test).
@@ -25,6 +28,9 @@ const GLINT := preload("res://audio/shard_glint.wav")
 
 ## L'incantesimo della prima verità.
 const FIRST_SPELL := "truth_spark"
+## Gli obiettivi della radura dell'albero.
+const GOAL_TREE := "Reach the dead tree"
+const GOAL_ROOTS := "Go down between the roots"
 ## Quanto vicino deve arrivare un nemico perché parta la scena del primo nemico.
 const FIRST_ENEMY_RANGE := 150.0
 ## Le battute di Selene: chiave -> riga.
@@ -178,6 +184,65 @@ func _after_selene() -> void:
 	state().set_flag("selene_met")
 	zone.objective.show_text(zone.GOAL_PATH)
 	arrived.emit()
+
+
+## La zona è pronta: la scena giusta per dove si è (la prima volta), o solo l'obiettivo.
+func zone_ready(_from_travel: bool) -> void:
+	match zone.zone_id:
+		"tree":
+			if not state().flag("tree_arrived"):
+				enter_tree.call_deferred()
+			else:
+				zone.objective.show_text(tree_goal())
+		_:
+			if not state().flag("forest_arrived"):
+				arrive()
+			elif not selene_met():
+				meet_selene.call_deferred()      # un salvataggio di prima che arrivasse Selene
+			else:
+				zone.objective.show_text(zone.GOAL_PATH)
+
+
+func tree_goal() -> String:
+	return GOAL_ROOTS if state().flag("tree_seen") else GOAL_TREE
+
+
+## Prima di passare in un'altra zona: la prima volta verso l'albero, la camera guarda avanti.
+func before_travel(to_zone: String) -> void:
+	if zone.zone_id == "wake" and to_zone == "tree" and not state().flag("tree_glimpse"):
+		state().set_flag("tree_glimpse")
+		await leave_scene()
+
+
+## La prima volta nella radura dell'albero: la camera va sull'albero secco, la luna sopra;
+## Lethe lo riconosce.
+func enter_tree() -> void:
+	await cut.begin()
+	cut.face(zone.hero, Vector2.RIGHT)
+	await cut.wait(0.6)
+	var tree_cell: Vector2i = zone.layout_value("TREE", Vector2i.ZERO)
+	await cut.pan_to(Vector2(tree_cell) * zone.TILE + Vector2(48, 64), 2.2)
+	await cut.wait(0.8)
+	cut.emote(zone.hero, "...")
+	await cut.say(DIALOGUE, "tree_arrive")
+	await cut.pan_back(1.4)
+	await cut.end()
+	state().set_flag("tree_arrived")
+	zone.objective.show_text(GOAL_TREE)
+	arrived.emit()
+
+
+## Dopo un dialogo con una cosa: l'albero visto cambia l'obiettivo.
+func on_talk(id: String) -> void:
+	if id == "dead_tree" and not state().flag("tree_seen"):
+		state().set_flag("tree_seen")
+		zone.objective.show_text(GOAL_ROOTS)
+
+
+## Dai dialoghi (il buco tra le radici): si scende. Per ora il capitolo finisce qui.
+func go_down() -> void:
+	state().set_flag("roots_entered")
+	zone.call_deferred(&"_leave")
 
 
 ## Il primo nemico: si ferma tutto, la camera lo guarda, Selene avvisa. Una volta sola.
