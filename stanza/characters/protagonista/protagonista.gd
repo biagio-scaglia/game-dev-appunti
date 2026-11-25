@@ -56,6 +56,9 @@ var attacking := &""
 var _launched := false
 ## Ferma (sta parlando con qualcosa): niente movimento né attacchi.
 var frozen := false
+## Guidata da una cutscene (core/cutscene.gd): niente input, niente animazioni automatiche;
+## la muove e la gira chi la guida (update_animation e la posizione).
+var scripted := false
 ## Sa un incantesimo (Spazio / J) e ha la spada in mano (K).
 var can_cast := true
 var can_slash := true
@@ -85,6 +88,9 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_tick_hurt(delta)
+	if scripted:
+		velocity = Vector2.ZERO
+		return
 	if knock != Vector2.ZERO:
 		velocity = knock
 		move_and_slide()
