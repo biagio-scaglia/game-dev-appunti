@@ -295,6 +295,57 @@ func test_morire_e_risvegliarsi_allo_specchio() -> void:
 		"i nemici tornano al loro posto")
 
 
+func test_i_nemici_sconfitti_restano_sconfitti_dopo_un_salvataggio() -> void:
+	var Layout := preload("res://forest/zone_wake_layout.gd")
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true,
+		"defeated": ["moth_0", "bramble_3"]}}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	assert_eq(zone.enemies().size(), Layout.ENEMIES.size() - 2, "quelli sconfitti non tornano")
+	var enemy: Node2D = zone.enemies()[0]
+	var key: String = enemy.get_meta(&"key")
+	enemy.die()
+	assert_true(key in zone.state.flags["defeated"], "uno sciolto si ricorda")
+	assert_true(key in zone.state.to_save(Vector2.ZERO, 0)["flags"]["defeated"], "e si salva")
+	zone.respawn()
+	await tree.process_frame
+	await tree.process_frame
+	assert_eq(zone.enemies().size(), Layout.ENEMIES.size(), "il cuore spezzato li riporta tutti")
+
+
+func test_dopo_lo_specchio_si_riparte_dallo_specchio_anche_dopo_un_salvataggio() -> void:
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true, "rested": true}}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	await tree.process_frame
+	assert_true(zone.respawn_point.distance_to(zone.mirror_point()) < 1.0, "lo specchio")
+	assert_true(zone.respawn_point.distance_to(zone.spawn.global_position) > 10.0, "non lo Spawn")
+
+
+func test_il_rovo_ha_le_radici() -> void:
+	var holder := _holder()
+	var bramble := Bramble.new()
+	bramble.sound = false
+	bramble.position = Vector2(200, 200)
+	holder.add_child(bramble)
+	bramble.hurt(1, &"sword", Vector2(180, 200))
+	await _frames(6)
+	assert_true(bramble.position.distance_to(Vector2(200, 200)) < 0.5, "i colpi non lo spostano")
+
+
+func test_guarita_i_bordi_rossi_se_ne_vanno() -> void:
+	var hud := HeartHud.new()
+	hud.sound = false
+	tree.root.add_child(hud)
+	_owned.append(hud)
+	hud.show_heart(1, 4)
+	hud.hit()
+	await wait_seconds(0.7)
+	assert_true(hud.vignette.modulate.a > 0.3, "con l'ultimo pezzo i bordi restano rossi")
+	hud.show_heart(4, 4)                # la mela, un livello, lo specchio
+	await wait_seconds(1.0)
+	assert_eq(hud.vignette.modulate.a, 0.0, "a cuore intero niente rosso")
+
+
 func test_la_mira_assistita_della_spada() -> void:
 	var holder := _holder()
 	var hero := _hero(holder, Vector2(200, 200))
