@@ -1,6 +1,8 @@
 extends Node2D
-## Una zona della foresta (la prima: zone_wake.tscn, scritta da tools/make_forest_zone.gd e
-## poi ritoccabile nell'editor). La scena ha il terreno ("Ground", con le collisioni del
+## Una zona della foresta (zone_wake.tscn, zone_tree.tscn..., scritte da
+## tools/make_forest_zone.gd dai dati in zone_<nome>_layout.gd e poi ritoccabili nell'editor).
+## Quale zona è lo dice `zone_id`; si passa da una all'altra dalle uscite (Exit_0...), e si
+## arriva all'entrata giusta (ENTRIES nei dati). La scena ha il terreno ("Ground", con le collisioni del
 ## TileSet: bosco fitto e Lete), le piante basse ("Decor"), le cose ("World": Sprite2D col
 ## nome del tile nei metadati), "Spawn" ed "Exit". Qui, quando parte:
 ## - il buio della notte (CanvasModulate), raggi di luna tra le chiome, lucciole;
@@ -24,6 +26,8 @@ signal leveled_up(level: int)
 signal secret_shown
 ## Per la regia (forest_story.gd): un nemico sciolto, un oggetto raccolto.
 signal enemy_defeated(enemy: Node2D)
+## Si va in un'altra zona (prima di cambiare scena).
+signal traveled(to_zone: String)
 signal item_picked(id: String)
 
 const Main := preload("res://main.gd")
@@ -39,7 +43,8 @@ const Music := preload("res://core/music.gd")
 const Sfx := preload("res://core/sfx.gd")
 const ObjectiveBanner := preload("res://ui/objective_banner.gd")
 const Talk := preload("res://dialogue/talk.gd")
-const Layout := preload("zone_wake_layout.gd")
+const ZoneLayout := preload("zone_layout.gd")
+const Zones := preload("zones.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
 const PAUSE_MENU := preload("res://menu/pause_menu.tscn")
 const DIALOGUE := preload("res://dialogue/forest.dialogue")
@@ -76,18 +81,22 @@ const PLACE := "The Forest"
 const NIGHT := Color(0.4, 0.45, 0.62)
 const TILE := 32
 const GOAL_PATH := "Follow the path"
+## Quanto ci mette lo schermo a farsi nero passando da una zona all'altra.
+const TRAVEL_FADE := 0.5
 ## Da quanto sopra il bordo della mappa partono i raggi di luna.
 const BEAM_ABOVE := 90.0
-## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
-const TALKS := ["mirror", "brambles", "old_stone"]
+
+## Quale zona è (forest/zones.gd): la scrive il generatore nella scena.
+@export var zone_id := "wake"
 
 @onready var ground: TileMapLayer = $Ground
 @onready var decor: TileMapLayer = $Decor
 @onready var world: Node2D = $World
 @onready var spawn: Marker2D = $Spawn
-@onready var exit_area: Area2D = $Exit
 
 var state: RefCounted = GameState.new()
+## I dati della zona (forest/zone_<nome>_layout.gd).
+var Layout: GDScript
 var hero: CharacterBody2D
 var camera: Camera2D
 var music: AudioStreamPlayer
@@ -120,10 +129,13 @@ func _ready() -> void:
 	add_child(night)
 	if not Main.pending_save.is_empty():
 		state.load_save(Main.pending_save)
+	var entry := String(Main.pending_save.get("entry", ""))
+	var same_zone := String(Main.pending_save.get("zone", Zones.FIRST)) == zone_id
 	state.place = PLACE
+	state.zone = zone_id
 	_build_things()
 	_light_decor()
-	for at in Layout.BEAMS:
+	for at in layout_value("BEAMS"):
 		# Il raggio scende da sopra la mappa (lo spiraglio non si vede mai): così salendo
 		# non si arriva al pezzo che sfuma e non sparisce.
 		var beam := MoonBeam.new()
@@ -138,16 +150,14 @@ func _ready() -> void:
 		beam.dust_amount = 34
 		beam.z_index = 1
 		add_child(beam)
-	for at in Layout.FIREFLIES:
+	for at in layout_value("FIREFLIES"):
 		var flies := Fireflies.new()
 		flies.position = at
 		flies.z_index = 2
 		add_child(flies)
 	hero = HERO.instantiate()
 	world.add_child(hero)
-	var saved := GameState.saved_position(Main.pending_save)
-	hero.global_position = saved if state.flag("forest_arrived") and saved != Vector2.ZERO \
-		else spawn.global_position
+	hero.global_position = start_position(entry, same_zone)
 	Main.pending_save = {}
 	_add_camera()
 	respawn_point = mirror_point() if state.flag("rested") else spawn.global_position
@@ -185,7 +195,8 @@ func _ready() -> void:
 	add_child(grey)
 	grey.setup(state)
 	hud.show_heart(state.heart, state.heart_max)
-	exit_area.body_entered.connect(_on_exit)
+	for exit in exits():
+		exit.body_entered.connect(_on_exit.bind(exit))
 	story = ForestStory.new()
 	story.name = "Story"
 	add_child(story)
@@ -197,12 +208,33 @@ func _ready() -> void:
 		Music.play_loop(music)
 	if state.flag("selene_met"):
 		story.spawn_selene().snap()
-	if not state.flag("forest_arrived"):
-		story.arrive()
-	elif not state.flag("selene_met"):
-		story.meet_selene.call_deferred()  # un salvataggio di prima che arrivasse Selene
-	else:
-		objective.show_text(GOAL_PATH)
+	story.zone_ready(entry != "")
+
+
+## Una costante dei dati della zona (vuota se non c'è).
+func layout_value(key: String, default: Variant = []) -> Variant:
+	return ZoneLayout.value(Layout, key, default)
+
+
+## Dove parte Lethe: all'entrata da cui arriva (da un'altra zona), dove aveva salvato (in
+## questa zona), o allo Spawn.
+func start_position(entry: String, same_zone: bool) -> Vector2:
+	var entries: Dictionary = layout_value("ENTRIES", {})
+	if entry != "" and entries.has(entry):
+		return ZoneLayout.cell_center(entries[entry], TILE)
+	var saved := GameState.saved_position(Main.pending_save)
+	if same_zone and saved != Vector2.ZERO and (zone_id != Zones.FIRST or state.flag("forest_arrived")):
+		return saved
+	return spawn.global_position
+
+
+## Le uscite verso le altre zone (Area2D col meta "to_zone").
+func exits() -> Array[Area2D]:
+	var out: Array[Area2D] = []
+	for child in get_children():
+		if child is Area2D and child.has_meta(&"to_zone"):
+			out.append(child)
+	return out
 
 
 func sync_abilities() -> void:
@@ -221,7 +253,7 @@ func sync_abilities() -> void:
 
 ## Il rettangolo della zona, in pixel.
 func bounds() -> Rect2:
-	return Rect2(Vector2.ZERO, Vector2(Layout.SIZE) * TILE)
+	return Rect2(Vector2.ZERO, Vector2(layout_value("SIZE")) * TILE)
 
 
 func _add_camera() -> void:
@@ -296,12 +328,16 @@ func talk_things() -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for sprite in thing_nodes():
 		var tile_name: String = sprite.get_meta(&"tile")
-		if tile_name in TALKS:
+		if tile_name in layout_value("TALKS"):
 			out.append({"id": tile_name, "rect": thing_rect(sprite)})
 	# Il ruscello, sopra e sotto il ponte (sul ponte non si guarda l'acqua a ogni passo).
-	var bridge_row: int = Layout.BRIDGE[0]
-	for r in Layout.LETHE:
-		for span in [[r[1], bridge_row], [bridge_row + 1, r[3]]]:
+	var bridge: Array = layout_value("BRIDGE")
+	var bridge_row: int = bridge[0] if not bridge.is_empty() else -1
+	for r in layout_value("LETHE"):
+		var spans := [[r[1], r[3]]]
+		if bridge_row > r[1] and bridge_row < r[3]:
+			spans = [[r[1], bridge_row], [bridge_row + 1, r[3]]]
+		for span in spans:
 			var top_left := Vector2(r[0], span[0]) * TILE
 			out.append({"id": "lethe", "rect": Rect2(top_left, Vector2(r[2] - r[0], span[1] - span[0]) * TILE)})
 	return out
@@ -317,8 +353,9 @@ func enemies() -> Array:
 ## sconfitti anche dopo un salvataggio; tornano tutti solo quando il cuore si spezza).
 func spawn_enemies() -> void:
 	var defeated: Array = state.flags.get("defeated", [])
-	for i in Layout.ENEMIES.size():
-		var entry: Array = Layout.ENEMIES[i]
+	var list: Array = layout_value("ENEMIES")
+	for i in list.size():
+		var entry: Array = list[i]
 		var key := enemy_key(i)
 		if key in defeated:
 			continue
@@ -333,9 +370,11 @@ func spawn_enemies() -> void:
 		world.add_child(enemy)
 
 
-## Il nome fisso di un nemico del Layout (per ricordarsi chi è stato sconfitto).
-static func enemy_key(index: int) -> String:
-	return "%s_%d" % [Layout.ENEMIES[index][0], index]
+## Il nome fisso di un nemico della zona (per ricordarsi chi è stato sconfitto). Nella prima
+## zona senza prefisso (i salvataggi di prima), nelle altre col nome della zona.
+func enemy_key(index: int) -> String:
+	var key := "%s_%d" % [layout_value("ENEMIES")[index][0], index]
+	return key if zone_id == Zones.FIRST else "%s:%s" % [zone_id, key]
 
 
 ## Un nemico sciolto: resta sconfitto, la sua luce vola a Lethe (esperienza) e a volte
@@ -686,18 +725,47 @@ func mirror_point() -> Vector2:
 # --- L'uscita ------------------------------------------------------------------------------
 
 func _on_talk_finished(id: String) -> void:
-	if id in TALKS or id == "lethe":
+	if id in layout_value("TALKS") or id == "lethe":
 		state.set_flag("talk_learned")
+	story.on_talk(id)
 
 
-## L'uscita: la scena (la camera guarda avanti, l'albero bianco), poi il capitolo chiude.
-func _on_exit(body: Node) -> void:
+## Un'uscita: verso la zona dei suoi meta. La prima volta, se la regia ha una scena per
+## quel passaggio (la camera che guarda l'albero bianco), prima la scena.
+func _on_exit(body: Node, exit: Area2D = null) -> void:
 	if body != hero or _leaving:
 		return
+	if exit == null:
+		exit = exits()[0]
 	_leaving = true
 	objective.show_text("")
-	await story.leave_scene()
-	_leave()
+	var to_zone := String(exit.get_meta(&"to_zone"))
+	await story.before_travel(to_zone)
+	travel(to_zone, String(exit.get_meta(&"entry")))
+
+
+## Si va in un'altra zona: lo schermo si fa nero, lo stato passa (Main.pending_save, con
+## l'entrata da cui si arriva), e la scena cambia.
+func travel(to_zone: String, entry: String) -> void:
+	hero.set(&"frozen", true)
+	var layer := CanvasLayer.new()
+	layer.layer = 90
+	add_child(layer)
+	var black := ColorRect.new()
+	black.color = Color(0, 0, 0, 0)
+	black.size = Vector2(640, 360)
+	layer.add_child(black)
+	var t := create_tween()
+	t.tween_property(black, "color:a", 1.0, TRAVEL_FADE)
+	t.parallel().tween_property(music, "volume_db", -30.0, TRAVEL_FADE)
+	await t.finished
+	var data_out: Dictionary = state.to_save(Vector2.ZERO, int(hero.get("sword_stage")))
+	data_out["zone"] = to_zone
+	data_out["entry"] = entry
+	Main.pending_save = data_out
+	traveled.emit(to_zone)
+	if is_inside_tree() and get_tree().current_scene == self:
+		get_tree().change_scene_to_file(Zones.scene(to_zone))
 
 
 ## Per ora la foresta finisce qui: "To be continued", poi il titolo.
