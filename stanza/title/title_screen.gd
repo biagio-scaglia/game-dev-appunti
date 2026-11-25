@@ -214,7 +214,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_chosen(id: StringName) -> void:
+	if _leaving:
+		return                              # già scelto: un secondo tasto non fa altro
 	sfx_confirm.play()
+	if id in [&"continue", &"start", &"quit"]:
+		menu.set_active(false)
 	match id:
 		&"continue":
 			continue_game()
