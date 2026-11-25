@@ -40,12 +40,10 @@ I tasti non sono scritti a schermo: il gioco li spiega quando servono.
 
 | Tasto | Azione |
 | --- | --- |
-| WASD / frecce | cammina (8 direzioni) |
-| Shift | corri |
-| E / Z / Invio | parla con quello che c'è davanti, vai avanti nei dialoghi |
-| K | la spada di vetro (da quando Lethe ha la scheggia dello specchio) |
-| Spazio / J | la magia (quando Lethe la impara: arriva con la prima verità) |
-| Esc / X | menu di pausa: oggetti, incantesimi, equipaggiamento, stato, salvataggi |
+| WASD / frecce | cammina (8 direzioni); tenendo la direzione corre da sola (Shift: subito) |
+| Spazio / Z / J / E / Invio / clic sinistro | il tasto unico: davanti a una cosa ci parla (e va avanti nei dialoghi), altrimenti la spada di vetro (da quando Lethe ha la scheggia dello specchio) |
+| Q / X / K / clic destro | la magia (quando Lethe la impara: arriva con la prima verità) |
+| Esc / C | menu di pausa: oggetti, incantesimi, equipaggiamento, stato, salvataggi |
 
 ## Le cartelle
 
