@@ -39,6 +39,8 @@ const THINGS := [
 	["big_rock", Vector2i(19, 9)], ["rock", Vector2i(31, 10)], ["rock", Vector2i(7, 16)],
 	["log", Vector2i(14, 19)], ["stump", Vector2i(10, 8)], ["bush", Vector2i(21, 16)],
 	["bush", Vector2i(36, 9)], ["bush", Vector2i(3, 7)],
+	["birch", Vector2i(9, 15)], ["birch", Vector2i(19, 18)], ["hollow_log", Vector2i(27, 16)],
+	["rock_b", Vector2i(22, 9)], ["rock_b", Vector2i(34, 16)],
 ]
 ## Le piante basse (TileMapLayer "Decor"): [tile, cella].
 const DECOR := [
