@@ -16,7 +16,7 @@ func after() -> void:
 
 
 func _zone(arrived := true) -> Node2D:
-	Main.pending_save = {"flags": {"forest_arrived": arrived, "talk_learned": true}}
+	Main.pending_save = {"flags": {"forest_arrived": arrived, "talk_learned": true, "selene_met": arrived}}
 	var zone := add_scene(ZONE, func(n): n.sound = false)
 	await tree.process_frame
 	await tree.physics_frame
@@ -30,7 +30,8 @@ func _blocked(zone: Node2D, from: Vector2, motion: Vector2) -> bool:
 	return hero.test_move(hero.global_transform, motion)
 
 
-func _drive(talk: Node) -> void:
+## Fa andare avanti un dialogo fino alla fine, scegliendo sempre la risposta `choice`.
+func _drive(talk: Node, choice := 0) -> void:
 	var box: CanvasLayer = talk.box
 	if not is_instance_valid(box):
 		return
@@ -40,7 +41,7 @@ func _drive(talk: Node) -> void:
 		if not is_instance_valid(box):
 			break
 		if box.choices_panel.visible:
-			box.choose(0)
+			box.choose(mini(choice, box.choice_texts().size() - 1))
 		elif box.waiting or box.text_label.is_typing:
 			box.advance()
 	await tree.physics_frame
@@ -95,6 +96,13 @@ func test_l_arrivo_dalla_caduta() -> void:
 	assert_true(zone.talk.is_talking(), "poi racconta l'arrivo")
 	await _drive(zone.talk)
 	assert_true(zone.state.flag("forest_arrived"), "arrivata")
+	deadline = Time.get_ticks_msec() + 4000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_true(zone.selene != null, "poi scende Selene")
+	assert_true(zone.talk.is_talking(), "e parla con Lethe")
+	await _drive(zone.talk)
+	assert_true(zone.state.flag("selene_met"), "incontrata")
 	assert_false(zone.hero.frozen, "e si gioca")
 	assert_eq(zone.objective.text, zone.GOAL_PATH, "segui il sentiero")
 
@@ -132,7 +140,7 @@ func test_dal_prologo_e_da_continue() -> void:
 	Main.pending_save = {"place": "Her Room"}
 	assert_eq(title.scene_after_start(), "res://main.tscn", "dalla stanza: la stanza")
 	title.free()
-	Main.pending_save = {"flags": {"forest_arrived": true}, "owned": ["black_dress", "glass_sword"],
+	Main.pending_save = {"flags": {"forest_arrived": true, "selene_met": true}, "owned": ["black_dress", "glass_sword"],
 		"equipped": {"weapon": "glass_sword", "body": "black_dress", "accessory": ""}}
 	var armed := add_scene(ZONE, func(n): n.sound = false)
 	await tree.process_frame
@@ -148,3 +156,46 @@ func test_la_mappa() -> void:
 	var data := preload("res://world/forest/forest_tileset.gd").load_data()
 	for entry in Layout.THINGS + Layout.DECOR:
 		assert_true(data["tiles"].has(entry[0]), "%s è un tile" % entry[0])
+
+
+# --- Selene ------------------------------------------------------------------------------
+
+func _zone_before_selene() -> Node2D:
+	Engine.time_scale = 6.0
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true}}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	var deadline := Time.get_ticks_msec() + 4000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	return zone
+
+
+func test_dire_la_verita_a_selene_accende_la_magia() -> void:
+	var zone := await _zone_before_selene()
+	assert_true(zone.talk.is_talking(), "Selene scende e parla")
+	assert_false(zone.state.knows(zone.FIRST_SPELL), "prima niente magia")
+	await _drive(zone.talk, 1)
+	assert_true(zone.state.knows(zone.FIRST_SPELL), "la verità: la luce nel palmo")
+	assert_true(zone.hero.can_cast, "e la si può lanciare")
+	assert_eq(zone.state.truth, 1, "una verità")
+
+
+func test_mentire_a_selene_e_la_seconda_occasione_al_lete() -> void:
+	var zone := await _zone_before_selene()
+	await _drive(zone.talk, 0)
+	assert_false(zone.state.knows(zone.FIRST_SPELL), "la bugia: niente magia")
+	assert_eq(zone.state.lies, 1, "una bugia")
+	zone.talk.talk("lethe")
+	await _drive(zone.talk, 1)
+	assert_true(zone.state.knows(zone.FIRST_SPELL), "al Lete dire che fa paura è la prima verità")
+
+
+func test_selene_segue_lethe() -> void:
+	var zone := await _zone()
+	assert_true(zone.selene != null, "dopo l'incontro c'è sempre")
+	var start: Vector2 = zone.selene.global_position
+	zone.hero.global_position += Vector2(200, 0)
+	await wait_seconds(1.5)
+	assert_true(zone.selene.global_position.distance_to(zone.selene.goal()) < 10.0, "la raggiunge")
+	assert_true(zone.selene.global_position.x > start.x + 150.0, "si è spostata con lei")
+	assert_true(zone.selene.global_position.y < zone.hero.global_position.y - 30.0, "sopra la testa")
