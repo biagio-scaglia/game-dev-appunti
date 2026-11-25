@@ -32,6 +32,7 @@ var prologue: Node
 
 
 func _ready() -> void:
+	get_tree().paused = false                   # una scena nuova parte sempre in movimento
 	hero.position = room.player_start()
 	if not pending_save.is_empty():
 		state.load_save(pending_save)
