@@ -52,6 +52,7 @@ const CHIME := preload("res://audio/ui_move.wav")
 const KNOCK := preload("res://audio/menu_knock.wav")
 const Pickup := preload("res://items/pickup.gd")
 const ItemIcons := preload("res://ui/item_icons.gd")
+const InputSetup := preload("res://core/input_setup.gd")
 ## Alla decima volta che il cuore si spezza: il segreto (un finto reset).
 const SECRET_DEATHS := 10
 ## Il livello dei nemici di questa zona.
@@ -433,7 +434,7 @@ func show_slash_hint() -> void:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override(&"panel", preload("res://menu/menu_style.gd").window_style())
 	panel.position = Vector2(hud.box.position.x + hud.box.size.x + 8, hud.box.position.y)
-	var label := _label("K  Swing the shard", Color(0.95, 0.9, 1.0))
+	var label := _label("%s  Swing the shard" % InputSetup.LABELS[&"action"], Color(0.95, 0.9, 1.0))
 	panel.add_child(label)
 	slash_hint.add_child(panel)
 	panel.modulate.a = 0.0
