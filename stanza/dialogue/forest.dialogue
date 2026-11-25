@@ -123,3 +123,45 @@ if selene_met()
 	Lethe: It looks like the plant on my windowsill.
 	Selene: Then it's waiting for you.
 => END
+
+# --- La radura dell'albero secco (zona "tree", forest_story.gd) ---------------------------
+
+# La prima volta: la camera va sull'albero, con la luna sopra.
+~ tree_arrive
+In the middle of the clearing there is a tree. White, all of it. Like bone.
+No leaves. The moon sits on its branches like it's waiting for something.
+Lethe: ...That's my plant.
+Lethe: The one on my windowsill. It got so big.
+if selene_met()
+	Selene: And so dry.
+=> END
+
+~ dead_tree
+if seen("dead_tree") == 0
+	The bark is cold and smooth. It sounds hollow when she touches it.
+	One leaf. Only one, up high. Still green.
+	if selene_met()
+		Selene: When did you last water it?
+		- I don't remember.
+			Lethe: I don't remember. ...A long time ago.
+			set truth += 1
+			Selene: It's still holding on. Look. One leaf.
+		- It was already dead.
+			Lethe: It was already dead when I got it. [#wrong]
+			set lies += 1
+			Selene: ...Then why does it have a leaf?
+	Under the roots, something breathes. Slow. Like someone asleep.
+else
+	The leaf is still there. Up high. Still green.
+=> END
+
+~ root_hole
+A hole between the roots, going down into the dark. The air coming up is warm, and smells like earth.
+if selene_met()
+	Selene: Whatever is making it sad... it's down there.
+- Go down.
+	Lethe: ...Okay. Stay close.
+	do go_down()
+- Not yet.
+	Lethe: Not yet.
+=> END
