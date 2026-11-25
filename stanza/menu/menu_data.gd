@@ -6,7 +6,7 @@ extends RefCounted
 ## [id, testo, aiuto in fondo al menu]
 const COMMANDS := [
 	[&"items", "Items", "Things you found in the room."],
-	[&"spells", "Spells", "Your spells. Choose the one you cast with Space / J."],
+	[&"spells", "Spells", "Your spells. Choose the one you cast with Q."],
 	[&"equip", "Equip", "Change what Lethe holds and wears."],
 	[&"status", "Status", "Lethe's stats, equipment and spell."],
 	[&"save", "Save", "Save your progress to a file."],
@@ -17,8 +17,8 @@ const COMMANDS := [
 const END_CHOICES := [[&"title", "To Title"], [&"cancel", "Cancel"]]
 
 ## I tasti, in fondo al menu: sulle voci e dentro una pagina.
-const KEYS_MAIN := "Enter: choose    Esc: close"
-const KEYS_PAGE := "Enter: choose    Esc: back"
+const KEYS_MAIN := "Space: choose    Esc: close"
+const KEYS_PAGE := "Space: choose    Esc: back"
 const KEYS_VIEW := "Esc: back"
 
 ## count -1: tante quante le schegge della spada (lo stadio + 1).
@@ -88,7 +88,7 @@ const SPELLS := [
 	{"id": "mend", "name": "Mend", "mp": 3,
 		"desc": "Hold your own heart a little less tight."},
 ]
-## Nessun incantesimo su Spazio / J all'inizio.
+## Nessun incantesimo su Q all'inizio.
 const START_SPELL := ""
 ## Come si vede quello che Lethe non ha ancora.
 const UNKNOWN := "???"
