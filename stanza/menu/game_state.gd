@@ -1,7 +1,7 @@
 extends RefCounted
 ## Lo stato della partita che si salva: tempo di gioco, giorno, verità e bugie (il karma),
 ## cosa sa e cosa ha Lethe (incantesimi imparati, equipaggiamento trovato), cosa ha addosso,
-## l'incantesimo su Spazio / J, dove sta e lo stadio della spada. Solo dati.
+## l'incantesimo su Q, dove sta e lo stadio della spada. Solo dati.
 ##
 ## All'inizio Lethe non sa nessun incantesimo e ha solo il vestito: niente magia, niente
 ## spada (vault: "Trama - bozza", il prologo). Le cose arrivano con learn() e give().
@@ -21,7 +21,7 @@ var learned: Array[String] = []
 var owned: Array[String] = []
 ## {slot: id dell'oggetto, "" = niente}
 var equipped: Dictionary = Data.START_EQUIPMENT.duplicate()
-## L'incantesimo su Spazio / J ("" = nessuno).
+## L'incantesimo su Q ("" = nessuno).
 var spell: String = Data.START_SPELL
 ## I segni di quello che è già successo nella storia (es. "knock_over", "mirror_calling"),
 ## e le cose guardate nella stanza ("looked": lista di id). Solo valori da JSON.
@@ -141,7 +141,7 @@ func owns(item_id: String) -> bool:
 	return item_id in owned
 
 
-## Può usare la magia: ha un incantesimo su Spazio / J.
+## Può usare la magia: ha un incantesimo su Q.
 func can_cast() -> bool:
 	return spell != "" and knows(spell)
 
@@ -151,7 +151,7 @@ func can_slash() -> bool:
 	return equipped.get("weapon", "") == "glass_sword"
 
 
-## Impara un incantesimo. Se non ne aveva nessuno pronto, va su Spazio / J.
+## Impara un incantesimo. Se non ne aveva nessuno pronto, va su Q.
 func learn(spell_id: String) -> void:
 	if Data.spell(spell_id).is_empty() or knows(spell_id):
 		return

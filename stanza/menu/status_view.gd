@@ -1,6 +1,6 @@
 extends VBoxContainer
 ## Lo stato di Lethe: la sua riga, poi parametri (con l'equipaggiamento), equipaggiamento,
-## incantesimo su Spazio / J e karma (verità e bugie).
+## incantesimo su Q e karma (verità e bugie).
 
 const Style := preload("menu_style.gd")
 const Data := preload("menu_data.gd")
