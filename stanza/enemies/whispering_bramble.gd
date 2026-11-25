@@ -41,6 +41,7 @@ func _ready() -> void:
 	weakness = {&"sword": 1.5, &"magic": 0.5}
 	exp_reward = 4
 	drop_chance = 0.4
+	knockback = 0.0                            # ha le radici: i colpi non lo spostano
 	make_sprite(SHEET, 3, -10.0, false)
 	make_body(16.0, Vector2(0, -10))
 	hurt_shape.radius = REST_RADIUS
