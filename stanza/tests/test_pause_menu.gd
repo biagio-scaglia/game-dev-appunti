@@ -370,3 +370,19 @@ func test_salvare_mentre_una_voce_e_guasta_non_rompe_niente() -> void:
 	assert_true(SaveStore.exists(1), "il salvataggio c'è")
 	assert_true(menu.is_open(), "e il menu è ancora lì")
 	menu.glitcher.restore(slot)          # anche chiamata a mano su un nodo liberato: niente
+
+
+func test_le_bugie_sono_occhi() -> void:
+	var menu := _menu(_hero())
+	menu.state.lies = 3
+	menu.open()
+	menu.choose(&"status")
+	var eyes: Control = menu.status_view.lie_eyes
+	assert_true(eyes.is_visible_in_tree(), "nel menu Stato c'è il filo con gli occhi")
+	assert_eq(eyes.open_eyes(), 3, "un occhio aperto per ogni bugia")
+	assert_eq(eyes.slots(), eyes.MIN_SLOTS, "gli altri chiusi, che aspettano")
+	assert_false(menu.status_view.lies_label.visible, "il numero non si vede")
+	menu.state.lies = 40
+	menu.back()
+	menu.choose(&"status")
+	assert_eq(eyes.open_eyes(), eyes.MAX_SLOTS, "con tante bugie il filo è tutto occhi aperti")

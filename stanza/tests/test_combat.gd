@@ -602,3 +602,21 @@ func test_la_spada_cresce_con_le_bugie() -> void:
 	assert_eq(zone.hero.sword_stage, 1, "due bugie: pugnale")
 	var toasts := zone.get_children().filter(func(n): return n is CanvasLayer and n.layer == 8)
 	assert_true(toasts.size() >= 1, "e lo si vede")
+
+
+func test_le_bugie_spengono_i_colori_del_mondo() -> void:
+	assert_eq(GameState.grey_for(0, 0), 0.0, "all'inizio a colori")
+	assert_eq(GameState.grey_for(3, 2), 0.0, "più verità che bugie: a colori")
+	assert_true(GameState.grey_for(0, 3) > GameState.grey_for(0, 1), "più bugie, più grigio")
+	assert_eq(GameState.grey_for(0, 99), GameState.GREY_MAX, "mai del tutto grigio")
+	var zone := await _zone()
+	var grey: CanvasLayer = zone.get_node("WorldGrey")
+	assert_true(grey.layer < zone.hud.layer, "sotto l'interfaccia: i cuori restano rossi")
+	assert_false(grey.rect.visible, "a colori pieni il filtro non c'è")
+	zone.state.lies = 4
+	await wait_seconds(2.0)
+	assert_near(grey.amount, GameState.grey_for(0, 4), 0.01, "il colore se ne va piano")
+	assert_true(grey.rect.visible, "e si vede")
+	zone.state.truth = 4
+	await wait_seconds(2.0)
+	assert_near(grey.amount, 0.0, 0.01, "la verità lo riporta")
