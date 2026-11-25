@@ -7,14 +7,16 @@ extends RefCounted
 ## ruscello del Lete, con un ponte; un ramo del sentiero sale a nord e finisce contro i
 ## rovi (dietro, una nicchia con una pietra antica: si aprirà col gesto Aprire).
 ##
-## Il terreno si descrive per vertici (come l'autotile "a angoli"): ogni vertice della
-## griglia (W+1 x H+1) è erba, sentiero, Lete o bosco fitto; dai 4 vertici di una cella si
-## sceglie il pezzo.
+## Il terreno si descrive per vertici (zone_layout.gd).
 
 const SIZE := Vector2i(40, 24)
 const SPAWN := Vector2i(6, 12)
-## Dove si esce (celle): verso il cuore della foresta.
-const EXIT := Rect2i(38, 9, 2, 5)
+## Dove si esce: [celle, zona, entrata]. A est, verso l'albero secco.
+const EXITS := [[Rect2i(38, 9, 2, 5), "tree", "west"]]
+## Dove si arriva da un'altra zona (celle): da est, tornando dall'albero secco.
+const ENTRIES := {"east": Vector2i(36, 11)}
+## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
+const TALKS := ["mirror", "brambles", "old_stone"]
 
 ## Vertici [x0, y0, x1, y1] inclusi.
 const CANOPY_BLOCKS := [
@@ -73,35 +75,3 @@ const ENEMIES := [
 const BEAMS := [Vector2(300, 150), Vector2(620, 330), Vector2(1000, 260)]
 ## Lucciole (pixel, centro di ogni nuvola).
 const FIREFLIES := [Vector2(250, 420), Vector2(700, 200), Vector2(1100, 500), Vector2(500, 600)]
-
-const GRASS := ""
-const MATERIALS := {"canopy": CANOPY_BLOCKS, "path": PATHS, "lethe": LETHE}
-## Se due materiali si toccano nella stessa cella, vince il primo (il bosco copre tutto,
-## l'acqua copre il sentiero).
-const PRECEDENCE := ["canopy", "lethe", "path"]
-
-
-## I vertici: vertices[y][x] = "" (erba) o il materiale.
-static func vertices() -> Array:
-	var v := []
-	for y in SIZE.y + 1:
-		var row := []
-		row.resize(SIZE.x + 1)
-		row.fill(GRASS)
-		v.append(row)
-	for material in ["path", "lethe", "canopy"]:            # dal più debole al più forte
-		for r in MATERIALS[material]:
-			for y in range(r[1], r[3] + 1):
-				for x in range(r[0], r[2] + 1):
-					v[y][x] = material
-	return v
-
-
-## Il terreno di una cella: [materiale, angoli (alto-sx, alto-dx, basso-sx, basso-dx)].
-## Materiale "" = erba piena.
-static func cell_terrain(v: Array, cell: Vector2i) -> Array:
-	var corners := [v[cell.y][cell.x], v[cell.y][cell.x + 1], v[cell.y + 1][cell.x], v[cell.y + 1][cell.x + 1]]
-	for material in PRECEDENCE:
-		if material in corners:
-			return [material, corners.map(func(c): return 1 if c == material else 0)]
-	return [GRASS, [0, 0, 0, 0]]
