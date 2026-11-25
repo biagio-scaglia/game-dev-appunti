@@ -264,9 +264,17 @@ func enemies() -> Array:
 	return get_tree().get_nodes_in_group(&"enemies").filter(func(e): return is_ancestor_of(e))
 
 
+## I nemici di Layout.ENEMIES, tranne quelli già sconfitti (flag "defeated": restano
+## sconfitti anche dopo un salvataggio; tornano tutti solo quando il cuore si spezza).
 func spawn_enemies() -> void:
-	for entry in Layout.ENEMIES:
+	var defeated: Array = state.flags.get("defeated", [])
+	for i in Layout.ENEMIES.size():
+		var entry: Array = Layout.ENEMIES[i]
+		var key := enemy_key(i)
+		if key in defeated:
+			continue
 		var enemy: CharacterBody2D = ENEMY_SCRIPTS[entry[0]].new()
+		enemy.set_meta(&"key", key)
 		enemy.name = "%s_%d" % [entry[0], world.get_child_count()]
 		enemy.sound = sound
 		enemy.target = hero
@@ -276,8 +284,18 @@ func spawn_enemies() -> void:
 		world.add_child(enemy)
 
 
-## Un nemico sciolto: la sua luce vola a Lethe (esperienza) e a volte lascia da mangiare.
+## Il nome fisso di un nemico del Layout (per ricordarsi chi è stato sconfitto).
+static func enemy_key(index: int) -> String:
+	return "%s_%d" % [Layout.ENEMIES[index][0], index]
+
+
+## Un nemico sciolto: resta sconfitto, la sua luce vola a Lethe (esperienza) e a volte
+## lascia da mangiare.
 func _on_enemy_died(enemy: Node2D) -> void:
+	var defeated: Array = state.flags.get("defeated", [])
+	if enemy.has_meta(&"key") and not enemy.get_meta(&"key") in defeated:
+		defeated.append(enemy.get_meta(&"key"))
+	state.flags["defeated"] = defeated
 	var at: Vector2 = enemy.global_position
 	var amount: int = state.exp_from(int(enemy.get(&"exp_reward")), int(enemy.get(&"level")))
 	_fly_motes(at + Vector2(0, -12), amount)
