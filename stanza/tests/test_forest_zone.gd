@@ -103,6 +103,7 @@ func test_l_arrivo_dalla_caduta() -> void:
 	assert_true(zone.talk.is_talking(), "e parla con Lethe")
 	await _drive(zone.talk)
 	assert_true(zone.state.flag("selene_met"), "incontrata")
+	assert_true(await wait_signal(zone.story.arrived, 4.0), "la scena finisce")
 	assert_false(zone.hero.frozen, "e si gioca")
 	assert_eq(zone.objective.text, zone.GOAL_PATH, "segui il sentiero")
 
@@ -122,7 +123,10 @@ func test_l_uscita() -> void:
 	Engine.time_scale = 8.0
 	var zone := await _zone()
 	zone._on_exit(zone.hero)
-	assert_true(zone.talk.is_talking(), "racconta la strada che continua")
+	var deadline := Time.get_ticks_msec() + 4000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_true(zone.talk.is_talking(), "la camera guarda avanti, e racconta la strada che continua")
 	await _drive(zone.talk)
 	assert_true(await wait_signal(zone.exited, 3.0), "poi la zona finisce")
 
@@ -183,6 +187,7 @@ func test_dire_la_verita_a_selene_accende_la_magia() -> void:
 func test_mentire_a_selene_e_la_seconda_occasione_al_lete() -> void:
 	var zone := await _zone_before_selene()
 	await _drive(zone.talk, 0)
+	await wait_signal(zone.story.arrived, 4.0)
 	assert_false(zone.state.knows(zone.FIRST_SPELL), "la bugia: niente magia")
 	assert_eq(zone.state.lies, 1, "una bugia")
 	zone.talk.talk("lethe")
@@ -199,3 +204,71 @@ func test_selene_segue_lethe() -> void:
 	assert_true(zone.selene.global_position.distance_to(zone.selene.goal()) < 10.0, "la raggiunge")
 	assert_true(zone.selene.global_position.x > start.x + 150.0, "si è spostata con lei")
 	assert_true(zone.selene.global_position.y < zone.hero.global_position.y - 30.0, "sopra la testa")
+
+
+func test_il_primo_nemico_ferma_tutto_e_selene_avvisa() -> void:
+	Engine.time_scale = 6.0
+	var zone := await _zone()
+	var enemy: Node2D = zone.enemies()[0]
+	zone.hero.global_position = enemy.global_position + Vector2(-100, 0)
+	var deadline := Time.get_ticks_msec() + 3000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_true(zone.state.flag("first_enemy_seen"), "la scena del primo nemico")
+	assert_false(enemy.is_physics_processing(), "i nemici si fermano")
+	assert_true(zone.hero.scripted, "Lethe la guida la scena")
+	await _drive(zone.talk)
+	deadline = Time.get_ticks_msec() + 3000
+	while zone.story.cut.running and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_false(zone.hero.scripted or zone.hero.frozen, "poi si gioca")
+	assert_true(enemy.is_physics_processing(), "e i nemici ripartono")
+
+
+func test_le_battute_di_selene_una_volta_sola() -> void:
+	var zone := await _zone()
+	zone.story.bark("first_kill")
+	assert_eq(zone.selene.bark_text(), zone.story.BARKS["first_kill"], "Selene lo dice")
+	assert_true(zone.state.flag("bark_first_kill"), "e si ricorda di averlo detto (si salva)")
+	zone.selene.bark("altro")
+	zone.story.bark("first_kill")
+	assert_eq(zone.selene.bark_text(), "altro", "non lo ridice")
+
+
+func test_la_cutscene_ridà_i_comandi() -> void:
+	var zone := await _zone()
+	var cut: Node = zone.story.cut
+	cut.pace = 0.1
+	await cut.begin()
+	assert_true(zone.hero.scripted, "durante la scena Lethe non si comanda")
+	assert_true(cut._top.size.y > 0.0, "le bande nere")
+	await cut.pan_to(zone.hero.global_position + Vector2(100, 0), 0.5)
+	assert_true(zone.camera.offset.x > 50.0, "la camera guarda altrove")
+	cut.emote(zone.hero, "!")
+	await cut.walk(zone.hero, zone.hero.global_position + Vector2(20, 0))
+	await cut.end()
+	assert_false(zone.hero.scripted or zone.hero.frozen, "alla fine si gioca")
+	assert_eq(zone.camera.offset, Vector2.ZERO, "la camera torna su Lethe")
+	assert_eq(cut._top.size.y, 0.0, "le bande escono")
+
+
+func test_selene_scende_una_volta_sola_dall_alto() -> void:
+	Engine.time_scale = 4.0
+	Main.pending_save = {"flags": {"forest_arrived": true, "talk_learned": true}}
+	var zone := add_scene("res://forest/zone_wake.tscn", func(n): n.sound = false)
+	var first_seen := Vector2.INF
+	var appearances := 0
+	var was_visible := false
+	var deadline := Time.get_ticks_msec() + 5000
+	while not zone.talk.is_talking() and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+		var s: Node2D = zone.selene
+		var shown: bool = s != null and s.visible
+		if shown and not was_visible:
+			appearances += 1
+			if first_seen == Vector2.INF:
+				first_seen = s.global_position
+		was_visible = shown
+	assert_eq(appearances, 1, "compare una volta")
+	assert_true(first_seen.y < zone.hero.global_position.y - 150.0, "e compare in alto, sopra Lethe (scende dal cielo)")
+	assert_true(absf(first_seen.x - zone.hero.global_position.x) < 80.0, "non in un angolo della mappa")
