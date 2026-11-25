@@ -22,6 +22,9 @@ signal died
 signal respawned
 signal leveled_up(level: int)
 signal secret_shown
+## Per la regia (forest_story.gd): un nemico sciolto, un oggetto raccolto.
+signal enemy_defeated(enemy: Node2D)
+signal item_picked(id: String)
 
 const Main := preload("res://main.gd")
 const GameState := preload("res://menu/game_state.gd")
@@ -53,10 +56,9 @@ const KNOCK := preload("res://audio/menu_knock.wav")
 const Pickup := preload("res://items/pickup.gd")
 const ItemIcons := preload("res://ui/item_icons.gd")
 const InputSetup := preload("res://core/input_setup.gd")
-const Selene := preload("res://characters/selene/selene.gd")
-const MenuData := preload("res://menu/menu_data.gd")
-## L'incantesimo della prima verità.
-const FIRST_SPELL := "truth_spark"
+const ForestStory := preload("forest_story.gd")
+## L'incantesimo della prima verità (lo insegna la regia).
+const FIRST_SPELL := ForestStory.FIRST_SPELL
 ## Alla decima volta che il cuore si spezza: il segreto (un finto reset).
 const SECRET_DEATHS := 10
 ## Il livello dei nemici di questa zona.
@@ -101,8 +103,11 @@ var data: Dictionary
 ## Falso nei test: niente suoni.
 var sound := true
 var _leaving := false
-## Selene, la compagna (dopo che è scesa dalla luna).
+## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
 var selene: Node2D
+## La regia del capitolo: le scene, Selene e le sue battute.
+var story: Node
+var _lies_before := 0
 
 
 func _ready() -> void:
@@ -174,14 +179,21 @@ func _ready() -> void:
 	add_child(hud)
 	hud.show_heart(state.heart, state.heart_max)
 	exit_area.body_entered.connect(_on_exit)
+	story = ForestStory.new()
+	story.name = "Story"
+	add_child(story)
+	story.setup(self)
+	talk.extra_states.append(story)       # i dialoghi chiamano selene_met() e learn_truth()
+	talk.talk_started.connect(func(_id: String) -> void: _lies_before = state.lies)
+	talk.talk_finished.connect(func(_id: String) -> void: story.after_talk(_lies_before))
 	if sound:
 		Music.play_loop(music)
 	if state.flag("selene_met"):
-		spawn_selene().snap()
+		story.spawn_selene().snap()
 	if not state.flag("forest_arrived"):
-		arrive()
+		story.arrive()
 	elif not state.flag("selene_met"):
-		meet_selene.call_deferred()        # un salvataggio di prima che arrivasse Selene
+		story.meet_selene.call_deferred()  # un salvataggio di prima che arrivasse Selene
 	else:
 		objective.show_text(GOAL_PATH)
 
@@ -194,50 +206,10 @@ func sync_abilities() -> void:
 	var grew: bool = stage > int(hero.sword_stage) and state.can_slash() and is_node_ready()
 	hero.sword_stage = stage
 	if grew:
-		_toast(["", "The shard grows.", "The glass is a blade now."][stage],
+		toast(["", "The shard grows.", "The glass is a blade now."][stage],
 			"Another lie. Another piece of the mirror.")
 		if sound:
 			Sfx.play(self, GLINT, 0.7, -4.0)
-
-
-# --- Selene ------------------------------------------------------------------------------
-
-func spawn_selene() -> Node2D:
-	if selene == null:
-		selene = Selene.new()
-		selene.name = "Selene"
-		selene.target = hero
-		add_child(selene)
-	return selene
-
-
-## Selene scende dalla luna, tra le foglie, e parla con Lethe (la prima scelta del capitolo).
-func meet_selene(pace := 1.0) -> void:
-	hero.set(&"frozen", true)
-	spawn_selene()
-	if sound:
-		Sfx.play(self, GLINT, 1.3, -6.0)
-	await selene.descend(pace)
-	talk.say(DIALOGUE, "selene_meet")
-
-
-## Per i dialoghi: Selene c'è già?
-func selene_met() -> bool:
-	return state.flag("selene_met")
-
-
-## La prima verità: nel palmo si accende la luce (la magia). Dai dialoghi.
-func learn_truth() -> void:
-	if state.knows(FIRST_SPELL):
-		return
-	state.learn(FIRST_SPELL)
-	sync_abilities()
-	if selene:
-		selene.glow_up()
-	if sound:
-		Sfx.play(self, GLINT, 1.6, -4.0)
-	_toast(String(MenuData.spell(FIRST_SPELL).get("name", "Light")),
-		"%s  Throw the light" % InputSetup.LABELS[&"cast"])
 
 
 ## Il rettangolo della zona, in pixel.
@@ -366,6 +338,7 @@ func _on_enemy_died(enemy: Node2D) -> void:
 	if enemy.has_meta(&"key") and not enemy.get_meta(&"key") in defeated:
 		defeated.append(enemy.get_meta(&"key"))
 	state.flags["defeated"] = defeated
+	enemy_defeated.emit(enemy)
 	var at: Vector2 = enemy.global_position
 	var amount: int = state.exp_from(int(enemy.get(&"exp_reward")), int(enemy.get(&"level")))
 	_fly_motes(at + Vector2(0, -12), amount)
@@ -386,6 +359,7 @@ func drop(id: String, at: Vector2) -> Node2D:
 
 
 func _on_picked(id: String) -> void:
+	item_picked.emit(id)
 	var effect: Dictionary = ItemIcons.info(id).get("effect", {})
 	state.heal(int(effect.get("heal", 0)))
 	hud.show_heart(state.heart, state.heart_max)
@@ -431,7 +405,7 @@ func gain_exp(amount: int) -> void:
 		hud.show_heart(state.heart, state.heart_max)
 		sync_abilities()
 		var line := "Her heart holds a little more." if state.level % 2 == 0 else "The shard cuts a little deeper."
-		_toast("LV %d" % state.level, line)
+		toast("LV %d" % state.level, line)
 		if sound:
 			Sfx.play(self, GLINT, 0.9, -4.0)
 		leveled_up.emit(state.level)
@@ -454,7 +428,7 @@ func _float_text(at: Vector2, text: String, color: Color) -> Label:
 
 
 ## Una scritta che compare in alto al centro e se ne va (il livello).
-func _toast(title: String, line: String) -> void:
+func toast(title: String, line: String) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 8
 	add_child(layer)
@@ -490,7 +464,7 @@ func _label(text: String, color: Color, font_size := 16) -> Label:
 ## La prima volta che un nemico si avvicina (e Lethe ha la spada): accanto al cuore, "K".
 ## Sparisce al primo fendente e non torna (flag "slash_learned").
 func _check_slash_hint() -> void:
-	if slash_hint or state.flag("slash_learned") or not state.can_slash() or talk.is_talking():
+	if slash_hint or not state.flag("first_enemy_seen") or state.flag("slash_learned") or not state.can_slash() or talk.is_talking():
 		return
 	for enemy in enemies():
 		if enemy.global_position.distance_to(hero.global_position) < SLASH_HINT_RANGE:
@@ -529,6 +503,7 @@ func _on_hero_attack(kind: StringName) -> void:
 
 func _process(_delta: float) -> void:
 	if hero and talk:
+		story.check_first_enemy()
 		_check_slash_hint()
 
 
@@ -665,7 +640,7 @@ func _secret(pace := 1.0) -> void:
 	layer.queue_free()
 	_dying = false
 	respawned.emit()
-	_toast("The hand loosens, a little.", "Her heart holds one more.")
+	toast("The hand loosens, a little.", "Her heart holds one more.")
 
 
 ## Di nuovo in piedi: davanti allo specchio (o allo Spawn), cuore intero, nemici al posto.
@@ -701,55 +676,21 @@ func mirror_point() -> Vector2:
 	return spawn.global_position
 
 
-# --- L'arrivo e l'uscita -------------------------------------------------------------------
-
-## La prima volta: il nero che si apre piano, le schegge che brillano intorno a Lethe,
-## l'arrivo raccontato. `pace` accorcia le attese (test).
-func arrive(pace := 1.0) -> void:
-	hero.set(&"frozen", true)
-	hero.set(&"facing", Vector2.DOWN)
-	var layer := CanvasLayer.new()
-	layer.layer = 60
-	add_child(layer)
-	var black := ColorRect.new()
-	black.color = Color.BLACK
-	black.size = Vector2(640, 360)
-	black.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(black)
-	await get_tree().create_timer(0.8 * pace).timeout
-	var glass := Sparks.shards(18)
-	glass.global_position = hero.global_position + Vector2(0, -10)
-	world.add_child(glass)
-	glass.emitting = true
-	glass.finished.connect(glass.queue_free)
-	if sound:
-		Sfx.play(self, GLINT, 0.8, -6.0)
-	var open := create_tween()
-	open.tween_property(black, "color:a", 0.0, 2.4 * pace).set_trans(Tween.TRANS_SINE)
-	await open.finished
-	layer.queue_free()
-	state.set_flag("forest_arrived")
-	talk.say(DIALOGUE, "arrive")
-
+# --- L'uscita ------------------------------------------------------------------------------
 
 func _on_talk_finished(id: String) -> void:
 	if id in TALKS or id == "lethe":
 		state.set_flag("talk_learned")
-	if id == "arrive":
-		meet_selene()
-	if id == "selene_meet":
-		state.set_flag("selene_met")
-		objective.show_text(GOAL_PATH)
-	if id == "exit":
-		_leave()
 
 
+## L'uscita: la scena (la camera guarda avanti, l'albero bianco), poi il capitolo chiude.
 func _on_exit(body: Node) -> void:
 	if body != hero or _leaving:
 		return
 	_leaving = true
 	objective.show_text("")
-	talk.say(DIALOGUE, "exit")
+	await story.leave_scene()
+	_leave()
 
 
 ## Per ora la foresta finisce qui: "To be continued", poi il titolo.
