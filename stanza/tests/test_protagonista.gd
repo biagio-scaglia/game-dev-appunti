@@ -116,3 +116,45 @@ func test_non_si_attacca_due_volte_insieme() -> void:
 	hero.cast()
 	hero.slash()
 	assert_eq(hero.attacking, &"cast", "la spada aspetta che finisca la magia")
+
+
+func test_tenendo_una_direzione_corre_da_sola() -> void:
+	var hero := _hero()
+	Input.action_press(&"move_right")
+	for i in 4:
+		await tree.physics_frame
+	assert_near(hero.velocity.x, hero.walk_speed, 0.5, "all'inizio cammina")
+	await wait_seconds(hero.auto_run_after + 0.1)
+	assert_true(hero.is_auto_running(), "poi si mette a correre")
+	assert_near(hero.velocity.x, hero.run_speed, 0.5, "senza Shift")
+	Input.action_release(&"move_right")
+	await tree.physics_frame
+	await tree.physics_frame
+	assert_false(hero.is_auto_running(), "lasciata la direzione si riparte camminando")
+
+
+func test_lo_schema_dei_tasti() -> void:
+	var InputSetup := preload("res://core/input_setup.gd")
+	InputSetup.ensure_actions()
+	var space := InputEventKey.new()
+	space.physical_keycode = KEY_SPACE
+	assert_true(InputMap.action_has_event(&"slash", space) and InputMap.action_has_event(&"interact", space),
+		"Spazio è il tasto unico: parla o colpisce")
+	var q := InputEventKey.new()
+	q.physical_keycode = KEY_Q
+	assert_true(InputMap.action_has_event(&"cast", q), "Q è la magia")
+	var esc := InputEventKey.new()
+	esc.physical_keycode = KEY_ESCAPE
+	assert_true(InputMap.action_has_event(&"menu", esc), "Esc il menu")
+	var left := InputEventMouseButton.new()
+	left.button_index = MOUSE_BUTTON_LEFT
+	assert_true(InputMap.action_has_event(&"slash", left), "anche col mouse")
+	for action in InputMap.get_actions():
+		if String(action).begins_with("ui_") or action in [&"slash", &"interact"]:
+			continue
+		for other in [&"slash", &"cast", &"menu"]:
+			if other == action or not InputMap.has_action(action):
+				continue
+			for event in InputMap.action_get_events(action):
+				assert_false(InputMap.action_has_event(other, event) and action in InputSetup.ACTIONS,
+					"%s e %s non si pestano i piedi (%s)" % [action, other, event.as_text()])
