@@ -3,9 +3,11 @@
 
 ~ arrive
 Grass. Cold, wet grass, under her cheek.
+Above her, leaves. So many leaves the sky is only a few holes of light.
 Trees everywhere. Taller than the house. Taller than anything.
 Lethe: ...Where...?
-Something sharp is still in her hand.
+Something sharp is still in her hand. A piece of the mirror.
+It doesn't hurt yet.
 => END
 
 # Selene scende dalla luna (forest_zone.gd, meet_selene): la prima scelta del capitolo.
@@ -37,6 +39,9 @@ if seen("mirror") == 0
 	A small mirror, standing alone in the grass. A violet frame, like her dress.
 	It reflects the moon. Not her.
 	Lethe: Same glass as the one in my room...
+	if selene_met()
+		Selene: You can rest here. The glass remembers you.
+		Selene: If you fall... you'll wake up in front of it. I promise.
 else
 	The moon in the mirror hasn't moved.
 She rests a moment, close to the glass. Her heart loosens.
@@ -47,16 +52,44 @@ do rest()
 ~ wake_again
 Lethe: ...
 The mirror is cold against her back. She's still here.
+if selene_met()
+	Selene: You're back. ...You're back.
+	Selene: Don't do that again. Please.
+	- I'm okay.
+		Lethe: I'm okay. [#wrong]
+		set lies += 1
+	- That hurt.
+		Lethe: That hurt. A lot.
+		set truth += 1
+		Selene: I know. I felt it too.
 => END
 
 ~ brambles
 Thorns, grown thick across the path. [shiver]Something glints behind them.[/shiver]
 Lethe: I can't get through. ...Not like this.
+if selene_met() and seen("brambles") == 0
+	Selene: They grew shut. Like curtains nobody opens.
+	Selene: Maybe someday you'll know how to open them.
 => END
 
 ~ old_stone
 An old stone with a mark carved in it. It glows, a little.
 Lethe: An eye. Or a moon.
+if selene_met()
+	Selene: ...Someone was here before you.
+	Selene: They didn't go back.
+=> END
+
+# Il primo nemico (forest_story.gd, first_enemy): tutto si ferma, la camera lo guarda.
+~ first_enemy
+Something moves in the dark between the trees. It has no face.
+Lethe: ...That's the dark from under my bed.
+Selene: Careful. It's not a moth. Not really. It's made of the things you didn't say.
+if knows("truth_spark")
+	Selene: You have the light, and the glass. Light is slower. Glass cuts both ways.
+else
+	Selene: You have the glass. Use it if you have to.
+	Selene: It will want you to.
 => END
 
 # Il ruscello del Lete. Con Selene: la sua prima bugia ("just a sip"), e una seconda
@@ -85,4 +118,8 @@ else
 ~ exit
 The path goes on, deeper into the trees.
 Somewhere ahead, something is white. Like bone. Like a dead tree.
+if selene_met()
+	Selene: ...There. Can you feel it? Something up ahead is very tired.
+	Lethe: It looks like the plant on my windowsill.
+	Selene: Then it's waiting for you.
 => END
