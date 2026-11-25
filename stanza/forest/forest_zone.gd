@@ -598,6 +598,7 @@ func _secret(pace := 1.0) -> void:
 
 ## Di nuovo in piedi: davanti allo specchio (o allo Spawn), cuore intero, nemici al posto.
 func respawn() -> void:
+	state.flags.erase("defeated")
 	for enemy in enemies():
 		enemy.queue_free()
 	spawn_enemies.call_deferred()
