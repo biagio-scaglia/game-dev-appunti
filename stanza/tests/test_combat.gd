@@ -571,3 +571,19 @@ func test_sotto_il_menu_di_pausa() -> void:
 	var menu_layer: int = zone.pause_menu.layer
 	assert_true(zone.hud.layer < menu_layer, "il cuore sta sotto il menu")
 	assert_true(zone.objective.layer < menu_layer, "anche l'obiettivo")
+
+
+func test_a_cuore_pieno_la_mela_resta_per_terra() -> void:
+	var zone := await _zone()
+	zone.hero.global_position = Vector2(400, 380)
+	await tree.physics_frame
+	var apple: Area2D = zone.drop("apple", zone.hero.global_position)
+	for i in 6:
+		await tree.physics_frame
+	assert_true(is_instance_valid(apple), "a cuore pieno non si prende")
+	zone.state.heart = zone.state.heart_max - 1
+	for i in 6:
+		await tree.physics_frame
+	assert_false(is_instance_valid(apple) and not apple.is_queued_for_deletion(),
+		"appena serve si prende, anche standoci già sopra")
+	assert_eq(zone.state.heart, zone.state.heart_max, "e cura")
