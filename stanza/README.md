@@ -15,13 +15,11 @@ I tasti non sono scritti a schermo: il gioco li spiegherà man mano, quando serv
 
 | Tasto | Azione |
 | --- | --- |
-| WASD / frecce | cammina |
-| Shift | corri |
-| Spazio / J | magia (carica sulle mani, poi il proiettile parte verso dove guarda); solo quando Lethe sa un incantesimo |
-| K | spada di vetro (fende verso dove guarda); solo quando Lethe ha la spada in mano |
-| Tab | solo in debug: cambia lo stadio della spada |
-| Esc / X | menu di pausa (Esc, X o tasto destro: indietro) |
-| E / Z / Invio | parla con la cosa davanti (sopra la testa di Lethe compare un fumetto col cuore); nei dialoghi: avanti |
+| WASD / frecce | cammina; tenendo la direzione per un attimo corre da sola (Shift: corre subito) |
+| Spazio / Z / J / E / Invio / clic sinistro | il tasto unico: parla con la cosa davanti (sopra la testa di Lethe compare un fumetto col cuore) e va avanti nei dialoghi; se davanti non c'è niente, spada di vetro (solo quando Lethe ha la spada in mano) |
+| Q / X / K / clic destro | magia (carica sulle mani, poi il proiettile parte verso dove guarda); solo quando Lethe sa un incantesimo |
+| F2 | solo in debug: cambia lo stadio della spada |
+| Esc / C | menu di pausa (Esc, C o tasto destro: indietro) |
 
 ## Comandi
 
@@ -200,7 +198,7 @@ menu/
 ├── menu_page.gd                 la base delle pagine a lista (titolo, lista col cuore, aiuto, "no")
 ├── party_view.gd, hero_card.gd  la pagina del gruppo (solo Lethe) e la sua riga (ritratto, barre)
 ├── items_view.gd                gli oggetti della stanza (riguardati, cambiano descrizione)
-├── spells_view.gd               gli incantesimi: quale va su Spazio / J
+├── spells_view.gd               gli incantesimi: quale va su Q
 ├── equip_view.gd                arma, corpo, accessorio, con l'anteprima dei parametri
 ├── status_view.gd               parametri, equipaggiamento, incantesimo, verità e bugie
 ├── save_view.gd, save_store.gd  i 3 file di salvataggio (JSON in user://saves)
@@ -246,11 +244,11 @@ tools/make_forest_zone.gd        riscrive forest/zone_wake.tscn da zone_wake_lay
   ogni bugia ne stacca una scheggia, e la lama cresce in tre stadi. Lethe usa la posa d'attacco con
   la scia del braccio in vetro azzurro (la magia viola è la verità, la spada no).
 - **All'inizio a mani vuote**: Lethe non sa incantesimi e non ha la spada (arrivano nella
-  foresta, vedi il vault, "Trama - bozza"): nella stanza Spazio / J e K non fanno niente, e nel
+  foresta, vedi il vault, "Trama - bozza"): nella stanza magia e spada non fanno niente, e nel
   menu incantesimi ed equipaggiamento non ancora trovati sono "???". Addosso ha solo il vestito.
   Lo stato della partita sa cosa ha imparato e trovato (`learn`, `give`) e lo salva.
 - **Menu di pausa**: come in RPG Maker, con il cuore del titolo come cursore. Oggetti, incantesimi
-  (quale parte con Spazio / J), equipaggiamento con l'anteprima dei parametri, stato, salvataggi.
+  (quale parte con Q), equipaggiamento con l'anteprima dei parametri, stato, salvataggi.
   In fondo una barra d'aiuto dice cosa fa quello che si guarda e quali tasti usare. Per ora
   parametri, armi diverse dalla spada e incantesimi scelti si vedono solo nel menu: il
   combattimento non li usa ancora. E qualcosa non va: il gioco dietro si fa grigio e trema, la
