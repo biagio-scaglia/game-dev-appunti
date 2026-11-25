@@ -150,7 +150,7 @@ func test_muoversi_nel_menu_suona_ma_non_al_primo_focus() -> void:
 
 func test_continue_solo_se_c_e_un_salvataggio() -> void:
 	var ids := TitleScreen.menu_entries().map(func(e): return e[0])
-	assert_eq(ids, [&"start", &"help", &"quit"], "senza salvataggi: niente Continue")
+	assert_eq(ids, [&"start", &"settings", &"help", &"quit"], "senza salvataggi: niente Continue")
 	SaveStore.write(3, {"saved_at": 99})
 	assert_false(&"continue" in TitleScreen.menu_entries().map(func(e): return e[0]),
 		"il File 3 non è di Lethe: non conta")
@@ -288,3 +288,85 @@ func test_quit_rompe_lo_schermo_e_poi_chiede_di_chiudere() -> void:
 	var shatter: CanvasLayer = title.get_children().filter(func(n): return n is ScreenShatter)[0]
 	assert_true(shatter.shard_count() > 0, "lo schermo è in pezzi")
 	assert_true(await wait_signal(title.quit_requested, 6.0), "poi quit_requested")
+
+
+# --- Le impostazioni e cancellare i file -----------------------------------------------------
+
+func _settings() -> Control:
+	var title := _title()
+	title.skip_reveal()
+	title.open_settings()
+	var page: Control = title.settings_page
+	page.sound = false
+	page.eraser.pace = 0.05
+	return page
+
+
+func test_le_impostazioni_si_cambiano_e_si_ricordano() -> void:
+	var page := await _settings()
+	assert_true(page.is_open(), "si aprono dal menu")
+	assert_eq(int(Settings.value("volume")), Settings.DEFAULTS["volume"], "volume di partenza")
+	page.change(&"volume", -1)
+	page.change(&"music", -8)
+	page.change(&"shake", 1)
+	page.change(&"text_speed", 1)
+	assert_eq(int(Settings.value("volume")), Settings.DEFAULTS["volume"] - 1, "un po' più piano")
+	assert_eq(int(Settings.value("music")), 0, "musica a zero (e non sotto)")
+	assert_false(bool(Settings.value("shake")), "senza scuotimento")
+	assert_eq(int(Settings.value("text_speed")), 2, "testo veloce")
+	assert_eq(page.value_text(&"shake"), "Off", "la riga dice Off")
+	assert_eq(page.list.get_node("text_speed/Value").text, "Fast", "e la riga del testo si aggiorna")
+	assert_near(AudioServer.get_bus_volume_db(AudioServer.get_bus_index(Settings.MUSIC_BUS)), -80.0, 0.1,
+		"il canale della musica è muto")
+	Settings.path = Settings.path            # rileggendo dal file
+	var config := ConfigFile.new()
+	config.load(Settings.path)
+	assert_eq(int(config.get_value(Settings.VALUES, "volume")), Settings.DEFAULTS["volume"] - 1, "salvato su file")
+	assert_true(Settings.text_speed_scale() < 1.0, "il dialogo lo legge")
+	Settings.set_value("music", 8)
+	Settings.set_value("volume", 8)
+
+
+func test_il_file_3_non_si_cancella() -> void:
+	var page := await _settings()
+	page.eraser.open_list()
+	page.eraser.choose(&"slot3")
+	assert_true(page.eraser.busy, "le scritte si guastano")
+	var deadline := Time.get_ticks_msec() + 3000
+	while page.title_label.text != "IT'S NOT YOURS." and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_eq(page.title_label.text, "IT'S NOT YOURS.", "non è suo")
+
+
+func test_keep_non_cancella_niente() -> void:
+	SaveStore.write(1, {"saved_at": 10})
+	var page := await _settings()
+	page.eraser.open_list()
+	page.eraser.choose(&"slot1")
+	assert_eq(page.list.focused_id(), &"keep", "il cuore parte da Keep")
+	page.eraser.choose(&"keep")
+	assert_true(SaveStore.exists(1), "il file c'è ancora")
+	assert_eq(page.mode, &"erase", "si torna alla lista")
+
+
+func test_cancellare_un_file_e_continue_sparisce() -> void:
+	SaveStore.write(1, {"saved_at": 10})
+	var title := _title()
+	title.skip_reveal()
+	assert_true(&"continue" in TitleScreen.menu_entries().map(func(e): return e[0]), "c'è Continue")
+	title.open_settings()
+	var page: Control = title.settings_page
+	page.sound = false
+	page.eraser.pace = 0.05
+	page.eraser.open_list()
+	page.eraser.choose(&"slot1")
+	page.eraser.choose(&"forget")
+	assert_true(page.eraser.busy, "non in silenzio")
+	var deadline := Time.get_ticks_msec() + 4000
+	while page.eraser.busy and Time.get_ticks_msec() < deadline:
+		await tree.process_frame
+	assert_false(SaveStore.exists(1), "il file non c'è più")
+	assert_eq(title._erased, true, "il titolo lo sa (poi bussano)")
+	page.close()
+	await wait_seconds(0.5)
+	assert_false(title.menu.has_node("continue"), "e Continue non c'è più")
