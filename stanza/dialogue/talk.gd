@@ -67,7 +67,7 @@ func _ready() -> void:
 	icon.hide()
 	layer.add_child(icon)
 	hint_label = Label.new()
-	hint_label.text = "E"
+	hint_label.text = InputSetup.LABELS[&"action"]
 	hint_label.add_theme_font_override(&"font", preload("res://ui/fonts/kenpixel_high_square.ttf"))
 	hint_label.add_theme_font_size_override(&"font_size", 16)
 	hint_label.add_theme_color_override(&"font_color", Color(0.95, 0.9, 1.0))
