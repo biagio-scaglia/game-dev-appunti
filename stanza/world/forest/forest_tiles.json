@@ -595,6 +595,190 @@
         ]
       ]
     },
+    "birch": {
+      "atlas": [
+        6,
+        12
+      ],
+      "size": [
+        2,
+        3
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    "hollow_log": {
+      "atlas": [
+        7,
+        2
+      ],
+      "size": [
+        2,
+        1
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          34,
+          4
+        ],
+        "color": [
+          0.45,
+          0.95,
+          0.85
+        ],
+        "energy": 0.35,
+        "radius": 34
+      },
+      "flicker": [
+        0.1,
+        0.9,
+        0.3
+      ]
+    },
+    "rock_b": {
+      "atlas": [
+        8,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "sapling": {
+      "atlas": [
+        9,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "reeds": {
+      "atlas": [
+        7,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "lily": {
+      "atlas": [
+        4,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "pebbles": {
+      "atlas": [
+        6,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "leaf_litter": {
+      "atlas": [
+        3,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "moonflower": {
+      "atlas": [
+        5,
+        3
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          10
+        ],
+        "color": [
+          0.72,
+          0.82,
+          1.0
+        ],
+        "energy": 0.45,
+        "radius": 40
+      },
+      "flicker": [
+        0.08,
+        0.6,
+        0.5
+      ]
+    },
+    "glow_moss": {
+      "atlas": [
+        9,
+        2
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          18
+        ],
+        "color": [
+          0.4,
+          0.9,
+          0.8
+        ],
+        "energy": 0.3,
+        "radius": 30
+      },
+      "flicker": [
+        0.1,
+        0.7,
+        0.2
+      ]
+    },
     "path_c": {
       "atlas": [
         1,
