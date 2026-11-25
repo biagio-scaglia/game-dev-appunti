@@ -1,41 +1,47 @@
 extends SceneTree
-## Scrive res://forest/zone_wake.tscn dai dati di forest/zone_wake_layout.gd: il terreno
+## Scrive res://forest/zone_<nome>.tscn dai dati di forest/zone_<nome>_layout.gd: il terreno
 ## (TileMapLayer "Ground", coi pezzi dell'autotile scelti dai vertici), le piante basse
 ## ("Decor"), le cose (Sprite2D sotto "World", y-sort: alberi, rocce, specchio, rovi...),
-## dove arriva Lethe ("Spawn") e l'uscita ("Exit"). Poi la scena si ritocca nell'editor
+## dove arriva Lethe ("Spawn") e le uscite verso le altre zone ("Exit_0"...). Poi la scena si ritocca nell'editor
 ## (col pennello del terreno e spostando le cose): luci e collisioni delle cose le mette
 ## forest_zone.gd quando parte, dal tile scritto nei metadati.
-##   godot --headless --path . -s res://tools/make_forest_zone.gd
+##   godot --headless --path . -s res://tools/make_forest_zone.gd -- <nome>   (wake, tree; senza: wake)
 
-const Layout := preload("res://forest/zone_wake_layout.gd")
+const ZoneLayout := preload("res://forest/zone_layout.gd")
+const Zones := preload("res://forest/zones.gd")
 const ForestTileset := preload("res://world/forest/forest_tileset.gd")
 const RoomTileset := preload("res://world/room_tileset.gd")
 const ZONE_SCRIPT := preload("res://forest/forest_zone.gd")
-const OUT := "res://forest/zone_wake.tscn"
 const TILE := 32
 
 var data: Dictionary
+var zone_id := "wake"
+var Layout: GDScript
 var rng := RandomNumberGenerator.new()
 
 
 func _initialize() -> void:
 	rng.seed = 11
+	var args := OS.get_cmdline_user_args()
+	zone_id = args[0] if args.size() > 0 else Zones.FIRST
+	Layout = Zones.layout(zone_id)
 	data = ForestTileset.load_data()
 	var tile_set: TileSet = load("res://world/forest/forest_tileset.tres")
 	var root := Node2D.new()
-	root.name = "ZoneWake"
+	root.name = "Zone" + zone_id.capitalize()
 	root.set_script(ZONE_SCRIPT)
+	root.set("zone_id", zone_id)
 	var ground := _layer("Ground", tile_set, root)
 	var decor := _layer("Decor", tile_set, root)
 	_paint_ground(ground)
-	for entry in Layout.DECOR:
+	for entry in ZoneLayout.value(Layout, "DECOR"):
 		decor.set_cell(entry[1], RoomTileset.SOURCE_ID, _atlas(entry[0]))
 	var world := Node2D.new()
 	world.name = "World"
 	world.y_sort_enabled = true
 	_own(root, world)
 	var counts := {}
-	for entry in Layout.THINGS:
+	for entry in ZoneLayout.value(Layout, "THINGS"):
 		var tile_name: String = entry[0]
 		counts[tile_name] = counts.get(tile_name, 0) + 1
 		var sprite := thing_sprite(data, tile_name, entry[1])
@@ -43,26 +49,32 @@ func _initialize() -> void:
 		_own(root, sprite, world)
 	var spawn := Marker2D.new()
 	spawn.name = "Spawn"
-	spawn.position = (Vector2(Layout.SPAWN) + Vector2(0.5, 0.5)) * TILE
+	spawn.position = ZoneLayout.cell_center(ZoneLayout.value(Layout, "SPAWN"), TILE)
 	_own(root, spawn)
-	var exit := Area2D.new()
-	exit.name = "Exit"
-	exit.collision_layer = 0
-	exit.collision_mask = 2                      # la protagonista
-	var rect := Rect2(Vector2(Layout.EXIT.position) * TILE, Vector2(Layout.EXIT.size) * TILE)
-	exit.position = rect.get_center()
-	_own(root, exit)
-	var shape := CollisionShape2D.new()
-	shape.name = "Shape"
-	var box := RectangleShape2D.new()
-	box.size = rect.size
-	shape.shape = box
-	_own(root, shape, exit)
+	var exits: Array = ZoneLayout.value(Layout, "EXITS")
+	for i in exits.size():
+		var exit := Area2D.new()
+		exit.name = "Exit_%d" % i
+		exit.collision_layer = 0
+		exit.collision_mask = 2                  # la protagonista
+		var cells: Rect2i = exits[i][0]
+		var rect := Rect2(Vector2(cells.position) * TILE, Vector2(cells.size) * TILE)
+		exit.position = rect.get_center()
+		exit.set_meta(&"to_zone", exits[i][1])
+		exit.set_meta(&"entry", exits[i][2])
+		_own(root, exit)
+		var shape := CollisionShape2D.new()
+		shape.name = "Shape"
+		var box := RectangleShape2D.new()
+		box.size = rect.size
+		shape.shape = box
+		_own(root, shape, exit)
+	var out := Zones.scene(zone_id)
 	var scene := PackedScene.new()
 	var err := scene.pack(root)
 	if err == OK:
-		err = ResourceSaver.save(scene, OUT)
-	print("zone_wake.tscn: ", "ok" if err == OK else "errore %d" % err)
+		err = ResourceSaver.save(scene, out)
+	print(out.get_file(), ": ", "ok" if err == OK else "errore %d" % err)
 	root.free()
 	quit(0 if err == OK else 1)
 
@@ -85,13 +97,16 @@ static func thing_sprite(tiles: Dictionary, tile_name: String, cell: Vector2i) -
 
 
 func _paint_ground(ground: TileMapLayer) -> void:
-	var v := Layout.vertices()
-	for y in Layout.SIZE.y:
-		for x in Layout.SIZE.x:
-			var terrain := Layout.cell_terrain(v, Vector2i(x, y))
+	var v := ZoneLayout.vertices(Layout)
+	var size: Vector2i = ZoneLayout.value(Layout, "SIZE")
+	for y in size.y:
+		for x in size.x:
+			var terrain := ZoneLayout.cell_terrain(v, Vector2i(x, y))
 			var tile_name := _pick(terrain[0], terrain[1])
 			ground.set_cell(Vector2i(x, y), RoomTileset.SOURCE_ID, _atlas(tile_name))
-	var b: Array = Layout.BRIDGE
+	var b: Array = ZoneLayout.value(Layout, "BRIDGE")
+	if b.is_empty():
+		return
 	for x in range(b[1], b[2] + 1):
 		var tile_name := "bridge_h_w" if x == b[1] else ("bridge_h_e" if x == b[2] else "bridge_h")
 		ground.set_cell(Vector2i(x, b[0]), RoomTileset.SOURCE_ID, _atlas(tile_name))
