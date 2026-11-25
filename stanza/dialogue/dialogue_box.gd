@@ -27,6 +27,7 @@ const LAYER := 50
 const BOX_HEIGHT := 86
 const MARGIN := 10
 const FACE_SIZE := Vector2(64, 64)
+const Settings := preload("res://core/settings_store.gd")
 const TEXT_SECONDS_PER_STEP := 0.025
 ## Una lamella di carillon ogni tante lettere, piano e acuta.
 const BLIP_EVERY := 3
@@ -215,7 +216,7 @@ func _build() -> void:
 
 	text_label = LABEL_SCENE.instantiate()
 	text_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	text_label.seconds_per_step = TEXT_SECONDS_PER_STEP
+	text_label.seconds_per_step = TEXT_SECONDS_PER_STEP * Settings.text_speed_scale()
 	text_label.skip_action = &""
 	text_label.add_theme_color_override(&"default_color", Style.TEXT)
 	text_label.add_theme_font_override(&"normal_font", Style.FONT)
