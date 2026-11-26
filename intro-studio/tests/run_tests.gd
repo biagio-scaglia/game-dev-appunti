@@ -17,6 +17,11 @@ func _run_all() -> void:
 	for file in _test_files():
 		print("\n%s" % file)
 		var script: GDScript = load(TESTS_DIR.path_join(file))
+		if script == null or not script.can_instantiate():
+			# Non compila: senza questo il file si saltava in silenzio e il totale era "verde".
+			failed += 1
+			print("  FAIL  il file non compila (vedi SCRIPT ERROR sopra)")
+			continue
 		for test_name in _test_methods(script):
 			var case: RefCounted = script.new()
 			case.tree = self
