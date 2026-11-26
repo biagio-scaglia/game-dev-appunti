@@ -71,10 +71,10 @@ const WALL_FACES := [
 ## - la chiave della camera di Lethe, nel passaggio delle spine;
 ## - la porta della sua camera, tra la stanza del masso e le cose sepolte (si apre con la chiave);
 ## - la scatola da scarpe di sotto il letto, nelle cose sepolte: dentro il filo rosso.
-## Piastre: [id, cella, cancello che apre]. Cancelli: [id, celle]. Chiavi: [id, cella].
+## Piastre: [id, cella, cancello che apre]. Cancelli: [id, celle in alto (il cancello è alto due)]. Chiavi: [id, cella].
 ## Porte: [id, chiave, cella in alto a sinistra]. Scatole: [id, cella, oggetto dentro].
 const PLATES := [["handprint", Vector2i(14, 20), "thorns"]]
-const GATES := [["thorns", [Vector2i(8, 23), Vector2i(9, 23), Vector2i(10, 23)]]]
+const GATES := [["thorns", [Vector2i(8, 22), Vector2i(9, 22), Vector2i(10, 22)]]]
 const KEYS := [["old_key", Vector2i(4, 30)]]
 const LOCKS := [["bedroom", "old_key", Vector2i(49, 22)]]
 const CHESTS := [["shoebox", Vector2i(50, 30), "heart_thread"]]
@@ -86,12 +86,14 @@ const THINGS := [
 	["silver_frame", Vector2i(35, 27)],
 	# Il cuore delle radici, e il cancello verso l'arena.
 	["root_heart", Vector2i(28, 15)],
-	["root_gate", Vector2i(28, 11)], ["root_gate", Vector2i(29, 11)], ["root_gate", Vector2i(30, 11)],
+	# Il cancello (alto due celle, come la parete) sta nel varco della parete del cuore: si vede
+	# arrivando. Dietro, il corridoio verso l'arena.
+	["root_gate", Vector2i(28, 13)], ["root_gate", Vector2i(29, 13)], ["root_gate", Vector2i(30, 13)],
 	# Le lanterne: l'annaffiatoio mai usato.
 	["watering_can", Vector2i(5, 19)],
 	# La stanza del masso: la pietra antica col segno (il gesto Aprire).
 	["old_stone", Vector2i(54, 15)],
-	["rock", Vector2i(45, 20)], ["rock_b", Vector2i(10, 31)], ["stump", Vector2i(45, 32)],
+	["boulder", Vector2i(51, 17)], ["rock", Vector2i(45, 20)], ["rock_b", Vector2i(10, 31)], ["stump", Vector2i(45, 32)],
 ]
 const DECOR := [
 	["glow_root", Vector2i(24, 31)], ["glow_root", Vector2i(36, 32)], ["glow_root", Vector2i(23, 20)],
@@ -102,10 +104,14 @@ const DECOR := [
 	["mushrooms", Vector2i(37, 29)], ["mushrooms", Vector2i(3, 20)], ["mushrooms", Vector2i(57, 33)],
 	["pebbles", Vector2i(31, 33)], ["pebbles", Vector2i(14, 21)], ["pebbles", Vector2i(50, 17)],
 	["leaf_litter", Vector2i(29, 29)], ["leaf_litter", Vector2i(31, 31)],
-	# Il passaggio delle spine: rovi bassi ai lati della porta e lungo le pareti.
-	["thorns", Vector2i(7, 27)], ["thorns", Vector2i(11, 27)], ["thorns", Vector2i(2, 28)],
-	["thorns", Vector2i(18, 31)], ["thorns", Vector2i(3, 34)], ["thorns", Vector2i(16, 34)],
-	["thorns", Vector2i(12, 33)],
+	# Il passaggio delle spine: la siepe di rovi al piede della parete, ai lati della porta.
+	["thorns", Vector2i(2, 27)], ["thorns", Vector2i(3, 27)], ["thorns", Vector2i(4, 27)],
+	["thorns", Vector2i(6, 27)], ["thorns", Vector2i(7, 27)], ["thorns", Vector2i(11, 27)],
+	["thorns", Vector2i(12, 27)], ["thorns", Vector2i(14, 27)], ["thorns", Vector2i(15, 27)],
+	["thorns", Vector2i(16, 27)], ["thorns", Vector2i(17, 27)],
+	# La stanza del masso: i solchi di chi ha provato a spostarlo, le schegge.
+	["drag_marks", Vector2i(48, 18)], ["drag_marks", Vector2i(49, 18)], ["drag_marks", Vector2i(50, 18)],
+	["rubble", Vector2i(54, 19)], ["rubble", Vector2i(47, 15)],
 ]
 ## Pochi nemici per ora (il dungeon vero arriva coi passi dopo): falene nel buio, lucciole
 ## false tra le radici che fanno luce.
