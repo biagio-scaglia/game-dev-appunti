@@ -137,7 +137,9 @@ func icon_anchor() -> Vector2:
 
 func _process(delta: float) -> void:
 	var now := ""
-	if hero and not is_talking() and not get_tree().paused and not hero.call(&"is_attacking") 			and not hero.get(&"frozen"):
+	if hero and not is_talking() and not get_tree().paused and not hero.call(&"is_attacking") \
+			and not hero.get(&"frozen"):
+
 		var feet := hero.global_position - room.global_position
 		now = RoomThings.in_front(things, feet, hero.get(&"facing"))
 	_set_target(now)
