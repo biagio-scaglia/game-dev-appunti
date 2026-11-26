@@ -37,6 +37,7 @@ const RoomTileset := preload("res://world/room_tileset.gd")
 const RoomFx := preload("res://world/room_fx.gd")
 const RoomThings := preload("res://world/room_things.gd")
 const MoonBeam := preload("res://fx/moon_beam.gd")
+const RoomCamera := preload("res://core/room_camera.gd")
 const Fireflies := preload("res://fx/fireflies.gd")
 const Sparks := preload("res://fx/sparks.gd")
 const Music := preload("res://core/music.gd")
@@ -79,6 +80,10 @@ const ENEMY_SCRIPTS := {
 
 const PLACE := "The Forest"
 const NIGHT := Color(0.4, 0.45, 0.62)
+## Quanto è lunga la luce che scende da un buco nel soffitto, sottoterra.
+const UNDERGROUND_BEAM := 150.0
+## Dove ci si riposa (e ci si risveglia): lo specchio nel bosco, la cornice sottoterra.
+const REST_TILES := ["mirror", "silver_frame"]
 const TILE := 32
 const GOAL_PATH := "Follow the path"
 ## Quanto ci mette lo schermo a farsi nero passando da una zona all'altra.
@@ -104,6 +109,8 @@ var pause_menu: CanvasLayer
 var talk: Node
 var objective: CanvasLayer
 var hud: CanvasLayer
+## La camera per stanze (solo nei dungeon: ROOMS nei dati).
+var rooms: Node
 ## Dove si riparte quando il cuore è stretto del tutto (lo Spawn, poi lo specchio).
 var respawn_point := Vector2.ZERO
 var _dying := false
@@ -125,7 +132,7 @@ func _ready() -> void:
 	Layout = Zones.layout(zone_id)
 	data = ForestTileset.load_data()
 	var night := CanvasModulate.new()
-	night.color = NIGHT
+	night.color = layout_value("DARKNESS", NIGHT)       # sottoterra è più buio
 	add_child(night)
 	if not Main.pending_save.is_empty():
 		state.load_save(Main.pending_save)
@@ -143,6 +150,11 @@ func _ready() -> void:
 		beam.slant = beam.length * 0.25
 		beam.top_width = 14.0
 		beam.fade_until = BEAM_ABOVE * 0.9 / beam.length   # pieno già prima del bordo
+		if not layout_value("ROOMS").is_empty():
+			# Sottoterra la luce scende dal buco nel soffitto della stanza, non dal cielo.
+			beam.length = UNDERGROUND_BEAM
+			beam.slant = 16.0
+			beam.fade_until = 0.25
 		beam.position = at - Vector2(beam.slant, beam.length)
 		beam.pool = true                         # nel bosco la luna fa una pozza sul prato
 		beam.unshaded = true
@@ -160,12 +172,18 @@ func _ready() -> void:
 	hero.global_position = start_position(entry, same_zone)
 	Main.pending_save = {}
 	_add_camera()
+	if not layout_value("ROOMS").is_empty():          # il dungeon: la camera per stanze
+		rooms = RoomCamera.new()
+		rooms.name = "Rooms"
+		add_child(rooms)
+		rooms.setup(camera, hero, layout_value("ROOMS"), TILE)
 	respawn_point = mirror_point() if state.flag("rested") else spawn.global_position
 	hero.damaged.connect(_on_hero_damaged)
 	hero.attack_finished.connect(_on_hero_attack)
 	spawn_enemies()
 	music = AudioStreamPlayer.new()
-	music.stream = THEME
+	var theme_path := String(layout_value("THEME", ""))
+	music.stream = load(theme_path) if theme_path != "" else THEME
 	music.volume_db = -6.0
 	music.process_mode = Node.PROCESS_MODE_ALWAYS
 	add_child(music)
@@ -208,6 +226,8 @@ func _ready() -> void:
 		Music.play_loop(music)
 	if state.flag("selene_met"):
 		story.spawn_selene().snap()
+	if rooms:
+		rooms.room_changed.connect(story.on_room)
 	story.zone_ready(entry != "")
 
 
@@ -714,10 +734,11 @@ func rest() -> void:
 		Sfx.play(self, GLINT, 1.0, -8.0)
 
 
-## Dove ci si risveglia davanti allo specchio (lo Spawn, se lo specchio non c'è).
+## Dove ci si risveglia davanti allo specchio (o alla cornice d'argento, sottoterra; lo
+## Spawn, se non c'è nessuno dei due).
 func mirror_point() -> Vector2:
 	for sprite in thing_nodes():
-		if sprite.get_meta(&"tile") == "mirror":
+		if sprite.get_meta(&"tile") in REST_TILES:
 			return sprite.global_position + Vector2(0, 20)
 	return spawn.global_position
 
