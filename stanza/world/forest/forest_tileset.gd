@@ -22,9 +22,11 @@ const ATLAS := preload("forest_tiles.png")
 const DATA_PATH := "res://world/forest/forest_tiles.json"
 const TERRAIN_SET := 0
 ## I terreni, nell'ordine del terrain set.
-const TERRAINS := ["grass", "path", "lethe", "canopy"]
+## "earth" e "roots" sono del sottosuolo: la terra sta sul pavimento di radici ("base").
+const TERRAINS := ["grass", "path", "lethe", "canopy", "earth", "roots"]
 const TERRAIN_COLORS := [Color(0.3, 0.55, 0.4), Color(0.6, 0.45, 0.35), Color(0.3, 0.45, 0.85),
-	Color(0.1, 0.3, 0.25)]
+	Color(0.1, 0.3, 0.25),
+	Color(0.25, 0.18, 0.22), Color(0.4, 0.3, 0.32)]
 ## I 4 angoli, nell'ordine di "corners": alto-sx, alto-dx, basso-sx, basso-dx.
 const CORNER_BITS := [TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER, TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER,
 	TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER, TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER]
@@ -52,7 +54,8 @@ static func build(data: Dictionary) -> TileSet:
 		tile_data.terrain_set = TERRAIN_SET
 		tile_data.terrain = material
 		for i in 4:
-			tile_data.set_terrain_peering_bit(CORNER_BITS[i], material if int(tile["corners"][i]) else 0)
+			var base: int = TERRAINS.find(tile.get("base", "grass"))
+			tile_data.set_terrain_peering_bit(CORNER_BITS[i], material if int(tile["corners"][i]) else base)
 		tile_data.probability = float(tile.get("probability", 1.0))
 	return tile_set
 
