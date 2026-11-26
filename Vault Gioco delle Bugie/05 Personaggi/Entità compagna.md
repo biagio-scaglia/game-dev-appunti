@@ -1,5 +1,5 @@
 ---
-tags: [personaggi, compagno]
+tags: [personaggi, compagno, galassia/lethe]
 stato: in gioco (prima versione)
 ---
 # Entità compagna
@@ -28,3 +28,5 @@ stato: in gioco (prima versione)
 - Aspetto originale (no copia di Navi: solo la funzione di guida)
 
 Collegato: [[Protagonista]], [[📚 Riferimenti e ispirazioni]]
+
+Galassia: [[🌌 Lethe]]

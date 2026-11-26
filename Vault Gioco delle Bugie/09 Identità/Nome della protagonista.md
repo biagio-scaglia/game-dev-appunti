@@ -1,5 +1,5 @@
 ---
-tags: [identità, nomi, personaggi]
+tags: [identità, nomi, personaggi, galassia/lethe]
 stato: scelto
 ---
 # Nome della protagonista
@@ -38,3 +38,5 @@ stato: scelto
 - **Yalan**: in turco vuol dire *"bugia"*. Se la compagna è inaffidabile, il nome lo dice da subito → [[Entità compagna]]
 
 Collegato: [[Protagonista]], [[Titolo del gioco]]
+
+Galassia: [[🌌 Lethe]]

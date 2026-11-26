@@ -1,5 +1,5 @@
 ---
-tags: [personaggi, protagonista]
+tags: [personaggi, protagonista, galassia/lethe]
 stato: da definire
 ---
 # Protagonista
@@ -15,3 +15,5 @@ stato: da definire
 - Che rapporto ha con la verità e la bugia all'inizio del gioco?
 
 Collegato: [[Entità compagna]], [[Cast e limite personaggi]]
+
+Galassia: [[🌌 Lethe]]

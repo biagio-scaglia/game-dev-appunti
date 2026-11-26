@@ -1,5 +1,5 @@
 ---
-tags: [identità, titolo]
+tags: [identità, titolo, galassia/lethe]
 stato: due finalisti
 ---
 # Titolo del gioco
@@ -22,3 +22,5 @@ Si possono anche **unire**: uno come titolo, l'altro come sottotitolo (es. *Alet
 | The suicide of the truth | |
 
 Collegato: [[Tema - Le bugie]], [[Nome della protagonista]]
+
+Galassia: [[🌌 Lethe]]

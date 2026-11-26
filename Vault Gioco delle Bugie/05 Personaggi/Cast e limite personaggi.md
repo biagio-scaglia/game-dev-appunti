@@ -1,5 +1,5 @@
 ---
-tags: [personaggi, scope]
+tags: [personaggi, scope, galassia/lethe]
 stato: da decidere
 ---
 # Cast e limite personaggi
@@ -17,3 +17,5 @@ stato: da decidere
 | [[Entità compagna]] | probabile |
 | [[Divinità supervisore]] | incerto |
 | Abitanti del villaggio | da creare |
+
+Galassia: [[🌌 Lethe]]

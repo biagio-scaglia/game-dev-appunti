@@ -1,5 +1,5 @@
 ---
-tags: [lore, luoghi, stanza]
+tags: [lore, luoghi, stanza, galassia/lethe]
 stato: in gioco
 ---
 # La stanza di Lethe
@@ -49,3 +49,5 @@ vicino alla porta), sotto la porta c'è una striscia di luce con l'ombra di due 
 - Lo specchio: si potrà scoprire del tutto? Con che conseguenze?
 
 Collegato: [[Protagonista]], [[Ambientazione]], [[Il mistero della ragazzina]]
+
+Galassia: [[🌌 Lethe]]
