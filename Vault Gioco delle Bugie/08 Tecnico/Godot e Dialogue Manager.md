@@ -14,8 +14,9 @@ stato: in gioco
 ## Soluzione (in gioco)
 - Addon **Dialogue Manager** 4.2.0 (Nathan Hoad, MIT), la serie per Godot 4.7: in `stanza/addons/dialogue_manager/`
   - Dialoghi ramificati, condizioni e variabili: le scelte cambiano già `truth` / `lies` (il [[Sistema Karma]])
-  - I testi stanno in `stanza/dialogue/stanza.dialogue`: un "cue" per oggetto, col nome del suo tile.
-    Un oggetto con un cue diventa interagibile da solo.
+  - I testi stanno in `stanza/dialogue/`: `stanza.dialogue` (la stanza), `prologue.dialogue` (il narratore),
+    `forest.dialogue` (la foresta e il dungeon). Un "cue" per oggetto, col nome del suo tile: un oggetto
+    con un cue diventa interagibile da solo. Come funziona nel codice: `appunti/dialoghi.md` nel repo
 
 ## A livello grafico (deciso)
 - Riquadro in basso con la finestra e il font del menu di pausa, testo a macchina da scrivere
@@ -24,7 +25,9 @@ stato: in gioco
 - Le scelte in una finestrella sopra, a destra, con il cuore che batte come cursore
 - Quando Lethe ha davanti qualcosa con cui parlare, sopra la sua testa compare un'iconcina: un fumetto
   col cuore che batte come quello del menu (tum-tum, pausa). Compare con un piccolo salto, sparisce
-  rimpicciolendo, e non la scurisce il buio della stanza. Tasto: E / Z / Invio
+  rimpicciolendo, e non la scurisce il buio della stanza. Tasto: il tasto unico (Spazio / Z / J / E / Invio,
+  A sul gamepad)
+
 
 ## Le righe che non vanno (in gioco)
 Il testo si guasta dove la stanza (o Lethe) non dice la verità → [[Tema - Le bugie]].

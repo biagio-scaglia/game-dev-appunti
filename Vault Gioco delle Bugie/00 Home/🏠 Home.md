@@ -10,6 +10,17 @@ creato: 2026-11-21
 Un gioco **a scelte** in **pixel art**, ambientato in un **fantasy**, dove il tema centrale sono **le bugie**.
 Mentire o dire la verità cambia il tuo potere (spada vs magia), la tua route e perfino la musica.
 
+## 🚪 Prima volta qui?
+Tre note per capire il gioco in dieci minuti: [[Tema - Le bugie]] (di cosa parla), [[Verità = Magia, Bugia = Spada]]
+(come si gioca) e [[Trama - bozza]] (cosa succede). Prima di scrivere qualsiasi cosa: [[Temi delicati - linee guida]].
+
+Ogni nota dice in cima il suo `stato`: `in gioco` vuol dire già fatta nel gioco (cartella `stanza/` del repo);
+gli altri (`bozza`, `idea`, `deciso`...) dicono a che punto è l'idea.
+
+Il *come* tecnico (codice, test, salvataggi) non sta qui ma negli appunti del repo, cartella `appunti/`.
+Le foto degli appunti a mano (`99 Allegati/`) restano solo in locale: su un clone quelle immagini mancano.
+
+
 ## 🧭 Mappa del vault
 
 ### 💡 Concept
