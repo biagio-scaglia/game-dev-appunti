@@ -106,9 +106,10 @@ static func light_decor(parent: Node2D, decor: TileMapLayer, data: Dictionary) -
 ## I raggi di luna (`points`: dove toccano terra). `underground`: escono da un buco nel
 ## soffitto della stanza invece che dal cielo.
 ## Gli occhi nelle radici (EYES: celle delle pareti), che guardano `target` (Lethe).
-static func add_eyes(parent: Node2D, cells: Array, target: Node2D) -> void:
+static func add_eyes(parent: Node2D, cells: Array, target: Node2D, sound := true) -> void:
 	for cell in cells:
 		var eye := RootEye.new()
+		eye.sound = sound
 		eye.name = "Eye_%d_%d" % [cell.x, cell.y]
 		eye.position = (Vector2(cell) + Vector2(0.5, 0.5)) * TILE
 		eye.target = target
