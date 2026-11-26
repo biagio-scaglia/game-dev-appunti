@@ -189,9 +189,20 @@ func _add_curtain(id: String, cell: Vector2i, lantern: String) -> void:
 	var opened := curtain_open(id)
 	var sprite := _thing("root_curtain_open" if opened else "root_curtain", cell)
 	sprite.set_meta(&"lantern", lantern)
+	sprite.set_meta(&"base_y", sprite.position.y)
 	curtains[id] = sprite
+	_layer_curtain(sprite, opened)
 	if opened:
 		_add_moon(sprite)
+
+
+## La tenda e la lanterna stanno nella stessa cella: chiusa, la tenda sta davanti (la copre);
+## aperta, passa dietro (la nicchia buia è lo sfondo della lanterna). Nell'ordine dall'alto
+## del mondo conta la y: la si sposta di un pixel, e il disegno resta dov'è.
+func _layer_curtain(sprite: Sprite2D, opened: bool) -> void:
+	var nudge := -1.0 if opened else 1.0
+	sprite.position.y = float(sprite.get_meta(&"base_y")) + nudge
+	sprite.offset.y = -sprite.texture.get_size().y - nudge
 
 
 func curtain_open(id: String) -> bool:
@@ -210,6 +221,7 @@ func open_curtain() -> void:
 		if child is StaticBody2D:
 			child.queue_free()
 	ZoneDressing.set_tile(sprite, zone.data, "root_curtain_open")
+	_layer_curtain(sprite, true)
 	_sfx(RETRACT, 1.2, -4.0)
 	_add_moon(sprite)
 	_refresh_talk()

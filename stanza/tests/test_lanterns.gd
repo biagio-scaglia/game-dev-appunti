@@ -118,6 +118,8 @@ func test_il_proiettile_accende_la_lanterna() -> void:
 func test_dietro_la_tenda_la_luce_non_arriva() -> void:
 	var zone := await _zone()
 	assert_true(zone.lanterns.hidden("east"), "la terza è dietro la tenda")
+	assert_true(zone.lanterns.curtains["east"].position.y > zone.lanterns.lanterns["east"].position.y,
+		"chiusa, la tenda le sta davanti")
 	LightCatch.touch(tree, _catch_point(zone, "east"))
 	assert_false(zone.lanterns.is_lit("east"), "la luce non la raggiunge")
 	var ids: Array = zone.talk.things.map(func(t): return t["id"])
@@ -180,6 +182,8 @@ func test_il_gesto_apre_la_tenda_e_la_luna_accende() -> void:
 	if not zone.lanterns.is_lit("east"):
 		assert_true(await wait_signal(zone.lanterns.lantern_lit, 3.0), "poi la luna arriva")
 	assert_true(zone.lanterns.is_lit("east"), "e accende la lanterna")
+	var lantern: Sprite2D = zone.lanterns.lanterns["east"]
+	assert_true(curtain.position.y < lantern.position.y, "aperta, la tenda passa dietro: la lanterna si vede")
 
 
 # --- Tutte accese: l'arena, e la veglia ----------------------------------------------------------
