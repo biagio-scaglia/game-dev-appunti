@@ -9,16 +9,19 @@ extends Node
 ##   testa) e si raccoglie col suo racconto ("key_<id>");
 ## - la porta: si parla, e con la chiave si apre ("door_<id>");
 ## - la scatola: si parla, si apre, dentro un oggetto ("box_<id>"). Il filo rosso
-##   (heart_thread) fa reggere al cuore una stretta in più.
+##   (heart_thread) fa reggere al cuore una stretta in più;
+## - i rovi (il tile "brambles", messi nella scena): col gesto Aprire si scostano e lasciano
+##   passare ("brambles_<zona>_<x>_<y>"). Nella prima radura chiudono la nicchia della pietra.
 ## Niente qui ha bisogno della magia: si risolve anche dicendo solo bugie.
 ##
 ## I dialoghi (forest.dialogue) lo usano: has_key(), door_open(), open_door(), box_open(),
-## open_box() (sta tra gli extra_states dei dialoghi).
+## open_box(), open_brambles() (sta tra gli extra_states dei dialoghi).
 
 signal gate_opened(id: String)
 signal key_taken(id: String)
 signal door_opened(id: String)
 signal box_opened(id: String)
+signal brambles_opened
 
 const ZoneDressing := preload("zone_dressing.gd")
 const ScreenText := preload("res://ui/screen_text.gd")
@@ -56,6 +59,9 @@ func setup(zone_node: Node2D) -> void:
 	for entry in zone.layout_value("LOCKS"):
 		doors[entry[0]] = _thing("bedroom_door_open" if door_open(entry[0]) else "bedroom_door", entry[2])
 		doors[entry[0]].set_meta(&"key", entry[1])
+	for sprite in zone.thing_nodes():
+		if sprite.get_meta(&"tile") == "brambles" and state().flag(_brambles_key(sprite)):
+			_show_brambles_open(sprite)
 	for entry in zone.layout_value("CHESTS"):
 		boxes[entry[0]] = _thing("shoebox_open" if box_open(entry[0]) else "shoebox", entry[1])
 		boxes[entry[0]].set_meta(&"item", entry[2])
@@ -258,3 +264,41 @@ func give(item: String) -> void:
 func _refresh_talk() -> void:
 	if zone.talk:
 		zone.talk.things = zone.talk_things()
+
+
+# --- I rovi -----------------------------------------------------------------------------------
+
+## Fin dove Lethe arriva ad aprire i rovi (pixel, dai piedi).
+const BRAMBLES_REACH := 72.0
+
+
+func _brambles_key(sprite: Sprite2D) -> String:
+	var cell := Vector2i((sprite.position / TILE).floor())
+	return "brambles_%s_%d_%d" % [zone.zone_id, cell.x, cell.y]
+
+
+## Dai dialoghi, col gesto Aprire: i rovi chiusi più vicini a Lethe si scostano.
+func open_brambles() -> void:
+	var best: Sprite2D = null
+	var best_d := BRAMBLES_REACH
+	for sprite in zone.thing_nodes():
+		if sprite.get_meta(&"tile") != "brambles":
+			continue
+		var d: float = sprite.global_position.distance_to(zone.hero.global_position)
+		if d < best_d:
+			best_d = d
+			best = sprite
+	if best == null:
+		return
+	state().set_flag(_brambles_key(best))
+	_show_brambles_open(best)
+	_sfx(RETRACT, 1.3, -4.0)
+	_refresh_talk()
+	brambles_opened.emit()
+
+
+func _show_brambles_open(sprite: Sprite2D) -> void:
+	for child in sprite.get_children():
+		if child is StaticBody2D:
+			child.queue_free()
+	ZoneDressing.set_tile(sprite, zone.data, "brambles_open")
