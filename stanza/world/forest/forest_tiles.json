@@ -486,6 +486,18 @@
       "layer": "decor",
       "solid": false
     },
+    "thorns": {
+      "atlas": [
+        8,
+        15
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
     "root_floor": {
       "atlas": [
         7,
