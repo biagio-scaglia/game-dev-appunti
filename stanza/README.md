@@ -21,6 +21,9 @@ I tasti non sono scritti a schermo: il gioco li spiegherà man mano, quando serv
 | F2 | solo in debug: cambia lo stadio della spada |
 | Esc / C | menu di pausa (Esc, C o tasto destro: indietro) |
 
+Col gamepad: levetta sinistra o croce per camminare, A il tasto unico, X la magia, Start il menu
+(B indietro), grilletto destro per correre subito (`core/input_setup.gd`).
+
 ## Comandi
 
 `$GODOT` è il percorso dell'eseguibile di Godot 4.7; i comandi si lanciano da questa cartella.
@@ -47,6 +50,10 @@ title/
 │                                "Talk to Someone" coi numeri d'aiuto
 ├── title_backdrop.gd            raggio di luna (con le nuvole che passano) e pulviscolo
 ├── title_figure.gd              Lethe di spalle nel raggio (solo se ci sono i suoi sprite)
+├── settings_page.gd             le impostazioni: volume, musica, schermo intero, tremolio, velocità
+│                                del testo, cancellare i file
+├── file_eraser.gd               cancellare un file, che non va come dovrebbe (il File 3 non si
+│                                cancella, un file vero resiste prima di sparire)
 ├── title_name.gd                il titolo col nome nascosto: ogni tanto di A-LETHE-IA resta solo LETHE
 └── art/                         finestra con tende e luna, pavimento, pannello del menu, cuore,
                                  ornamento (dal generatore in locale: griglia a 16 px, blocchi 2x2)
@@ -69,11 +76,26 @@ forest/
 │                                ruscello del Lete col ponte, i rovi sul ramo a nord, lo specchio.
 │                                Scritta da tools/make_forest_zone.gd, poi si ritocca nell'editor
 │                                (pennello del terreno; le cose sono Sprite2D da spostare)
-├── zone_wake_layout.gd          i dati della zona: il terreno per vertici, le cose, le piante
-└── forest_zone.gd               la zona quando parte: notte, raggi di luna, lucciole, luci e
-                                 collisioni delle cose (dal JSON), la camera che segue Lethe e si
-                                 ferma ai bordi, l'OST, il menu, i dialoghi (forest.dialogue),
-                                 l'obiettivo, l'arrivo dalla caduta e l'uscita (per ora: titolo)
+├── zone_tree.tscn               la seconda zona: la radura dell'albero secco (la pianta del davanzale
+│                                di Lethe, enorme), col buco tra le radici che scende al dungeon
+├── zone_wake_layout.gd,         i dati delle zone, solo costanti: il terreno per vertici, le cose,
+│   zone_tree_layout.gd,         le piante, i nemici, le entrate e le uscite; nel dungeon anche
+│   zone_roots_layout.gd         stanze, piastre, cancelli, chiavi, porte e scatole
+├── zone_layout.gd               le funzioni comuni per leggere i dati di una zona
+├── zones.gd                     nome della zona -> scena (il salvataggio ricorda il nome)
+├── forest_zone.gd               la zona quando parte: monta i pezzi qui sotto e li tiene insieme
+│                                (notte, camera, OST, menu, dialoghi, obiettivo, uscite tra le zone).
+│                                È la facciata: i pezzi e i test parlano con lei
+├── zone_combat.gd               i nemici della zona, l'esperienza, il cuore, la morte e il
+│                                risveglio, il segreto della decima morte
+├── zone_dressing.gd             l'allestimento: luci e collisioni delle cose (dal JSON), raggi di
+│                                luna, lucciole, le cose con cui si parla
+├── zone_puzzles.gd              i meccanismi (piastre, cancelli, chiavi, porte, scatole), ricordati
+│                                nei flag della partita
+└── forest_story.gd              la regia del capitolo: l'arrivo, Selene, il primo nemico, le battute,
+                                 gli obiettivi passo passo, la discesa nel dungeon
+characters/selene/selene.gd      Selene, la compagna: uno spicchio di luna che segue Lethe, fa luce
+                                 e dice battute brevi sopra la testa (bark)
 enemies/
 ├── enemy.gd                     la base dei nemici: vita, debolezze (spada/magia), il lampo bianco e
 │                                la spinta quando li colpisci, la morte che si scioglie in ombra, il
@@ -88,8 +110,13 @@ enemies/
 │                                (tutti: numeri del danno, barretta della vita sopra, un attimo
 │                                scomposti dopo un colpo, luce che vola a Lethe come esperienza)
 items/pickup.gd                  un oggetto per terra (la mela che lascia un nemico): galleggia, luccica,
-                                 si prende passandoci sopra
+                                 si prende passandoci sopra e dopo un po' sparisce; la chiave invece
+                                 si raccoglie parlandoci e aspetta
 fx/damage_number.gd              il numero del danno: rosa sul punto debole, grigio se l'arma fa poco
+fx/emote.gd                      la nuvoletta sopra la testa: "!", "?", "...", un cuoricino
+fx/fireflies.gd                  le lucciole del bosco (blend additivo, blocchi di 2 pixel)
+fx/world_grey.gd                 il mondo che si svuota: con più bugie che verità i colori vanno al
+                                 grigio, restano solo i rossi
 prologue/
 ├── prologue.gd                  il regista del prologo nella stanza: il risveglio dopo la cutscene
 │                                (gli occhi che si aprono, un respiro, "Night."), lo specchio che
@@ -116,6 +143,8 @@ ui/
 │                                cuore che batte; cambia scivolando, il numero si accende
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
 │                                alla voce scelta batte un cuore. La usano il titolo e il menu di pausa
+├── screen_text.gd               le scritte e i neri dello schermo in un posto solo: scritta centrata,
+│                                nero per le sfumature, toast in alto, "+3 EXP" che sale
 └── fonts/                       Kenney Pixel (CC0)
 main.tscn / main.gd              stanza al buio (CanvasModulate) + protagonista + OST
 audio/stanza_theme.wav           l'OST della stanza: loop lo-fi di 25 s (dal generatore, senza stacchi)
@@ -167,6 +196,8 @@ dialogue/
 ├── stanza.dialogue              cosa dicono le cose della stanza (Dialogue Manager): un cue per
 │                                oggetto, col nome del suo tile. Le scelte cambiano truth / lies
 ├── prologue.dialogue            il narratore del prologo: il risveglio, lo specchio che chiama
+├── forest.dialogue              la foresta e il dungeon: le cose, Selene, i meccanismi (porte e
+│                                scatole si aprono da qui, con le funzioni di zone_puzzles.gd)
 ├── dialogue_box.gd              il riquadro: testo a macchina da scrivere, il viso di Lethe quando
 │                                pensa lei, le scelte col cuore, i suoni del carillon. Una riga
 │                                col tag [#wrong] non va: si guasta tutta, il riquadro sobbalza,
@@ -198,6 +229,7 @@ characters/protagonista/
 magic/
 ├── magic_frames.gd              animazioni di carica (8), proiettile (4), impatto (9), ognuna col suo ritmo
 ├── projectile.gd / .tscn        vola con una scia di scintille e una luce viola, esplode su muri e mobili
+├── charge.tscn, impact.tscn     le scene della carica e dell'impatto (con one_shot_effect.gd)
 └── one_shot_effect.gd           carica e impatto: luce (sale nella carica, si spegne nell'impatto),
                                  suono, scoppio di scintille e tremolio a scelta
 weapon/
@@ -213,7 +245,9 @@ menu/
 ├── spells_view.gd               gli incantesimi: quale va su Q
 ├── equip_view.gd                arma, corpo, accessorio, con l'anteprima dei parametri
 ├── status_view.gd               parametri, equipaggiamento, incantesimo, verità e bugie
-├── save_view.gd, save_store.gd  i 3 file di salvataggio (JSON in user://saves)
+├── lie_eyes.gd                  le bugie nello Stato: un filo spinato con gli occhi, uno aperto per bugia
+├── save_view.gd, save_store.gd  i 3 file di salvataggio (JSON in user://saves; si scrive in un .tmp
+│                                accanto e poi lo si sostituisce, così uno slot non resta mai a metà)
 ├── end_view.gd                  Game End: lo schermo si rompe e si torna al titolo
 ├── game_state.gd, equipment.gd  lo stato che si salva e i conti dei parametri (solo logica)
 ├── menu_data.gd                 tutti i testi e i numeri del menu (solo dati)
@@ -226,11 +260,17 @@ core/
 ├── glow.gd                      luci morbide (PointLight2D a gradiente radiale)
 ├── music.gd                     musica in loop
 ├── sfx.gd                       suoni usa-e-getta (si liberano da soli, suonano anche in pausa)
+├── cutscene.gd                  il regista delle cutscene: passi in fila con await (bande nere,
+│                                camera, dialoghi, emote), così una scena si scrive come un copione
+├── room_camera.gd               la camera per stanze dei dungeon: i limiti scivolano passando una porta
 ├── settings_store.gd            le cose da ricordare che non sono un salvataggio (l'avviso già letto)
-└── input_setup.gd               crea le azioni di input se mancano
-tests/                           un file per modulo + mini runner headless
+└── input_setup.gd               crea le azioni di input se mancano (tastiera, mouse, gamepad)
+tests/                           un file per modulo + mini runner headless (vedi ../appunti/)
 tools/make_forest_tileset.gd     riscrive world/forest/forest_tileset.tres dal JSON (con l'autotile)
-tools/make_forest_zone.gd        riscrive forest/zone_wake.tscn da zone_wake_layout.gd
+tools/make_forest_zone.gd        riscrive forest/zone_<nome>.tscn da zone_<nome>_layout.gd. Attenzione:
+                                 sovrascrive i ritocchi fatti nell'editor, si lancia solo sulla zona
+                                 che cambia
+
 ```
 
 - **Luci**: la stanza è scurita da un `CanvasModulate`; schermo del PC, lampada, telefono e luna
