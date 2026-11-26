@@ -1,22 +1,93 @@
 {
   "collapse-filter": true,
-  "search": "",
+  "search": "-path:\"99 Allegati\"",
   "showTags": false,
   "showAttachments": false,
-  "hideUnresolved": false,
+  "hideUnresolved": true,
   "showOrphans": true,
-  "collapse-color-groups": true,
-  "colorGroups": [],
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "path:\"00 Home\"",
+      "color": {
+        "a": 1,
+        "rgb": 15919561
+      }
+    },
+    {
+      "query": "path:\"02 Concept\"",
+      "color": {
+        "a": 1,
+        "rgb": 15119440
+      }
+    },
+    {
+      "query": "path:\"03 Gameplay\"",
+      "color": {
+        "a": 1,
+        "rgb": 14701931
+      }
+    },
+    {
+      "query": "path:\"04 Storia e Lore\"",
+      "color": {
+        "a": 1,
+        "rgb": 10189792
+      }
+    },
+    {
+      "query": "path:\"05 Personaggi\"",
+      "color": {
+        "a": 1,
+        "rgb": 6273256
+      }
+    },
+    {
+      "query": "path:\"06 Arte e Grafica\"",
+      "color": {
+        "a": 1,
+        "rgb": 7327626
+      }
+    },
+    {
+      "query": "path:\"07 Audio\"",
+      "color": {
+        "a": 1,
+        "rgb": 15765440
+      }
+    },
+    {
+      "query": "path:\"08 Tecnico\"",
+      "color": {
+        "a": 1,
+        "rgb": 10134961
+      }
+    },
+    {
+      "query": "path:\"09 Identità\"",
+      "color": {
+        "a": 1,
+        "rgb": 15790320
+      }
+    },
+    {
+      "query": "path:\"01 Appunti originali\"",
+      "color": {
+        "a": 1,
+        "rgb": 11569754
+      }
+    }
+  ],
   "collapse-display": true,
-  "showArrow": false,
+  "showArrow": true,
   "textFadeMultiplier": 0,
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
   "collapse-forces": true,
   "centerStrength": 0.518713248970312,
-  "repelStrength": 10,
+  "repelStrength": 12,
   "linkStrength": 1,
-  "linkDistance": 250,
+  "linkDistance": 180,
   "scale": 1,
   "close": false
 }
