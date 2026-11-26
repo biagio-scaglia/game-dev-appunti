@@ -451,7 +451,7 @@ func test_il_tasto_della_spada() -> void:
 	assert_true(zone.slash_hint != null, "un nemico vicino: compare il tasto")
 	var label: Label = zone.slash_hint.get_child(0).get_child(0)
 	assert_true(label.text.begins_with("Space"), "dice il tasto")
-	zone._on_hero_attack(&"slash")
+	zone.combat.on_hero_attack(&"slash")
 	assert_eq(zone.slash_hint, null, "al primo fendente sparisce")
 	assert_true(zone.state.flag("slash_learned"), "e non torna")
 
