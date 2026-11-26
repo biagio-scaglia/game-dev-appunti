@@ -242,9 +242,14 @@ if selene_met()
 
 ~ thorns_gate
 Roots, woven tight across the passage. They shiver when she comes close.
+Behind them, in the dirt, something small glints.
 Lethe: They're not dead. They're waiting.
-if selene_met()
-	Selene: That flat stone back there... it looked like a hand.
+if is_pressed("handprint") == false
+	if selene_met()
+		Selene: That flat stone in the floor, by the pebbles... it has a hand on it.
+		Selene: Maybe it wants to be stepped on.
+	else
+		Lethe: There's a stone in the floor here, with a hand on it. ...Like a button.
 => END
 
 # La chiave per terra, nel passaggio delle spine: ci si parla e si raccoglie.
