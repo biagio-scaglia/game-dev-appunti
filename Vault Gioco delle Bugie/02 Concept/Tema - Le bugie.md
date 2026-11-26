@@ -1,5 +1,5 @@
 ---
-tags: [concept, tema]
+tags: [concept, tema, galassia/bugie]
 stato: solido
 ---
 # Tema - Le bugie
@@ -24,3 +24,5 @@ Il **cuore del gioco**: le bugie sono la tematica principale e devono permeare t
 ## Da approfondire
 - Perché la protagonista mente? A chi? A sé stessa?
 - Qual è la bugia più grande del gioco? (Collegata al titolo "Death is a lie"?)
+
+Galassia: [[🌌 Le bugie]]

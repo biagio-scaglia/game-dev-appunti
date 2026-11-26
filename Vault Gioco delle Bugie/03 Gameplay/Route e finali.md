@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, narrativa]
+tags: [gameplay, narrativa, galassia/bugie]
 stato: bozza (deciso: route dinamiche)
 ---
 # Route e finali
@@ -26,3 +26,5 @@ In tutti i finali, dopo i titoli: l'avviso e il numero d'aiuto → [[Temi delica
   nel mondo vuoto. Il Lete ha una melodia sua, bella, che si fa sentire di più se si beve.
 
 Collegato: [[Sistema Karma]], [[Verità = Magia, Bugia = Spada]], [[Trama - bozza]], [[Il Lete]]
+
+Galassia: [[🌌 Le bugie]]

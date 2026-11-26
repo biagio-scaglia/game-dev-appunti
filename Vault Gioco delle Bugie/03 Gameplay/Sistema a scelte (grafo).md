@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, sistema]
+tags: [gameplay, sistema, galassia/bugie]
 stato: idea
 ---
 # Sistema a scelte (grafo)
@@ -23,3 +23,5 @@ Il gioco è **sostanzialmente a scelte**.
 ## Note
 - Un grafo di dialoghi non è pesante per Godot: sono dati testuali. Il vero costo è **scrivere** tutti i rami.
 - Per tenere i rami sotto controllo: struttura "branch & bottleneck" (i rami si separano e poi riconvergono sugli eventi chiave).
+
+Galassia: [[🌌 Le bugie]]

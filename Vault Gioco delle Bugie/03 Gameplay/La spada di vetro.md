@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, combattimento, armi]
+tags: [gameplay, combattimento, armi, galassia/bugie]
 stato: in gioco (prima versione)
 ---
 # La spada di vetro
@@ -37,3 +37,5 @@ compare *"The shard grows."* / *"Another lie. Another piece of the mirror."*. Ne
 - **La tentazione**: la spada fa più danni della magia ma costa (karma, [[La mano che stringe il cuore]]).
 
 Collegato: [[Verità = Magia, Bugia = Spada]], [[Sistema Karma]], [[Protagonista]]
+
+Galassia: [[🌌 Le bugie]]

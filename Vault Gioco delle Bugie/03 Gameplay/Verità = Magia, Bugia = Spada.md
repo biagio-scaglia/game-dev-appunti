@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, combattimento, progressione]
+tags: [gameplay, combattimento, progressione, galassia/bugie]
 stato: idea forte
 ---
 # Verità = Magia, Bugia = Spada
@@ -24,3 +24,5 @@ incantesimi ed equipaggiamento non ancora trovati sono **"???"**. Addosso ha sol
 - Gli altri incantesimi e l'equipaggiamento si trovano lungo la strada ([[Cose da fare]]).
 
 Collegato: [[Sistema Karma]], [[Tema - Le bugie]], [[La spada di vetro]]
+
+Galassia: [[🌌 Le bugie]]

@@ -1,5 +1,5 @@
 ---
-tags: [arte, meccanica, visual]
+tags: [arte, meccanica, visual, galassia/bugie]
 stato: idea
 ---
 # La mano che stringe il cuore
@@ -20,3 +20,5 @@ Una **mano** che afferra / stringe il **cuore** della protagonista.
 - Ispirazione citata negli appunti (Satella `[?]`): prendere solo l'idea, design originale.
 
 Collegato: [[Tema - Le bugie]], [[Sistema Karma]], [[Pixel art]]
+
+Galassia: [[🌌 Le bugie]]

@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, sistema]
+tags: [gameplay, sistema, galassia/bugie]
 stato: idea
 ---
 # Sistema Karma
@@ -29,3 +29,5 @@ Il karma non cambia solo le armi: cambia **quanta gente c'è** → [[Trama - boz
 - Bugie "piccole" e bugie "grandi" con pesi diversi
 
 Collegato: [[Route e finali]], [[Sistema a scelte (grafo)]]
+
+Galassia: [[🌌 Le bugie]]
