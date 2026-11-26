@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, combattimento, nemici]
+tags: [gameplay, combattimento, nemici, galassia/gioco]
 stato: bozza
 ---
 # Nemici e boss
@@ -108,3 +108,5 @@ modo cambia la scena finale del boss (la verità lo libera, la spada lo rompe).
 - I nemici lasciano qualcosa? (Cibo, luce, schegge per migliorare la spada?)
 
 Collegato: [[Trama - bozza]], [[Cose da fare]], [[Sistema Karma]]
+
+Galassia: [[🌌 Il gioco]]

@@ -1,5 +1,5 @@
 ---
-tags: [tecnico, godot]
+tags: [tecnico, godot, galassia/gioco]
 stato: in gioco
 ---
 # Godot e Dialogue Manager
@@ -45,3 +45,5 @@ Il testo si guasta dove la stanza (o Lethe) non dice la verità → [[Tema - Le 
 
 ## Già pronto
 - L'intro dello studio, riusabile in ogni gioco: cartella `intro-studio/` del repo
+
+Galassia: [[🌌 Il gioco]]

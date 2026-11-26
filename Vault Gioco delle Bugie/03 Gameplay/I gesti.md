@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, meccanica, progressione]
+tags: [gameplay, meccanica, progressione, galassia/gioco]
 stato: bozza
 ---
 # I gesti
@@ -24,3 +24,5 @@ si torna nei posti vecchi e si aprono strade (e [[Cose da fare]]) che prima eran
   la lettera sulla scrivania, la porta aperta.
 
 Collegato: [[Trama - bozza]], [[La stanza di Lethe]], [[Il Lete]]
+
+Galassia: [[🌌 Il gioco]]

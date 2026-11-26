@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, dungeon, capitolo-1]
+tags: [gameplay, dungeon, capitolo-1, galassia/gioco]
 stato: deciso, da fare
 ---
 # Il dungeon delle radici
@@ -97,3 +97,5 @@ Si ricordano nei salvataggi (flag plate_, gate_, key_, door_, box_). Il codice: 
 i dati in zone_roots_layout.gd (PLATES, GATES, KEYS, LOCKS, CHESTS).
 
 Collegato: [[Trama - bozza]], [[I gesti]], [[Nemici e boss]], [[Entità compagna]]
+
+Galassia: [[🌌 Il gioco]]

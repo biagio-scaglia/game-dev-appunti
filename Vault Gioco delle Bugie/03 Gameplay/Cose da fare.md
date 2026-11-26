@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, contenuti, facoltativo]
+tags: [gameplay, contenuti, facoltativo, galassia/gioco]
 stato: bozza
 ---
 # Cose da fare
@@ -61,3 +61,5 @@ o se Lethe lo dimentica bevendo dal [[Il Lete|Lete]]. Alcune si aprono solo con 
 - Il minigioco della console è un progetto a parte: farlo piccolissimo o tagliarlo.
 
 Collegato: [[Trama - bozza]], [[Nemici e boss]], [[La stanza di Lethe]]
+
+Galassia: [[🌌 Il gioco]]
