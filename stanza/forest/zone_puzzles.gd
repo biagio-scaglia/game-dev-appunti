@@ -10,6 +10,8 @@ extends Node
 ## - la porta: si parla, e con la chiave si apre ("door_<id>");
 ## - la scatola: si parla, si apre, dentro un oggetto ("box_<id>"). Il filo rosso
 ##   (heart_thread) fa reggere al cuore una stretta in più;
+## - i tesori (TREASURES): un oggetto per terra che luccica, si raccoglie parlandoci
+##   ("item_<id>"); la Moon Pearl dietro la terra che crolla fa durare di più la luce;
 ## - i rovi (il tile "brambles", messi nella scena): col gesto Aprire si scostano e lasciano
 ##   passare ("brambles_<zona>_<x>_<y>"). Nella prima radura chiudono la nicchia della pietra.
 ## Niente qui ha bisogno della magia: si risolve anche dicendo solo bugie.
@@ -44,6 +46,8 @@ var doors := {}
 var boxes := {}
 ## Le chiavi ancora per terra (id -> Area2D).
 var keys := {}
+## I tesori ancora per terra (id -> Area2D).
+var treasures := {}
 
 
 func setup(zone_node: Node2D) -> void:
@@ -56,6 +60,9 @@ func setup(zone_node: Node2D) -> void:
 	for entry in zone.layout_value("KEYS"):
 		if not has_key(entry[0]):
 			_add_key(entry[0], entry[1])
+	for entry in zone.layout_value("TREASURES"):
+		if not state().flag("item_" + entry[0]):
+			_add_treasure(entry[0], entry[1])
 	for entry in zone.layout_value("LOCKS"):
 		doors[entry[0]] = _thing("bedroom_door_open" if door_open(entry[0]) else "bedroom_door", entry[2])
 		doors[entry[0]].set_meta(&"key", entry[1])
@@ -95,6 +102,9 @@ func talk_things() -> Array[Dictionary]:
 		out.append({"id": "shoebox", "rect": ZoneDressing.thing_rect(boxes[id])})
 	for id in keys:
 		var item: Node2D = keys[id]
+		out.append({"id": id, "rect": Rect2(item.position - Vector2(16, 28), Vector2(32, 32))})
+	for id in treasures:
+		var item: Node2D = treasures[id]
 		out.append({"id": id, "rect": Rect2(item.position - Vector2(16, 28), Vector2(32, 32))})
 	for id in gates:
 		for sprite in gates[id]:
@@ -248,17 +258,52 @@ func open_box(id: String) -> void:
 	box_opened.emit(id)
 
 
-## Un oggetto trovato: per ora il filo rosso (il cuore regge una stretta in più).
+## Un oggetto trovato: il filo rosso (il cuore regge una stretta in più), la Moon Pearl (la
+## luce dura di più: una luna in più, e tutte piene).
 func give(item: String) -> void:
 	var info: Dictionary = ItemIcons.info(item)
 	var effect: Dictionary = info.get("effect", {})
 	var s: RefCounted = state()
+	var line := "Something of hers, found again."
 	if effect.has("max_heart"):
 		s.heart_max = mini(s.HEART_CAP, s.heart_max + int(effect["max_heart"]))
 		s.heal(s.heart_max)
 		zone.hud.show_heart(s.heart, s.heart_max)
+		line = "Her heart holds one more."
+	if effect.has("max_light"):
+		s.mp_max = mini(s.MP_CAP, s.mp_max + int(effect["max_light"]))
+		s.mp = s.mp_max
+		if zone.light:
+			zone.light.refresh()
+		line = "Her light lasts a little longer."
 	_sfx(GLINT, 0.9, -4.0)
-	ScreenText.toast(zone, info.get("name", item), "Her heart holds one more.")
+	ScreenText.toast(zone, info.get("name", item), line)
+
+
+# --- I tesori ----------------------------------------------------------------------------------
+
+func _add_treasure(id: String, cell: Vector2i) -> void:
+	var item: Area2D = Pickup.new()
+	item.id = id
+	item.name = "treasure_" + id
+	item.position = (Vector2(cell) + Vector2(0.5, 0.8)) * TILE
+	item.auto_pick = false
+	item.expires = false
+	item.glow = Color(0.75, 0.82, 1.0)
+	zone.world.add_child(item)
+	treasures[id] = item
+
+
+## Dai dialoghi: il tesoro si raccoglie, sparisce da terra e fa il suo effetto.
+func take_treasure(id: String) -> void:
+	if state().flag("item_" + id):
+		return
+	state().set_flag("item_" + id)
+	if treasures.has(id):
+		treasures[id].queue_free()
+		treasures.erase(id)
+		_refresh_talk()
+	give(id)
 
 
 func _refresh_talk() -> void:

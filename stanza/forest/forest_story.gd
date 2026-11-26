@@ -75,6 +75,11 @@ const BARKS := {
 	"full_apple": "Keep it for later.",
 	# La prima lanterna accesa al posto di Lethe: mente, per non pesarle.
 	"selene_tired_first": "I'm fine. Really.",
+	# Le trappole del passo 5: la prima volta che le spine la prendono, che la terra cede.
+	"spiked": "Wait for them to go back down. Watch the ground.",
+	"fell": "That ground won't hold you. ...Or anyone.",
+	# Il masso sprofondato: dall'altra parte c'è la perla.
+	"boulder_sunk": "Look. Something's shining, on the other side.",
 	# La prima volta che la magia sfuma: la luce è finita.
 	"no_light": "Your light's gone. Stay near a light... it comes back.",
 }
@@ -101,6 +106,9 @@ func setup(zone_node: Node2D) -> void:
 			zone.lanterns.curtain_opened]:
 		done.connect(func(_id: String) -> void: _update_roots_goal())
 	zone.lanterns.lantern_lit.connect(_on_lantern_lit)
+	zone.traps.spiked.connect(func() -> void: bark("spiked"))
+	zone.traps.fell.connect(func() -> void: bark("fell"))
+	zone.boulders.sunk.connect(func(_id: String) -> void: bark("boulder_sunk"))
 	zone.lanterns.all_lit.connect(_on_lanterns_lit)
 
 

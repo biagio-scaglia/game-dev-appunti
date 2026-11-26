@@ -14,6 +14,8 @@ extends Node2D
 ## - zone_lanterns.gd ("Lanterns"): le lanterne di radice e le tende di radici (passo 4);
 ## - zone_light.gd ("Light"): la luce di Lethe (gli MP), come si spende e come torna;
 ## - zone_ambience.gd ("Ambience"): sottoterra, la polvere nell'aria, le gocce, le radici;
+## - zone_traps.gd ("Traps"): le spine di radice a tempo e la terra che crolla (passo 5);
+## - zone_boulders.gd ("Boulders"): i massi da spingere (insieme a Selene);
 ## - forest_story.gd ("Story"): la regia del capitolo (scene, Selene, obiettivi);
 ## - qui: il buio, Lethe e la camera (per stanze nei dungeon: core/room_camera.gd), la musica,
 ##   il menu di pausa, i dialoghi, l'interfaccia, i passaggi tra le zone.
@@ -51,6 +53,8 @@ const ZonePuzzles := preload("zone_puzzles.gd")
 const ZoneLanterns := preload("zone_lanterns.gd")
 const ZoneLight := preload("zone_light.gd")
 const ZoneAmbience := preload("zone_ambience.gd")
+const ZoneTraps := preload("zone_traps.gd")
+const ZoneBoulders := preload("zone_boulders.gd")
 const Zones := preload("zones.gd")
 const ForestStory := preload("forest_story.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
@@ -98,6 +102,9 @@ var puzzles: Node
 var lanterns: Node
 ## La luce di Lethe (gli MP): la spende la magia, torna vicino alle luci.
 var light: Node
+## Le trappole (spine, terra che crolla) e i massi.
+var traps: Node
+var boulders: Node
 ## La regia del capitolo: le scene, Selene e le sue battute.
 var story: Node
 ## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
@@ -145,7 +152,15 @@ func _ready() -> void:
 	lanterns.name = "Lanterns"
 	add_child(lanterns)
 	lanterns.setup(self)                        # dopo i meccanismi: tutte accese, apre un loro cancello
-	ZoneDressing.add_eyes(decor, layout_value("EYES"), hero, sound)   # sulle piante basse: sotto Lethe
+	ZoneDressing.add_eyes(decor, layout_value("EYES"), hero, sound)
+	traps = ZoneTraps.new()
+	traps.name = "Traps"
+	add_child(traps)
+	traps.setup(self)
+	boulders = ZoneBoulders.new()
+	boulders.name = "Boulders"
+	add_child(boulders)
+	boulders.setup(self)                        # dopo le trappole: un masso sprofondato le riempie   # sulle piante basse: sotto Lethe
 	_add_music()
 	_add_menu()
 	_add_talk()
@@ -239,6 +254,7 @@ func _add_talk() -> void:
 	talk.extra_states.append(self)
 	talk.extra_states.append(puzzles)    # i dialoghi aprono porte e scatole
 	talk.extra_states.append(lanterns)   # e Selene accende le lanterne, il gesto apre le tende
+	talk.extra_states.append(boulders)   # e Selene aiuta a spingere
 	talk.key_hint = not state.flag("talk_learned")
 	talk.talk_finished.connect(_on_talk_finished)
 	talk.talk_started.connect(func(_id: String) -> void: hud.set_shown(false))

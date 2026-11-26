@@ -90,6 +90,23 @@ const CHESTS := [["shoebox", Vector2i(50, 30), "heart_thread"]]
 const LANTERNS := [["west", Vector2i(4, 14)], ["middle", Vector2i(10, 14)], ["east", Vector2i(15, 14)]]
 const CURTAINS := [["east", Vector2i(15, 14), "east"]]
 const LANTERNS_OPEN := "arena"
+## Il passo 5 (forest/zone_traps.gd, zone_boulders.gd):
+## - le spine di radice a tempo, in fila tra l'entrata del passaggio delle spine e la chiave:
+##   ognuna col suo ritardo (secondi), fanno un'onda; [cella dove escono, ritardo];
+## - la terra che crolla nella stanza del masso: una striscia larga due celle che chiude
+##   l'angolo est (lì la Moon Pearl); [celle];
+## - il masso: [id, cella in alto a sinistra]. Spinto due volte a destra (con Selene) cade
+##   nella striscia e fa da ponte.
+const SPIKES := [[Vector2i(6, 28), 0.00], [Vector2i(6, 29), 0.28], [Vector2i(6, 30), 0.56], [Vector2i(6, 31), 0.84], [Vector2i(6, 32), 1.12], [Vector2i(6, 33), 1.40], [Vector2i(6, 34), 1.68]]
+const CRUMBLE := [
+	Vector2i(55, 15), Vector2i(56, 15), Vector2i(55, 16), Vector2i(56, 16), Vector2i(55, 17), Vector2i(56, 17),
+	Vector2i(55, 18), Vector2i(56, 18), Vector2i(55, 19), Vector2i(56, 19), Vector2i(55, 20), Vector2i(56, 20),
+	Vector2i(55, 21), Vector2i(56, 21), Vector2i(55, 22), Vector2i(56, 22),
+]
+const BOULDERS := [["stone", Vector2i(51, 17)]]
+## I tesori per terra (zone_puzzles.gd): [oggetto, cella].
+const TREASURES := [["moon_pearl", Vector2i(57, 18)]]
+
 ## Gli occhi nelle radici (forest/root_eye.gd): sulle pareti delle stanze buie.
 const EYES := [
 	Vector2i(7, 13), Vector2i(13, 14), Vector2i(5, 25), Vector2i(15, 26), Vector2i(1, 30),
@@ -107,12 +124,12 @@ const THINGS := [
 	["watering_can", Vector2i(5, 19)],
 	# La stanza del masso: la pietra antica col segno (il gesto Aprire).
 	["old_stone", Vector2i(54, 15)],
-	["boulder", Vector2i(51, 17)], ["rock", Vector2i(45, 20)], ["rock_b", Vector2i(10, 31)], ["stump", Vector2i(45, 32)],
+	["rock", Vector2i(45, 20)], ["rock_b", Vector2i(10, 31)], ["stump", Vector2i(45, 32)],
 ]
 const DECOR := [
 	["glow_root", Vector2i(24, 31)], ["glow_root", Vector2i(36, 32)], ["glow_root", Vector2i(23, 20)],
 	["glow_root", Vector2i(36, 15)], ["glow_root", Vector2i(4, 16)], ["glow_root", Vector2i(16, 29)],
-	["glow_root", Vector2i(56, 20)], ["glow_root", Vector2i(44, 29)],
+	["glow_root", Vector2i(44, 21)], ["glow_root", Vector2i(44, 29)],
 	["roots", Vector2i(22, 28)], ["roots", Vector2i(26, 33)], ["roots", Vector2i(33, 20)],
 	["roots", Vector2i(12, 17)], ["roots", Vector2i(52, 31)], ["roots", Vector2i(7, 32)],
 	["mushrooms", Vector2i(37, 29)], ["mushrooms", Vector2i(3, 20)], ["mushrooms", Vector2i(57, 33)],

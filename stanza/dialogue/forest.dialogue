@@ -375,3 +375,28 @@ else
 	- Leave it buried.
 		Lethe: ...Leave it.
 => END
+
+# Il masso (passo 5): la prima volta Lethe da sola non lo smuove.
+~ boulder_alone
+Lethe pushes. Her shoes slide on the dirt. The stone doesn't move. Not even a little.
+Lethe: ...It's too heavy.
+Lethe: Everything down here is too heavy.
+if selene_met()
+	Selene: Then don't push it alone.
+	Selene: I'm small. But I'm here.
+	do push_together()
+	Lethe: ...Okay. Together.
+	Selene: Over there, the ground is cracked. It won't hold you.
+	Selene: But a stone this heavy... it would fill it.
+else
+	She leans on it again. Something in the stone gives, a little.
+	do push_together()
+=> END
+
+# Il tesoro dietro la terra che crolla.
+~ moon_pearl
+Past the broken ground, where nobody could walk, something round and cold glows in the dirt.
+A pearl. Like a piece of the moon that fell down here, and stayed.
+Lethe: ...It waited.
+do take_treasure("moon_pearl")
+=> END
