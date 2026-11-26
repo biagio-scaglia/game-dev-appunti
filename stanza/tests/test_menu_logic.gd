@@ -53,6 +53,30 @@ func test_un_file_rotto_vale_come_vuoto() -> void:
 	assert_eq(SaveStore.read(2), {}, "file rotto")
 
 
+func test_riscrivere_uno_slot_non_lascia_file_a_meta() -> void:
+	assert_true(SaveStore.write(1, {"lies": 1}), "il primo")
+	assert_true(SaveStore.write(1, {"lies": 2}), "sopra il vecchio")
+	assert_eq(int(SaveStore.read(1)["lies"]), 2, "c'è il nuovo")
+	assert_false(FileAccess.file_exists(SaveStore.path(1) + ".tmp"), "e niente file temporaneo in giro")
+
+
+func test_un_salvataggio_ritoccato_a_mano_non_rompe_niente() -> void:
+	# JSON valido, ma coi campi del tipo sbagliato: si scartano, non si va in crash.
+	var data := {"learned": "truth_spark", "owned": 3, "equipped": [], "flags": "x",
+		"heart_max": 99, "heart": 99, "position": [12]}
+	var state := GameState.new()
+	state.load_save(data)
+	assert_eq(state.learned.size(), 0, "incantesimi: non una lista, niente")
+	assert_eq(state.owned, ["black_dress"] as Array[String], "oggetti: solo il vestito")
+	assert_eq(state.equipped["body"], "black_dress", "addosso: quello di partenza")
+	assert_eq(state.flags, {}, "segni: vuoti")
+	assert_eq(state.heart_max, GameState.HEART_CAP, "il cuore non va oltre il massimo")
+	assert_eq(state.heart, GameState.HEART_CAP, "e nemmeno quello che resta")
+	assert_eq(GameState.saved_position(data), Vector2.ZERO, "posizione monca: zero")
+	assert_eq(GameState.saved_position({"position": "qui"}), Vector2.ZERO, "posizione non lista: zero")
+
+
+
 func test_il_testo_guasto_tiene_spazi_e_lunghezza() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
