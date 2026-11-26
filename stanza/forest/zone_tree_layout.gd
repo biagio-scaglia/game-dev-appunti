@@ -11,7 +11,8 @@ const SIZE := Vector2i(30, 20)
 const SPAWN := Vector2i(2, 10)
 ## Da ovest si torna alla prima zona.
 const EXITS := [[Rect2i(0, 9, 1, 3), "wake", "east"]]
-const ENTRIES := {"west": Vector2i(2, 10)}
+## "hole": risalendo dalle radici, accanto al buco.
+const ENTRIES := {"west": Vector2i(2, 10), "hole": Vector2i(17, 10)}
 ## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
 const TALKS := ["dead_tree", "root_hole"]
 ## L'albero e il buco tra le radici (le scene della regia li guardano).

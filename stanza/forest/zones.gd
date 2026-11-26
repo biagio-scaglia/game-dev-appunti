@@ -5,6 +5,7 @@ extends RefCounted
 const SCENES := {
 	"wake": "res://forest/zone_wake.tscn",      # la radura della caduta
 	"tree": "res://forest/zone_tree.tscn",      # la radura dell'albero secco
+	"roots": "res://forest/zone_roots.tscn",    # il dungeon delle radici, sotto l'albero
 }
 const FIRST := "wake"
 
