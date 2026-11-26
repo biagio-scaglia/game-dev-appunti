@@ -642,6 +642,84 @@
         ]
       ]
     },
+    "root_lantern": {
+      "atlas": [
+        7,
+        16
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "root_lantern_lit": {
+      "atlas": [
+        8,
+        16
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "light": {
+        "offset": [
+          16,
+          24
+        ],
+        "color": [
+          1.0,
+          0.72,
+          0.45
+        ],
+        "energy": 0.9,
+        "radius": 90
+      },
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ],
+      "flicker": [
+        0.12,
+        1.4,
+        0.05
+      ]
+    },
+    "root_curtain": {
+      "atlas": [
+        5,
+        16
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "root_curtain_open": {
+      "atlas": [
+        6,
+        16
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": false
+    },
     "boulder": {
       "atlas": [
         0,
