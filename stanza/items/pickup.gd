@@ -3,6 +3,8 @@ extends Area2D
 ## ui/item_icons.gd che galleggia piano, un luccichio a intermittenza (così si distingue
 ## dal fondo: i fiorellini dell'erba non brillano), un'ombra. Lethe ci passa sopra e lo
 ## prende (`picked`). Dopo un po' lampeggia e sparisce, se nessuno lo prende.
+## Fa un po' di luce (`glow`), così si vede anche al buio del dungeon. Con `auto_pick` falso
+## non si prende passandoci sopra: si raccoglie parlandoci (la chiave: ha il suo dialogo).
 ## `wanted` dice se adesso serve (la mela a cuore pieno no): se non serve resta a terra, e
 ## si prende appena serve, anche se Lethe ci sta già sopra.
 
@@ -10,12 +12,18 @@ signal picked(id: String)
 
 const ItemIcons := preload("res://ui/item_icons.gd")
 const DropShadow := preload("res://fx/drop_shadow.gd")
+const Glow := preload("res://core/glow.gd")
 
 const LIFETIME := 25.0
 const BLINK_FROM := 4.0
 const GLINT_EVERY := 1.3
 
 var id := "apple"
+## La lucina dell'oggetto (Color(0, 0, 0, 0) = niente).
+var glow := Color(1.0, 0.86, 0.55)
+## Si prende passandoci sopra (falso: solo parlandoci).
+var auto_pick := true
+var light: PointLight2D
 ## Serve adesso? (chi lo lascia per terra lo decide: la zona guarda il cuore)
 var wanted := func() -> bool: return true
 var sprite: Sprite2D
@@ -38,6 +46,10 @@ func _ready() -> void:
 	sprite.texture = ItemIcons.icon(id)
 	sprite.offset = Vector2(0, -16)
 	add_child(sprite)
+	if glow.a > 0.0:
+		light = Glow.light(glow, 0.7, 34.0)
+		light.position = Vector2(0, -16)
+		add_child(light)
 	_glint = Node2D.new()
 	_glint.draw.connect(_draw_glint)
 	_glint.position = Vector2(6, -24)
@@ -84,7 +96,7 @@ func _draw_glint() -> void:
 
 
 func _on_body(body: Node2D) -> void:
-	if _taken or not body.has_method(&"hurt") or not wanted.call():
+	if _taken or not auto_pick or not body.has_method(&"hurt") or not wanted.call():
 		return
 	_taken = true
 	picked.emit(id)
