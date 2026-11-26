@@ -14,6 +14,7 @@ const RoomFx := preload("res://world/room_fx.gd")
 const MoonBeam := preload("res://fx/moon_beam.gd")
 const Fireflies := preload("res://fx/fireflies.gd")
 const ForestTileset := preload("res://world/forest/forest_tileset.gd")
+const RootEye := preload("root_eye.gd")
 
 const TILE := 32
 ## Da quanto sopra il bordo della mappa partono i raggi di luna (nel bosco).
@@ -104,6 +105,17 @@ static func light_decor(parent: Node2D, decor: TileMapLayer, data: Dictionary) -
 
 ## I raggi di luna (`points`: dove toccano terra). `underground`: escono da un buco nel
 ## soffitto della stanza invece che dal cielo.
+## Gli occhi nelle radici (EYES: celle delle pareti), che guardano `target` (Lethe).
+static func add_eyes(parent: Node2D, cells: Array, target: Node2D) -> void:
+	for cell in cells:
+		var eye := RootEye.new()
+		eye.name = "Eye_%d_%d" % [cell.x, cell.y]
+		eye.position = (Vector2(cell) + Vector2(0.5, 0.5)) * TILE
+		eye.target = target
+		eye.add_to_group(&"root_eyes")
+		parent.add_child(eye)
+
+
 static func add_beams(parent: Node2D, points: Array, underground: bool) -> void:
 	for at in points:
 		var beam := MoonBeam.new()
