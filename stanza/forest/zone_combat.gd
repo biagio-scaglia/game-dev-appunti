@@ -33,6 +33,7 @@ const HURT := preload("res://audio/heart_hurt.wav")
 const BREAK := preload("res://audio/heart_break.wav")
 const CHIME := preload("res://audio/ui_move.wav")
 const KNOCK := preload("res://audio/menu_knock.wav")
+const GameOver := preload("res://ui/game_over.gd")
 
 const ENEMY_SCRIPTS := {
 	"moth": preload("res://enemies/shadow_moth.gd"),
@@ -248,8 +249,10 @@ func _on_hero_damaged(amount: int, _from: Vector2) -> void:
 		die()
 
 
-## Il cuore stretto del tutto: tutto si ferma, il nero, "Death is a lie.", e Lethe si
-## risveglia davanti allo specchio col cuore intero (i nemici tornano al loro posto).
+## Il cuore stretto del tutto: la schermata del cuore spezzato (ui/game_over.gd: il fermo
+## immagine, gli occhi, la mano, "Death is a lie.", qualcuno bussa), e Lethe si risveglia
+## davanti allo specchio col cuore intero (i nemici tornano al loro posto). La prima volta
+## per intero, poi un po' più in fretta.
 func die(pace := 1.0) -> void:
 	if _dying:
 		return
@@ -262,19 +265,21 @@ func die(pace := 1.0) -> void:
 	if zone.state.add_death() == SECRET_DEATHS:
 		await _secret(pace)
 		return
-	var black := ScreenText.black_layer(zone, 70)
-	var label := ScreenText.centered_line(black.get_parent(), "Death is a lie.", Color(0.78, 0.2, 0.3))
-	var t := create_tween()
-	t.tween_property(black, "color:a", 1.0, 1.2 * pace)
-	t.tween_property(label, "modulate:a", 1.0, 0.8 * pace)
-	t.tween_interval(1.6 * pace)
-	t.tween_property(label, "modulate:a", 0.0, 0.6 * pace)
-	await t.finished
+	var frozen: Image = null
+	if DisplayServer.get_name() != "headless":        # l'istante, per il fermo immagine
+		frozen = get_viewport().get_texture().get_image()
+	if zone.music:
+		zone.music.stop()                              # la musica si taglia di colpo
+	var screen := GameOver.new()
+	screen.sound = zone.sound
+	screen.pace = pace * (1.0 if zone.state.deaths() <= 1 else 0.7)
+	screen.eye_count = 7 + mini(int(zone.state.lies), 9)     # qualcuno ha visto
+	zone.add_child(screen)
+	await screen.play(frozen)
 	respawn()
-	var back := create_tween()
-	back.tween_property(black, "color:a", 0.0, 1.2 * pace)
-	await back.finished
-	black.get_parent().queue_free()
+	if zone.music and zone.sound:
+		Music.play_loop(zone.music)
+	await screen.fade_out(1.2 * pace)
 	_dying = false
 	respawned.emit()
 	zone.talk.say(DIALOGUE, "wake_again")
