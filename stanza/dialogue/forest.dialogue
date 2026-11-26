@@ -165,3 +165,66 @@ if selene_met()
 - Not yet.
 	Lethe: Not yet.
 => END
+
+# --- Il dungeon delle radici (forest_story.gd: enter_roots, saw_heart) -----------------------
+
+~ roots_arrive
+Down. Much further than the hole looked.
+The air is warm and wet. The roots overhead move, a little. Like something breathing.
+Lethe: ...It smells like the pot. The plant pot, when I still watered it.
+if selene_met()
+	Selene: I'll stay close. I can make a little light.
+	Selene: Not much. But a little.
+=> END
+
+~ silver_frame
+if seen("silver_frame") == 0
+	A silver frame, hanging from a root. The glass is clean. Someone keeps it clean.
+	There's no photo inside. Only a heart, drawn in pencil on the back of the paper.
+	Lethe: Someone wiped the dust off. All the way down here.
+	if selene_met()
+		Selene: You can rest here. Like at the mirror.
+else
+	The pencil heart. The clean glass.
+She rests, her back against the cool roots. Her heart loosens.
+do rest()
+=> END
+
+~ root_heart
+if seen("root_heart") == 0
+	All the roots meet here, twisted into a knot as big as a bed.
+	It beats. Slowly. Behind a crack in the bark, something glows violet.
+	Lethe: It's alive. It looks dead, and it's alive.
+	if selene_met()
+		Selene: Everything dry is still waiting for water.
+		Selene: Or for someone to say it out loud.
+	do saw_heart()
+else
+	Slow. Steady. Still beating.
+=> END
+
+~ root_gate
+Roots, grown into a wall across the passage. Thick as arms.
+Behind them, something big breathes in its sleep.
+Lethe: Not yet. I can't open this. ...Not like this.
+=> END
+
+~ watering_can
+if seen("watering_can") == 0
+	A small watering can, half buried in the earth. Blue. Never used.
+	The price sticker is still on it.
+	Lethe: ...I bought this. The week before.
+	Lethe: I was going to start taking care of things. The plant first. Then me.
+	if selene_met()
+		Selene: What happened?
+		- Nothing happened.
+			Lethe: Nothing happened. That's the thing. Nothing happened, every day.
+			set truth += 1
+			Selene: ...That's the hardest kind.
+		- I forgot.
+			Lethe: I just forgot. [#wrong]
+			set lies += 1
+			Selene: ...
+else
+	The price sticker. She never peeled it off.
+=> END
