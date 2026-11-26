@@ -7,6 +7,11 @@ extends Node2D
 ## Durante il gioco dice battute brevi sopra la testa (bark), senza fermare niente: il primo
 ## nemico sciolto, il cuore che stringe, la mela... Ognuna con una chiave si dice una volta.
 ##
+## Quando accende qualcosa al posto di Lethe (le lanterne del dungeon, se Lethe non ha più la
+## magia) si stanca (`tire()`): la sua luce cala e i colori si spengono un po', per sempre.
+## Qualcun altro paga per le bugie (vault: "Entità compagna"). Quanto è stanca si salva nei
+## flag ("selene_tired") e lo rimette chi la crea.
+##
 ## Disegnata qui (SHAPE), a blocchi di PX pixel: niente immagini.
 
 const Glow := preload("res://core/glow.gd")
@@ -51,6 +56,11 @@ var _glow_boost := 0.0
 var _bark: Label
 ## Le battute già dette (chiave -> vero).
 var said := {}
+## Quanto è stanca (0 = per niente). Ogni volta: meno luce, colori più spenti.
+var tired := 0
+const TIRED_LIGHT := 0.1
+const TIRED_GREY := 0.15
+const TIRED_MAX := 4
 
 
 func _ready() -> void:
@@ -132,6 +142,17 @@ func bark_text() -> String:
 	return _bark.text if is_instance_valid(_bark) else ""
 
 
+## Ha dato la sua luce a qualcos'altro: ne ha un po' meno, da adesso.
+func tire() -> void:
+	tired = mini(tired + 1, TIRED_MAX)
+	_glow_boost = -0.6                    # un calo improvviso, poi resta più bassa
+
+
+## La luce di base, dopo la stanchezza.
+func base_energy() -> float:
+	return 0.55 - TIRED_LIGHT * tired
+
+
 ## Un attimo di luce in più (quando arriva, quando Lethe dice la verità).
 func glow_up() -> void:
 	_glow_boost = 1.0
@@ -147,7 +168,7 @@ func _process(delta: float) -> void:
 		_blink = 0.12 if not _eye_open else randf_range(2.5, 5.0)
 		queue_redraw()
 	_glow_boost = move_toward(_glow_boost, 0.0, delta)
-	light.energy = 0.55 + 0.08 * sin(_time * 2.0) + 0.6 * _glow_boost
+	light.energy = maxf(0.05, base_energy() + 0.08 * sin(_time * 2.0) + 0.6 * _glow_boost)
 	queue_redraw()
 
 
@@ -166,6 +187,9 @@ func _draw() -> void:
 			var col: Color = COLORS[c]
 			if _glow_boost > 0.0:
 				col = col.lerp(Color.WHITE, _glow_boost * 0.6)
+			if tired > 0:
+				var grey := col.get_luminance()
+				col = col.lerp(Color(grey, grey, grey), TIRED_GREY * tired).darkened(0.06 * tired)
 			# La falce guarda Lethe: specchiata quando sta alla sua sinistra.
 			var px := x if side < 0.0 else row.length() - 1 - x
 			draw_rect(Rect2(origin + Vector2(px, y) * PX, Vector2(PX, PX)), col)
