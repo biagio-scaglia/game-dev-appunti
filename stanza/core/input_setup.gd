@@ -11,6 +11,10 @@ extends RefCounted
 ## - cast: Q (o X, K, clic destro), la magia.
 ## - menu: Esc o C, il menu di pausa.
 ## - sword_stage: F2, solo per provare gli stadi della spada nelle build di debug.
+##
+## Col gamepad: levetta sinistra o croce per camminare, A il tasto unico, X la magia, Start
+## il menu (dentro il menu B torna indietro: è ui_cancel, già di Godot). La corsa parte da
+## sola tenendo la direzione, come da tastiera; il grilletto destro la fa partire subito.
 
 ## Spazio, Z, J, E, Invio e il clic sinistro fanno la stessa cosa (vedi sopra).
 const ACTION_KEYS := [KEY_SPACE, KEY_Z, KEY_J, KEY_E, KEY_ENTER]
@@ -27,6 +31,26 @@ const ACTIONS := {
 	&"sword_stage": [KEY_F2],
 	&"menu": [KEY_ESCAPE, KEY_C],
 }
+## I pulsanti del gamepad (JOY_BUTTON_*) e le levette ([asse, verso]).
+const JOY_BUTTONS := {
+	&"move_left": [JOY_BUTTON_DPAD_LEFT],
+	&"move_right": [JOY_BUTTON_DPAD_RIGHT],
+	&"move_up": [JOY_BUTTON_DPAD_UP],
+	&"move_down": [JOY_BUTTON_DPAD_DOWN],
+	&"slash": [JOY_BUTTON_A],
+	&"interact": [JOY_BUTTON_A],
+	&"cast": [JOY_BUTTON_X],
+	&"menu": [JOY_BUTTON_START],
+}
+const JOY_AXES := {
+	&"move_left": [JOY_AXIS_LEFT_X, -1.0],
+	&"move_right": [JOY_AXIS_LEFT_X, 1.0],
+	&"move_up": [JOY_AXIS_LEFT_Y, -1.0],
+	&"move_down": [JOY_AXIS_LEFT_Y, 1.0],
+	&"run": [JOY_AXIS_TRIGGER_RIGHT, 1.0],
+}
+## La zona morta delle levette per camminare: piccola, così si cammina piano anche inclinando poco.
+const STICK_DEADZONE := 0.3
 const MOUSE := {
 	&"slash": MOUSE_BUTTON_LEFT,
 	&"interact": MOUSE_BUTTON_LEFT,
@@ -40,7 +64,7 @@ static func ensure_actions() -> void:
 	for action: StringName in ACTIONS:
 		if InputMap.has_action(action):
 			continue
-		InputMap.add_action(action)
+		InputMap.add_action(action, STICK_DEADZONE if JOY_AXES.has(action) else 0.5)
 		for key: Key in ACTIONS[action]:
 			var event := InputEventKey.new()
 			event.physical_keycode = key
@@ -49,3 +73,13 @@ static func ensure_actions() -> void:
 			var click := InputEventMouseButton.new()
 			click.button_index = MOUSE[action]
 			InputMap.action_add_event(action, click)
+		for button: JoyButton in JOY_BUTTONS.get(action, []):
+			var pad := InputEventJoypadButton.new()
+			pad.button_index = button
+			InputMap.action_add_event(action, pad)
+		if JOY_AXES.has(action):
+			var motion := InputEventJoypadMotion.new()
+			motion.axis = JOY_AXES[action][0]
+			motion.axis_value = JOY_AXES[action][1]
+			InputMap.action_add_event(action, motion)
+

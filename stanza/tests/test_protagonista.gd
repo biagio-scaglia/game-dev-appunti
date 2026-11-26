@@ -149,6 +149,19 @@ func test_lo_schema_dei_tasti() -> void:
 	var left := InputEventMouseButton.new()
 	left.button_index = MOUSE_BUTTON_LEFT
 	assert_true(InputMap.action_has_event(&"slash", left), "anche col mouse")
+	var a := InputEventJoypadButton.new()
+	a.button_index = JOY_BUTTON_A
+	assert_true(InputMap.action_has_event(&"interact", a) and InputMap.action_has_event(&"slash", a),
+		"col gamepad A è il tasto unico")
+	var start := InputEventJoypadButton.new()
+	start.button_index = JOY_BUTTON_START
+	assert_true(InputMap.action_has_event(&"menu", start), "Start il menu")
+	var stick := InputEventJoypadMotion.new()
+	stick.axis = JOY_AXIS_LEFT_X
+	stick.axis_value = -1.0
+	assert_true(InputMap.action_has_event(&"move_left", stick), "la levetta cammina")
+	assert_false(InputMap.action_has_event(&"move_right", stick), "dalla parte giusta")
+
 	for action in InputMap.get_actions():
 		if String(action).begins_with("ui_") or action in [&"slash", &"interact"]:
 			continue
