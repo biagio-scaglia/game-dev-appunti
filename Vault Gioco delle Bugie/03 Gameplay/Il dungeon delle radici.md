@@ -42,11 +42,37 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 
 ## I passi
 1. La zona 2, la radura dell'albero secco, e il passaggio dalla prima zona.
-2. Le stanze (dai dati, come la radura), la camera per stanza, le porte.
+2. ~~Le stanze (dai dati, come la radura), la camera per stanza, le porte.~~ **Fatto (26/11).**
 3. Porta chiusa e chiave, forziere, piastra, cancello di radici.
 4. Buio, lanterne, occhi, il gesto Aprire.
 5. Trappole, il masso, la pozza del Lete; la mappa nel menu.
 6. Il Cervo Secco (Beehave).
 7. La foglia e la fine del capitolo.
+
+## In gioco (passo 2)
+- **Si scende** dal buco tra le radici: un tonfo, il nero che si apre, la luce che scende dal buco.
+  *"It smells like the pot. The plant pot, when I still watered it."* Selene: *"I can make a
+  little light. Not much. But a little."* Obiettivo: **Find the heart of the roots**.
+- **Le stanze**: la camera resta sulla stanza e **scivola** passando una porta (Lethe si ferma un
+  attimo e fa un passo dentro). La prima volta compaiono il **nome** e **una riga**:
+  - *Under the Tree* — "The roots she never watered."
+  - *The Heart of the Roots* — "Everything dry is still holding on."
+  - *The Lantern Roots* — "Light, if someone brings it."
+  - *The Stone Room* — "Some things are too heavy to move alone."
+  - *The Thorn Passage* — "It hurts to go forward. It hurts to stay."
+  - *The Buried Things* — "What you hide, stays."
+  - *Where the Deer Sleeps* — "Something sleeps where the light can't reach."
+- **Il racconto nelle cose**:
+  - la **cornice d'argento** (il riposo): pulita, senza foto, solo un cuore a matita;
+  - il **cuore delle radici**: un nodo grande come un letto che **batte**, una luce viola nella
+    crepa. *"It looks dead, and it's alive."* Visto lui, l'obiettivo diventa **Find a way past the roots**;
+  - l'**annaffiatoio mai usato**, col prezzo ancora attaccato: *"I was going to start taking care
+    of things. The plant first. Then me."* Selene: *"What happened?"* → *"Nothing happened. That's
+    the thing."* (verità) o *"I just forgot."* (bugia);
+  - il **cancello di radici** che chiude l'arena: dietro, qualcosa di grande dorme.
+- **La musica**: un bordone sotto terra, il **battito lento del cuore delle radici** in tutte le
+  stanze, gocce nel buio, le prime note del lamento del titolo su un vetro lontano.
+- Il dungeon è una zona come le radure (zone_roots_layout.gd): terra e pavimento di radici
+  nell'autotile, si dipinge nell'editor come il bosco.
 
 Collegato: [[Trama - bozza]], [[I gesti]], [[Nemici e boss]], [[Entità compagna]]
