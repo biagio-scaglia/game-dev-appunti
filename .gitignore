@@ -18,6 +18,9 @@ stanza/characters/protagonista/sprites/anteprima_sprite.png*
 # Obsidian: stato dell'interfaccia, cambia a ogni apertura
 **/.obsidian/workspace*.json
 **/.obsidian/cache
+# Obsidian: i plugin della community restano in locale (il vault si usa senza)
+**/.obsidian/community-plugins.json
+**/.obsidian/plugins/
 .trash/
 
 # Python: gli script restano solo in locale, mai nel repo
