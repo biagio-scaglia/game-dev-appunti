@@ -14,7 +14,8 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 - **Senza magia** (se Lethe ha mentito a Selene e al Lete) le lanterne le accende **Selene**, e
   ogni volta si affievolisce un po': qualcun altro paga per le bugie → [[Entità compagna]].
 - **La mappa del dungeon** nel menu di pausa, con le stanze già visitate.
-- Addon: **Beehave** per il Cervo Secco; **Phantom Camera** per ora no (bastano la camera
+- Addon: ~~**Beehave** per il Cervo Secco~~ (26/11: il cervo è fatto a stati espliciti come gli
+  altri nemici, cinque stati non valevano un plugin in più e due autoload); **Phantom Camera** per ora no (bastano la camera
   bloccata sulla stanza e il regista delle cutscene).
 
 ## Le stanze
@@ -46,7 +47,7 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 3. ~~Porta chiusa e chiave, forziere, piastra, cancello di radici.~~ **Fatto (26/11).**
 4. ~~Buio, lanterne, occhi, il gesto Aprire.~~ **Fatto (26/11).**
 5. ~~Trappole, il masso~~ **fatto (26/11)**; la pozza del Lete e la mappa nel menu: da fare.
-6. Il Cervo Secco (Beehave).
+6. ~~Il Cervo Secco.~~ **Fatto (26/11).**
 7. La foglia e la fine del capitolo.
 
 ## In gioco (passo 2)
@@ -143,6 +144,27 @@ di rovi al piede delle pareti è fitta e non si attraversa.
    Dall'altra parte la **Moon Pearl** (una luna in più): *"It waited."*
 Si risolve anche con sole bugie. Il codice: forest/zone_traps.gd, forest/zone_boulders.gd; i dati:
 SPIKES, CRUMBLE, BOULDERS, TREASURES.
+
+## In gioco (passo 6): il Cervo Secco
+Lo spirito dell'albero secco, la bugia *"It hasn't been that long"* con un corpo. **Di fronte**: la
+corteccia bianca e morta coi segni della betulla, le corna a ramo secco spalancate con le foglie
+morte e un germoglio verde (l'unico), gli occhi vuoti con la luce viola, un buco nel petto e dentro
+il cuore dell'albero che batte viola. Anteprima: docs/cervo_secco.png.
+1. **L'entrata**: le radici ricrescono e chiudono l'arena dietro Lethe; il cervo dorme, apre un
+   occhio: *"It hasn't been that long."* (la riga che mente, due volte). Lethe: *"...That's what I
+   kept saying."* Poi la barra (*The Dry Deer*) e la musica dello scontro (il cuore che batte forte,
+   il carillon del titolo che stona).
+2. **Lo scontro**: si avvicina; prende la mira (abbassa le corna, raspa, occhi e cuore si accendono,
+   **una scia viola per terra** dove andrà); **carica in linea retta**; contro la parete sbatte, la
+   terra trema, **cadono i rami** (prima l'ombra per terra) e resta **stordito** con le corna
+   piantate: lì prende il doppio. Fuori dallo stordimento la corteccia ferma metà della spada; la
+   magia passa. A metà vita **bramisce**, le crepe si accendono: preavviso più corto, due cariche.
+3. **Se Lethe cade** si ricomincia (il cervo torna a dormire, le radici si riaprono).
+4. **La fine** dall'ultimo colpo: con la **magia** lo libera (*"It has been a long time."* si inchina
+   e si scioglie in luce); con la **spada** lo rompe (*"Not that long. ...Right?"* corteccia e foglie
+   morte). Tutte e due: dove stava una **foglia verde** da portare all'albero (il passo 7).
+Il codice: enemies/dry_deer.gd, forest/zone_boss.gd, fx/falling_branch.gd, ui/boss_bar.gd; i dati:
+BOSS, BOSS_ROOM, BOSS_GATE.
 
 Il codice: forest/zone_lanterns.gd (lanterne e tende), forest/root_eye.gd, magic/vigil.gd e
 vigil_flame.gd, magic/light_catch.gd; i dati: LANTERNS, CURTAINS, LANTERNS_OPEN, EYES.

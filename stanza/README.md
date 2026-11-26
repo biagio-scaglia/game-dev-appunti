@@ -105,6 +105,8 @@ forest/
 │                                la terra che crolla (cede tutta insieme, si cade e si torna indietro)
 ├── zone_boulders.gd             i massi da spingere (la prima volta insieme a Selene); spinti sulla
 │                                terra che crolla ci sprofondano e fanno da ponte
+├── zone_boss.gd                 il boss della zona: la scena d'entrata (le radici richiudono), la
+│                                barra, i rami, si ricomincia se Lethe cade, le due fini (libero o rotto)
 ├── zone_ambience.gd             l'aria sottoterra: la polvere, le gocce che cadono (anello e plip con
 │                                l'eco), le radici che scricchiolano e la terra che cade
 └── forest_story.gd              la regia del capitolo: l'arrivo, Selene, il primo nemico, le battute,
@@ -122,6 +124,10 @@ enemies/
 │                                sopra), trema e frusta lontano. Debole alla spada, blocca il passo
 ├── false_firefly.gd             la lucciola falsa: sembra una lucciola, da vicino si apre (denti,
 │                                luce rossa) e insegue; poi torna a fare la lucciola
+├── dry_deer.gd                  il Cervo Secco, il boss del capitolo 1: di fronte (le corna a ramo
+│                                secco, il cuore viola nel petto); prende la mira (la scia viola per
+│                                terra), carica, sbatte e resta stordito (lì prende il doppio), cadono i
+│                                rami; a metà vita due cariche di fila. Anteprima: ../docs/cervo_secco.png
 ├── sprites/                     i fogli (dal generatore in locale). Anteprima: ../docs/nemici.png
 │                                (tutti: numeri del danno, barretta della vita sopra, un attimo
 │                                scomposti dopo un colpo, luce che vola a Lethe come esperienza)
@@ -131,6 +137,8 @@ items/pickup.gd                  un oggetto per terra (la mela che lascia un nem
 fx/damage_number.gd              il numero del danno: rosa sul punto debole, grigio se l'arma fa poco
 fx/emote.gd                      la nuvoletta sopra la testa: "!", "?", "...", un cuoricino
 fx/fireflies.gd                  le lucciole del bosco (blend additivo, blocchi di 2 pixel)
+fx/falling_branch.gd             un ramo secco che cade dal buio: l'ombra per terra (si vede dove),
+                                 poi il ramo che si spezza e fa male a chi c'è sotto
 fx/fire.gd                       un fuoco piccolo e vivo (le lanterne): la fiamma a blocchi in 4
                                  fotogrammi mai nello stesso ordine, le braci, il crepitio vicino; la
                                  vampata quando prende
@@ -159,6 +167,8 @@ ui/
 │                                dell'esperienza; il battito più veloce con poco cuore, con l'ultimo
 │                                pezzo i bordi scuri. Si nasconde durante i dialoghi. Sopra i cuori
 │                                la luce (gli MP, light_row.gd)
+├── boss_bar.gd                  la vita di un boss in basso al centro: il nome, la barra a blocchi,
+│                                la scia bianca di quanto ha fatto male, il bordo viola nella seconda fase
 ├── light_row.gd                 la luce di Lethe: una fila di lune che si spengono con la magia e
 │                                tornano con un lampo; trema se la luce non basta
 ├── objective_banner.gd          l'obiettivo in alto a sinistra (cosa fare adesso, in una riga), col

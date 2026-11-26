@@ -94,7 +94,7 @@ modo cambia la scena finale del boss (la verità lo libera, la spada lo rompe).
 
 | Capitolo | Boss | La bugia | Com'è lo scontro |
 |---|---|---|---|
-| 1 | **Il Cervo Secco** (mini-boss) | *"Non è passato tanto tempo."* | Carica in linea retta; i rami cadono dove si ferma. Alla fine l'albero fa una foglia |
+| 1 | **Il Cervo Secco** (mini-boss, *in gioco*) | *"Non è passato tanto tempo."* | Carica in linea retta; i rami cadono dove si ferma; stordito contro la parete prende il doppio. Alla fine una foglia → [[Il dungeon delle radici]] |
 | 2 | **La Padrona di Casa** | *"Va tutto bene, qui."* | Chiama i Sorrisi, bussa e fa uscire ombre dalle porte. La magia le stacca la maschera, la spada la rompe (sotto non c'è niente) |
 | 3 | **La Cornice** | *"Non me lo ricordo."* | Prima ti insegue per tutta la casa (fuga), poi nella galleria salta da un quadro all'altro |
 | 4 | **L'Orologiaio** | *"Se il tempo si ferma, non succede."* | In cima alla torre; ferma il tempo a scatti, si colpisce solo quando le lancette ripartono |
