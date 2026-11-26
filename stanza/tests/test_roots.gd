@@ -144,3 +144,16 @@ func test_si_scende_e_si_risale() -> void:
 	var zone := await _zone()
 	assert_eq(zone.state.zone, "roots", "il salvataggio ricorda il dungeon")
 	assert_eq(preload("res://forest/zones.gd").scene("roots"), ZONE, "la zona ha la sua scena")
+
+
+func test_la_scivolata_non_riblocca_lethe() -> void:
+	# Una scena ferma Lethe, la camera scivola in un'altra stanza, la scena finisce prima che la
+	# camera abbia finito: Lethe deve restare libera (la camera non rimette il "ferma" di prima).
+	var zone := await _zone()
+	var hero: CharacterBody2D = zone.hero
+	hero.frozen = true
+	hero.global_position = _room_center("heart")         # è già di là: la camera non torna indietro
+	zone.rooms.slide_to(zone.rooms.room_named("heart"))
+	hero.frozen = false
+	await tree.create_timer(zone.rooms.SLIDE + 0.2).timeout
+	assert_false(hero.frozen, "libera")

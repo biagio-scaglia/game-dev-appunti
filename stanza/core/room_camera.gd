@@ -88,7 +88,11 @@ func slide_to(room: Array) -> void:
 	t.tween_property(hero, "global_position", hero.global_position + push, SLIDE)
 	await t.finished
 	camera.position_smoothing_enabled = smoothing
-	hero.set(&"frozen", was_frozen)
+	# La libera solo se l'ha fermata lei: se era già ferma (una scena, un dialogo), decide chi
+	# l'ha fermata. Rimettere il valore di prima la bloccherebbe per sempre quando quella scena
+	# finisce durante la scivolata.
+	if not was_frozen:
+		hero.set(&"frozen", false)
 	sliding = false
 
 
