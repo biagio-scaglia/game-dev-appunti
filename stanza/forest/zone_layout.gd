@@ -7,13 +7,17 @@ extends RefCounted
 ## Le costanti di una zona: SIZE, SPAWN, CANOPY_BLOCKS, PATHS, LETHE, BRIDGE ([] = niente
 ## ponte), THINGS, DECOR, ENEMIES, BEAMS, FIREFLIES, TALKS, ENTRIES {nome: cella},
 ## EXITS [[Rect2i, zona, entrata]]. Quelle che mancano valgono vuote.
+## Per i posti sottoterra (il dungeon delle radici): BASE ("roots": il pavimento è di radici,
+## non d'erba), EARTH_BLOCKS (la terra, che blocca), CARVE (dove si scava: stanze e porte,
+## tornano pavimento), WALL_FACES (la parete in cima alle stanze), ROOMS (la camera per
+## stanze), DARKNESS e THEME (il buio e la musica).
 
 const GRASS := ""
 ## Se due materiali si toccano nella stessa cella, vince il primo (il bosco copre tutto,
 ## l'acqua copre il sentiero).
-const PRECEDENCE := ["canopy", "lethe", "path"]
+const PRECEDENCE := ["earth", "canopy", "lethe", "path"]
 ## Il materiale e la costante della zona che lo descrive.
-const MATERIALS := {"canopy": "CANOPY_BLOCKS", "path": "PATHS", "lethe": "LETHE"}
+const MATERIALS := {"canopy": "CANOPY_BLOCKS", "path": "PATHS", "lethe": "LETHE", "earth": "EARTH_BLOCKS"}
 
 
 ## Una costante della zona (o `default` se non c'è).
@@ -30,11 +34,15 @@ static func vertices(layout: GDScript) -> Array:
 		row.resize(size.x + 1)
 		row.fill(GRASS)
 		v.append(row)
-	for material in ["path", "lethe", "canopy"]:            # dal più debole al più forte
+	for material in ["path", "lethe", "canopy", "earth"]:   # dal più debole al più forte
 		for r in value(layout, MATERIALS[material]):
 			for y in range(r[1], r[3] + 1):
 				for x in range(r[0], r[2] + 1):
 					v[y][x] = material
+	for r in value(layout, "CARVE"):                         # lo scavo: torna pavimento
+		for y in range(r[1], r[3] + 1):
+			for x in range(r[0], r[2] + 1):
+				v[y][x] = GRASS
 	return v
 
 

@@ -104,6 +104,11 @@ func _paint_ground(ground: TileMapLayer) -> void:
 			var terrain := ZoneLayout.cell_terrain(v, Vector2i(x, y))
 			var tile_name := _pick(terrain[0], terrain[1])
 			ground.set_cell(Vector2i(x, y), RoomTileset.SOURCE_ID, _atlas(tile_name))
+	for face in ZoneLayout.value(Layout, "WALL_FACES"):       # la parete in cima alle stanze
+		var origin := _atlas("root_wall")
+		for x in range(face[1], face[2] + 1):
+			ground.set_cell(Vector2i(x, face[0]), RoomTileset.SOURCE_ID, origin)
+			ground.set_cell(Vector2i(x, face[0] + 1), RoomTileset.SOURCE_ID, origin + Vector2i(0, 1))
 	var b: Array = ZoneLayout.value(Layout, "BRIDGE")
 	if b.is_empty():
 		return
@@ -117,6 +122,8 @@ func _paint_ground(ground: TileMapLayer) -> void:
 func _pick(material: String, corners: Array) -> String:
 	if material == "":
 		var roll := rng.randf()
+		if String(ZoneLayout.value(Layout, "BASE", "")) == "roots":
+			return "root_floor_b" if roll < 0.3 else "root_floor"
 		return "grass_c" if roll < 0.08 else ("grass_d" if roll < 0.2 else ("grass_b" if roll < 0.45 else "grass"))
 	if material == "canopy" and corners == [1, 1, 1, 1]:
 		return ["canopy_c", "thicket_b", "thicket_c"][rng.randi() % 3]
