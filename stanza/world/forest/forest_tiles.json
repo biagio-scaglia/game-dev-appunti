@@ -732,6 +732,78 @@
       "layer": "object",
       "solid": false
     },
+    "cracked_floor": {
+      "atlas": [
+        2,
+        18
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "pit": {
+      "atlas": [
+        5,
+        18
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": true
+    },
+    "boulder_sunk": {
+      "atlas": [
+        3,
+        17
+      ],
+      "size": [
+        2,
+        2
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "root_spikes_down": {
+      "atlas": [
+        9,
+        17
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "root_spikes_warn": {
+      "atlas": [
+        1,
+        18
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "decor",
+      "solid": false
+    },
+    "root_spikes_up": {
+      "atlas": [
+        0,
+        18
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "decor",
+      "solid": false
+    },
     "boulder": {
       "atlas": [
         0,
@@ -742,17 +814,7 @@
         2
       ],
       "layer": "object",
-      "solid": true,
-      "solid_cells": [
-        [
-          0,
-          1
-        ],
-        [
-          1,
-          1
-        ]
-      ]
+      "solid": true
     },
     "drag_marks": {
       "atlas": [
