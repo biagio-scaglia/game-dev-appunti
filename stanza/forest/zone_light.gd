@@ -61,7 +61,7 @@ func shown() -> bool:
 
 
 func refresh() -> void:
-	zone.hud.show_light(state().mp, state().MP_MAX, shown())
+	zone.hud.show_light(state().mp, state().mp_max, shown())
 
 
 ## La luce torna di `amount`. Piena: il suono di vetro.
@@ -70,17 +70,17 @@ func gain(amount: int) -> void:
 	if got <= 0:
 		return
 	refresh()
-	if state().mp >= state().MP_MAX and zone.sound:
+	if state().mp >= state().mp_max and zone.sound:
 		Sfx.play(zone, REFILL, 1.0, -8.0)
 
 
 ## Riposando: tutta.
 func restore() -> void:
-	gain(state().MP_MAX)
+	gain(state().mp_max)
 
 
 func _process(delta: float) -> void:
-	if state().mp >= state().MP_MAX or zone.talk.is_talking() or not shown():
+	if state().mp >= state().mp_max or zone.talk.is_talking() or not shown():
 		_passive = 0.0
 		_near = 0.0
 		return

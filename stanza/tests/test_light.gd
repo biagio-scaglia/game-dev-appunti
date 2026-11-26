@@ -39,15 +39,15 @@ func _zone(flags := {}, extra := WITH_LIGHT) -> Node2D:
 
 func test_la_luce_si_spende_e_torna() -> void:
 	var s := GameState.new()
-	assert_eq(s.mp, s.MP_MAX, "all'inizio piena")
+	assert_eq(s.mp, s.mp_max, "all'inizio piena")
 	assert_eq(GameState.spell_cost("truth_spark"), 1, "la scintilla costa una luna")
 	assert_eq(GameState.spell_cost("vigil"), 3, "la veglia tre")
 	assert_true(s.spend_mp("vigil"), "si spende")
-	assert_eq(s.mp, s.MP_MAX - 3, "tolta")
+	assert_eq(s.mp, s.mp_max - 3, "tolta")
 	s.mp = 2
 	assert_false(s.spend_mp("vigil"), "non basta")
 	assert_eq(s.mp, 2, "e non si tocca")
-	assert_eq(s.gain_mp(10), s.MP_MAX - 2, "torna fino al massimo, non oltre")
+	assert_eq(s.gain_mp(10), s.mp_max - 2, "torna fino al massimo, non oltre")
 
 
 func test_la_luce_si_salva() -> void:
@@ -57,7 +57,7 @@ func test_la_luce_si_salva() -> void:
 	again.load_save(s.to_save(Vector2.ZERO, 0))
 	assert_eq(again.mp, 2, "si ricorda")
 	again.load_save({"mp": 99})
-	assert_eq(again.mp, again.MP_MAX, "un valore storto si aggiusta")
+	assert_eq(again.mp, again.mp_max, "un valore storto si aggiusta")
 
 
 # --- In gioco ---------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ func test_la_luce_si_salva() -> void:
 func test_le_lune_si_vedono_solo_con_la_magia() -> void:
 	var zone := await _zone()
 	assert_true(zone.hud.light_row.visible, "con la scintilla: le lune sopra i cuori")
-	assert_eq(zone.hud.light_row.moons.size(), zone.state.MP_MAX, "una per luna")
+	assert_eq(zone.hud.light_row.moons.size(), zone.state.mp_max, "una per luna")
 	var dark := await _zone({}, {"truth": 0, "lies": 6})
 	assert_false(dark.hud.light_row.visible, "senza magia niente lune")
 
@@ -74,7 +74,7 @@ func test_la_magia_spende_e_senza_luce_sfuma() -> void:
 	var zone := await _zone()
 	var hero: CharacterBody2D = zone.hero
 	hero.cast()
-	assert_eq(zone.state.mp, zone.state.MP_MAX - 1, "la scintilla spende una luna")
+	assert_eq(zone.state.mp, zone.state.mp_max - 1, "la scintilla spende una luna")
 	assert_eq(zone.hud.light_row.light, zone.state.mp, "e le lune lo mostrano")
 	await wait_signal(hero.attack_finished, 2.0)
 	zone.state.mp = 0
@@ -111,7 +111,7 @@ func test_riposando_torna_tutta() -> void:
 	var zone := await _zone()
 	zone.state.mp = 1
 	zone.rest()
-	assert_eq(zone.state.mp, zone.state.MP_MAX, "allo specchio, tutta")
+	assert_eq(zone.state.mp, zone.state.mp_max, "allo specchio, tutta")
 
 
 func test_una_verita_ridà_luce() -> void:
