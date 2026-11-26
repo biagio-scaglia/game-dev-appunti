@@ -352,6 +352,8 @@ func respawn() -> void:
 	spawn_enemies.call_deferred()
 	state.heal(state.heart_max)
 	zone.hud.show_heart(state.heart, state.heart_max)
+	if zone.light:
+		zone.light.restore()
 	var hero: CharacterBody2D = zone.hero
 	hero.global_position = respawn_point
 	hero.set(&"knock", Vector2.ZERO)
@@ -365,6 +367,8 @@ func rest() -> void:
 	var state: RefCounted = zone.state
 	state.heal(state.heart_max)
 	zone.hud.show_heart(state.heart, state.heart_max)
+	if zone.light:
+		zone.light.restore()                    # e anche la luce
 	respawn_point = mirror_point()
 	state.set_flag("rested")
 	_sfx(GLINT, 1.0, -8.0)

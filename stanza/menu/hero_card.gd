@@ -49,6 +49,8 @@ func refresh(state: RefCounted) -> void:
 	level_label.text = "Lv %d" % int(state.level)
 	hp.max_value = int(state.heart_max)
 	hp.value = int(state.heart)
+	mp.max_value = int(state.MP_MAX)
+	mp.value = int(state.mp)
 	xp.max_value = state.exp_to_next(int(state.level))
 	xp.value = int(state.xp)
 

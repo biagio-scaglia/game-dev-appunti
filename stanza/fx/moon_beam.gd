@@ -50,6 +50,12 @@ func _ready() -> void:
 		light.position = foot()
 		light.scale = Vector2(1.0, 0.55)               # schiacciata: è per terra
 		add_child(light)
+		add_to_group(&"light_sources")                 # nella pozza la luce di Lethe torna
+
+
+## Dove la luce si prende (la pozza a terra, nel mondo): forest/zone_light.gd.
+func pool_point() -> Vector2:
+	return to_global(foot())
 
 
 ## Il trapezio intero (dallo spiraglio a terra).

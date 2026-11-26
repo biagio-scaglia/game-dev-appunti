@@ -39,6 +39,9 @@ var heart := 4
 var level := 1
 var xp := 0
 const HEART_CAP := 8
+## La luce (gli MP): la spende la magia (il costo di ogni incantesimo è in Data.SPELLS).
+var mp := Data.MP
+const MP_MAX := Data.MP
 
 
 func _init() -> void:
@@ -175,6 +178,27 @@ func owns(item_id: String) -> bool:
 	return item_id in owned
 
 
+## Quanta luce costa un incantesimo.
+static func spell_cost(spell_id: String) -> int:
+	return int(Data.spell(spell_id).get("mp", 0))
+
+
+## Spende la luce per l'incantesimo su Q: falso (e niente speso) se non basta.
+func spend_mp(spell_id: String) -> bool:
+	var cost := spell_cost(spell_id)
+	if mp < cost:
+		return false
+	mp -= cost
+	return true
+
+
+## La luce torna (fino a MP_MAX). Ritorna quanta ne è tornata davvero.
+func gain_mp(amount: int) -> int:
+	var before := mp
+	mp = mini(MP_MAX, mp + amount)
+	return mp - before
+
+
 ## Può usare la magia: ha un incantesimo su Q.
 func can_cast() -> bool:
 	return spell != "" and knows(spell)
@@ -220,6 +244,7 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 		"flags": flags.duplicate(true),
 		"heart": heart,
 		"heart_max": heart_max,
+		"mp": mp,
 		"level": level,
 		"xp": xp,
 		"position": [position.x, position.y],
@@ -256,6 +281,7 @@ func load_save(data: Dictionary) -> void:
 	xp = maxi(0, int(data.get("xp", 0)))
 	heart_max = clampi(int(data.get("heart_max", 4)), 1, HEART_CAP)
 	heart = clampi(int(data.get("heart", heart_max)), 1, heart_max)
+	mp = clampi(int(data.get("mp", MP_MAX)), 0, MP_MAX)
 	flags = _dict(data, "flags").duplicate(true)
 	var saved_spell := String(data.get("spell", Data.START_SPELL))
 	spell = saved_spell if knows(saved_spell) else Data.START_SPELL

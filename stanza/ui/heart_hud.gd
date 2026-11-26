@@ -6,11 +6,13 @@ extends CanvasLayer
 ## - Guarire (la mela, un livello, lo specchio): il cuore torna con un rimbalzo.
 ## - L'ultimo cuore pieno batte (tum-tum), più in fretta quando ne resta poco; con l'ultimo
 ##   pezzo i bordi restano rossi e pulsano, e si sente il battito.
-## Durante i dialoghi (il riquadro del testo sta in basso) la fila si nasconde.
+## Sopra i cuori la luce (gli MP, ui/light_row.gd), quando Lethe ha una magia che la spende.
+## Durante i dialoghi (il riquadro del testo sta in basso) le file si nascondono.
 ## I cuori sono disegnati qui (SHAPE), a blocchi di PX pixel: niente immagini.
 
 const HEARTBEAT := preload("res://audio/heartbeat.wav")
 const Sfx := preload("res://core/sfx.gd")
+const LightRow := preload("light_row.gd")
 
 ## Un cuore, 9 x 8: O contorno, h luce, r pieno, d ombra.
 const SHAPE := [
@@ -79,6 +81,8 @@ var heart_max := 4
 ## La fila dei cuori (la usa anche il suggerimento del tasto della spada, per mettersi accanto).
 var box: Control
 var pips: Array[Pip] = []
+## La luce (gli MP): una fila di lune sopra i cuori.
+var light_row: Control
 
 var vignette: TextureRect
 var _time := 0.0
@@ -111,6 +115,9 @@ func _ready() -> void:
 	box = Control.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(box)
+	light_row = LightRow.new()
+	light_row.visible = false
+	add_child(light_row)
 	_rebuild()
 
 
@@ -125,7 +132,16 @@ static func beats_per_second(heart_now: int, heart_total: int) -> float:
 
 ## Nasconde la fila (piano) mentre c'è un dialogo, e la rimette dopo.
 func set_shown(shown: bool) -> void:
-	create_tween().tween_property(box, "modulate:a", 1.0 if shown else 0.0, 0.2)
+	var t := create_tween().set_parallel()
+	t.tween_property(box, "modulate:a", 1.0 if shown else 0.0, 0.2)
+	t.tween_property(light_row, "modulate:a", 1.0 if shown else 0.0, 0.2)
+
+
+## La luce (gli MP). `shown` falso finché non ha una magia che la spende.
+func show_light(now: int, total: int, shown: bool) -> void:
+	light_row.visible = shown
+	light_row.show_light(now, total)
+	light_row.position = Vector2(MARGIN.x, box.position.y - LightRow.moon_size().y - 4)
 
 
 func show_heart(heart_now: int, heart_total: int) -> void:

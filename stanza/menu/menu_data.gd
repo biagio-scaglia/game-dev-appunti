@@ -47,7 +47,10 @@ const NAME := "Lethe"
 const CLASS := "Hikikomori"
 const LEVEL := 1
 const HP := 34
-const MP := 12
+## La luce (gli MP): quante lune. La magia la spende, la spada no (la verità costa, la bugia
+## no); torna da sola piano, in fretta vicino a una luce, tutta riposando, un po' a ogni
+## verità (forest/zone_light.gd).
+const MP := 6
 
 const PARAM_ORDER := ["ATK", "DEF", "M.ATK", "M.DEF", "AGI", "LUK"]
 ## I parametri senza equipaggiamento.
@@ -82,9 +85,9 @@ const BASE_OWNED := ["black_dress"]
 ## Truth Spark, arriva con la prima verità detta nella foresta; Vigil (le quattro fiammelle)
 ## accendendo con la propria luce le lanterne di radice del dungeon.
 const SPELLS := [
-	{"id": "truth_spark", "name": "Truth Spark", "mp": 0,
+	{"id": "truth_spark", "name": "Truth Spark", "mp": 1,
 		"desc": "Gather light in your hands and throw it. It lights up the dark."},
-	{"id": "vigil", "name": "Vigil", "mp": 2,
+	{"id": "vigil", "name": "Vigil", "mp": 3,
 		"desc": "Four small flames keep watch around you. Then they go where the dark is."},
 	{"id": "moonlight", "name": "Moonlight", "mp": 4,
 		"desc": "Open your hands to the moon. Everything nearby remembers the light."},

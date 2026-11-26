@@ -75,6 +75,8 @@ const BARKS := {
 	"full_apple": "Keep it for later.",
 	# La prima lanterna accesa al posto di Lethe: mente, per non pesarle.
 	"selene_tired_first": "I'm fine. Really.",
+	# La prima volta che la magia sfuma: la luce è finita.
+	"no_light": "Your light's gone. Stay near a light... it comes back.",
 }
 
 signal arrived

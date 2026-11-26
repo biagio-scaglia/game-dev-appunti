@@ -12,6 +12,8 @@ extends Node2D
 ## - zone_combat.gd ("Combat"): nemici, cuore, esperienza, oggetti, morte, riposo, il segreto;
 ## - zone_puzzles.gd ("Puzzles"): piastre, cancelli di radici, chiavi, porte, scatole, rovi;
 ## - zone_lanterns.gd ("Lanterns"): le lanterne di radice e le tende di radici (passo 4);
+## - zone_light.gd ("Light"): la luce di Lethe (gli MP), come si spende e come torna;
+## - zone_ambience.gd ("Ambience"): sottoterra, la polvere nell'aria, le gocce, le radici;
 ## - forest_story.gd ("Story"): la regia del capitolo (scene, Selene, obiettivi);
 ## - qui: il buio, Lethe e la camera (per stanze nei dungeon: core/room_camera.gd), la musica,
 ##   il menu di pausa, i dialoghi, l'interfaccia, i passaggi tra le zone.
@@ -47,6 +49,8 @@ const ZoneDressing := preload("zone_dressing.gd")
 const ZoneCombat := preload("zone_combat.gd")
 const ZonePuzzles := preload("zone_puzzles.gd")
 const ZoneLanterns := preload("zone_lanterns.gd")
+const ZoneLight := preload("zone_light.gd")
+const ZoneAmbience := preload("zone_ambience.gd")
 const Zones := preload("zones.gd")
 const ForestStory := preload("forest_story.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
@@ -92,6 +96,8 @@ var combat: Node
 var puzzles: Node
 ## Lanterne di radice e tende di radici.
 var lanterns: Node
+## La luce di Lethe (gli MP): la spende la magia, torna vicino alle luci.
+var light: Node
 ## La regia del capitolo: le scene, Selene e le sue battute.
 var story: Node
 ## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
@@ -139,14 +145,23 @@ func _ready() -> void:
 	lanterns.name = "Lanterns"
 	add_child(lanterns)
 	lanterns.setup(self)                        # dopo i meccanismi: tutte accese, apre un loro cancello
-	ZoneDressing.add_eyes(self, layout_value("EYES"), hero)
+	ZoneDressing.add_eyes(decor, layout_value("EYES"), hero, sound)   # sulle piante basse: sotto Lethe
 	_add_music()
 	_add_menu()
 	_add_talk()
 	_add_ui()
+	light = ZoneLight.new()
+	light.name = "Light"
+	add_child(light)
+	light.setup(self)                           # dopo l'interfaccia (le lune) e i dialoghi (le verità)
 	for exit in exits():
 		exit.body_entered.connect(_on_exit.bind(exit))
 	_add_story()
+	if is_underground():
+		var ambience := ZoneAmbience.new()
+		ambience.name = "Ambience"
+		add_child(ambience)
+		ambience.setup(self)
 	if sound:
 		Music.play_loop(music)
 	if state.flag("selene_met"):

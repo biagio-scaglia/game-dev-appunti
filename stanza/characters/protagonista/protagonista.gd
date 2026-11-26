@@ -11,6 +11,8 @@ extends CharacterBody2D
 ## stato della partita (all'inizio niente), da sola (test, reel) può tutto.
 
 signal attack_finished(kind: StringName)
+## Voleva la magia ma la luce (gli MP) non bastava: tra le mani sfuma.
+signal fizzled
 ## Ha preso un colpo (da `from`, nel mondo): chi la ascolta toglie il cuore.
 signal damaged(amount: int, from: Vector2)
 
@@ -20,6 +22,8 @@ const InputSetup := preload("../../core/input_setup.gd")
 const PROJECTILE := preload("res://magic/projectile.tscn")
 const CHARGE := preload("res://magic/charge.tscn")
 const Vigil := preload("res://magic/vigil.gd")
+const Sfx := preload("res://core/sfx.gd")
+const FIZZLE := preload("res://audio/magic_fizzle.wav")
 const SWORD := preload("res://weapon/glass_sword.tscn")
 
 @export var walk_speed := 70.0
@@ -70,6 +74,10 @@ var can_slash := true
 var spell := "truth_spark"
 ## La veglia in corso: finché le fiammelle girano non se ne lancia un'altra.
 var vigil: Node2D
+## Chi paga la luce della magia: riceve l'incantesimo, ritorna falso se non basta (lo mette
+## la zona, che conosce lo stato). Senza, la magia è gratis (test, reel).
+var pay: Callable
+var _fizzle_wait := 0.0
 ## Secondi di invulnerabilità che restano; la spinta di un colpo (si spegne da sola).
 var invulnerable := 0.0
 var knock := Vector2.ZERO
@@ -148,6 +156,7 @@ func hurt(amount: int, from: Vector2) -> bool:
 
 
 func _tick_hurt(delta: float) -> void:
+	_fizzle_wait = maxf(0.0, _fizzle_wait - delta)
 	if invulnerable <= 0.0:
 		return
 	invulnerable = maxf(0.0, invulnerable - delta)
@@ -172,8 +181,43 @@ func update_animation(direction: Vector2, running: bool) -> void:
 func cast() -> void:
 	if spell == "vigil" and is_instance_valid(vigil):
 		return
+	if is_attacking():
+		return
+	if pay.is_valid() and not pay.call(spell):
+		_fizzle()
+		return
 	if _start_attack(&"cast"):
 		_spawn(CHARGE.instantiate(), hand_position())
+
+
+## Non c'è luce: un soffio grigio tra le mani, il suono che si spegne. Non troppo spesso.
+func _fizzle() -> void:
+	if _fizzle_wait > 0.0:
+		return
+	_fizzle_wait = 0.5
+	fizzled.emit()
+	if not is_inside_tree():
+		return
+	Sfx.play(get_parent(), FIZZLE, randf_range(0.95, 1.1), -6.0)
+	var puff := CPUParticles2D.new()
+	puff.amount = 7
+	puff.lifetime = 0.5
+	puff.one_shot = true
+	puff.explosiveness = 0.9
+	puff.direction = Vector2.UP
+	puff.spread = 50.0
+	puff.gravity = Vector2(0, -25)
+	puff.initial_velocity_min = 10.0
+	puff.initial_velocity_max = 28.0
+	puff.scale_amount_min = 1.0
+	puff.scale_amount_max = 2.0
+	var ramp := Gradient.new()
+	ramp.set_color(0, Color(0.7, 0.66, 0.78, 0.8))
+	ramp.set_color(1, Color(0.3, 0.28, 0.36, 0.0))
+	puff.color_ramp = ramp
+	_spawn(puff, hand_position())
+	puff.emitting = true
+	puff.finished.connect(puff.queue_free)
 
 
 ## Fende con la spada di vetro verso dove guarda. Ignorato se sta già attaccando.
