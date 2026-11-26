@@ -21,7 +21,13 @@ Il *come* tecnico (codice, test, salvataggi) non sta qui ma negli appunti del re
 Le foto degli appunti a mano (`99 Allegati/`) restano solo in locale: su un clone quelle immagini mancano.
 
 
+## 🌌 Le galassie
+Le stesse note, raggruppate per quello di cui parlano invece che per cartella (nel grafo ogni galassia ha
+il suo colore): [[🌌 Lethe]] · [[🌌 Le bugie]] · [[🌌 La storia]] · [[🌌 Il gioco]] · [[🌌 Il tono]].
+Ogni nota dice in fondo a quale galassia appartiene.
+
 ## 🧭 Mappa del vault
+
 
 ### 💡 Concept
 - [[Tema - Le bugie]]
