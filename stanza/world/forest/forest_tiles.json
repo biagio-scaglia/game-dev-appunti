@@ -496,7 +496,19 @@
         1
       ],
       "layer": "decor",
-      "solid": false
+      "solid": true
+    },
+    "thorns_b": {
+      "atlas": [
+        9,
+        16
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": true
     },
     "root_floor": {
       "atlas": [

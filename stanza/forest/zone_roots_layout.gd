@@ -119,10 +119,11 @@ const DECOR := [
 	["pebbles", Vector2i(31, 33)], ["pebbles", Vector2i(14, 21)], ["pebbles", Vector2i(50, 17)],
 	["leaf_litter", Vector2i(29, 29)], ["leaf_litter", Vector2i(31, 31)],
 	# Il passaggio delle spine: la siepe di rovi al piede della parete, ai lati della porta.
-	["thorns", Vector2i(2, 27)], ["thorns", Vector2i(3, 27)], ["thorns", Vector2i(4, 27)],
-	["thorns", Vector2i(6, 27)], ["thorns", Vector2i(7, 27)], ["thorns", Vector2i(11, 27)],
-	["thorns", Vector2i(12, 27)], ["thorns", Vector2i(14, 27)], ["thorns", Vector2i(15, 27)],
-	["thorns", Vector2i(16, 27)], ["thorns", Vector2i(17, 27)],
+	# Blocca (non ci si passa sopra); due varianti alternate perché non si veda il ripetersi.
+	["thorns", Vector2i(2, 27)], ["thorns_b", Vector2i(3, 27)], ["thorns", Vector2i(4, 27)],
+	["thorns_b", Vector2i(6, 27)], ["thorns", Vector2i(7, 27)], ["thorns_b", Vector2i(11, 27)],
+	["thorns", Vector2i(12, 27)], ["thorns_b", Vector2i(14, 27)], ["thorns", Vector2i(15, 27)],
+	["thorns_b", Vector2i(16, 27)], ["thorns", Vector2i(17, 27)],
 	# La stanza del masso: i solchi di chi ha provato a spostarlo, le schegge.
 	["drag_marks", Vector2i(48, 18)], ["drag_marks", Vector2i(49, 18)], ["drag_marks", Vector2i(50, 18)],
 	["rubble", Vector2i(54, 19)], ["rubble", Vector2i(47, 15)],
