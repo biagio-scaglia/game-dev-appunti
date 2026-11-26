@@ -1,5 +1,7 @@
 extends RefCounted
 ## I file di salvataggio: uno per slot, in JSON, in user://saves/. Solo file, niente nodi.
+## Si scrive prima in un file accanto (.tmp) e poi lo si mette al posto del vecchio: se il
+## gioco si chiude a metà scrittura, il salvataggio di prima resta intero.
 
 const SLOTS := 3
 
@@ -17,11 +19,18 @@ static func exists(slot: int) -> bool:
 
 static func write(slot: int, data: Dictionary) -> bool:
 	DirAccess.make_dir_recursive_absolute(dir)
-	var file := FileAccess.open(path(slot), FileAccess.WRITE)
+	var tmp := path(slot) + ".tmp"
+	var file := FileAccess.open(tmp, FileAccess.WRITE)
 	if file == null:
-		push_error("Salvataggio non riuscito: %s" % path(slot))
+		push_error("Salvataggio non riuscito: %s" % tmp)
 		return false
 	file.store_string(JSON.stringify(data, "\t"))
+	var ok := file.get_error() == OK
+	file.close()
+	if not ok or DirAccess.rename_absolute(tmp, path(slot)) != OK:
+		push_error("Salvataggio non riuscito: %s" % path(slot))
+		DirAccess.remove_absolute(tmp)
+		return false
 	return true
 
 
