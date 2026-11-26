@@ -626,6 +626,46 @@
     },
     "root_gate": {
       "atlas": [
+        2,
+        16
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "boulder": {
+      "atlas": [
+        0,
+        16
+      ],
+      "size": [
+        2,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    "drag_marks": {
+      "atlas": [
         5,
         14
       ],
@@ -633,8 +673,20 @@
         1,
         1
       ],
-      "layer": "object",
-      "solid": true
+      "layer": "decor",
+      "solid": false
+    },
+    "rubble": {
+      "atlas": [
+        4,
+        16
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
     },
     "watering_can": {
       "atlas": [
