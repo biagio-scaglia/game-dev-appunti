@@ -229,7 +229,8 @@ func to_save(position: Vector2, sword_stage: int) -> Dictionary:
 
 
 ## Riprende i campi dello stato da un salvataggio (posizione e spada le applica chi chiama).
-## Quello che non torna (un incantesimo che non esiste, un oggetto mai trovato) si scarta.
+## Quello che non torna (un incantesimo che non esiste, un oggetto mai trovato, un campo del
+## tipo sbagliato in un file ritoccato a mano) si scarta.
 func load_save(data: Dictionary) -> void:
 	play_time = float(data.get("play_time", 0.0))
 	day = int(data.get("day", 1))
@@ -238,29 +239,41 @@ func load_save(data: Dictionary) -> void:
 	truth = int(data.get("truth", 0))
 	lies = int(data.get("lies", 0))
 	learned.clear()
-	for id in data.get("learned", []):
+	for id in _list(data, "learned"):
 		if not Data.spell(String(id)).is_empty() and not knows(String(id)):
 			learned.append(String(id))
 	owned.assign(Data.BASE_OWNED)
-	for id in data.get("owned", []):
+	for id in _list(data, "owned"):
 		if Data.EQUIPMENT.has(String(id)) and not owns(String(id)):
 			owned.append(String(id))
 	equipped = Data.START_EQUIPMENT.duplicate()
-	var saved: Dictionary = data.get("equipped", {})
+	var saved := _dict(data, "equipped")
 	for slot in equipped:
 		var id := String(saved.get(slot, equipped[slot]))
 		if id == "" or (owns(id) and Data.EQUIPMENT[id]["slot"] == slot):
 			equipped[slot] = id
 	level = maxi(1, int(data.get("level", 1)))
 	xp = maxi(0, int(data.get("xp", 0)))
-	heart_max = maxi(1, int(data.get("heart_max", 4)))
+	heart_max = clampi(int(data.get("heart_max", 4)), 1, HEART_CAP)
 	heart = clampi(int(data.get("heart", heart_max)), 1, heart_max)
-	var saved_flags = data.get("flags", {})
-	flags = saved_flags.duplicate(true) if saved_flags is Dictionary else {}
+	flags = _dict(data, "flags").duplicate(true)
 	var saved_spell := String(data.get("spell", Data.START_SPELL))
 	spell = saved_spell if knows(saved_spell) else Data.START_SPELL
 
 
 static func saved_position(data: Dictionary) -> Vector2:
-	var p: Array = data.get("position", [0, 0])
+	var p = data.get("position", [])
+	if not p is Array or p.size() < 2:
+		return Vector2.ZERO
 	return Vector2(float(p[0]), float(p[1]))
+
+
+static func _list(data: Dictionary, key: String) -> Array:
+	var value = data.get(key, [])
+	return value if value is Array else []
+
+
+static func _dict(data: Dictionary, key: String) -> Dictionary:
+	var value = data.get(key, {})
+	return value if value is Dictionary else {}
+
