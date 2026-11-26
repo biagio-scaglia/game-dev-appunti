@@ -7,6 +7,7 @@ extends Area2D
 ## non si prende passandoci sopra: si raccoglie parlandoci (la chiave: ha il suo dialogo).
 ## `wanted` dice se adesso serve (la mela a cuore pieno no): se non serve resta a terra, e
 ## si prende appena serve, anche se Lethe ci sta già sopra.
+## Con `expires` falso resta per terra finché qualcuno non lo prende (la chiave: non sparisce).
 
 signal picked(id: String)
 
@@ -23,6 +24,8 @@ var id := "apple"
 var glow := Color(1.0, 0.86, 0.55)
 ## Si prende passandoci sopra (falso: solo parlandoci).
 var auto_pick := true
+## Dopo LIFETIME secondi lampeggia e sparisce (falso: resta lì).
+var expires := true
 var light: PointLight2D
 ## Serve adesso? (chi lo lascia per terra lo decide: la zona guarda il cuore)
 var wanted := func() -> bool: return true
@@ -68,12 +71,13 @@ func _process(delta: float) -> void:
 	sprite.position.y = -2.0 + sin(_time * 3.0) * 2.0
 	_glint.position.y = -24.0 + sprite.position.y
 	_glint.queue_redraw()
-	var left := LIFETIME - _time
-	if left < BLINK_FROM:
-		visible = int(left * 8.0) % 2 == 0
-	if left <= 0.0:
-		queue_free()
-		return
+	if expires:
+		var left := LIFETIME - _time
+		if left < BLINK_FROM:
+			visible = int(left * 8.0) % 2 == 0
+		if left <= 0.0:
+			queue_free()
+			return
 	if monitoring:
 		for body in get_overlapping_bodies():   # ci stava sopra quando non serviva
 			_on_body(body)
