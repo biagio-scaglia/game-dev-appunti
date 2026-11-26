@@ -121,6 +121,12 @@ male a chi toccano, la seguono se si muove), poi partono una dopo l'altra verso 
 piegando per seguirli; senza nemici, a ventaglio dove guarda. Ispirazione di movimento: le spade
 evocate di Vergil (DMC3); qui sono fiamme piccole, viola e bianche → [[Verità = Magia, Bugia = Spada]].
 
+**L'atmosfera**: le lanterne hanno un fuoco vivo (la vampata quando prendono, le braci, il
+crepitio che si sente avvicinandosi); nell'aria la polvere; ogni tanto una goccia cade dal buio
+(l'anello per terra, il plip con l'eco) e lontano una radice scricchiola e cade un filo di terra.
+Gli occhi si aprono con un suono umido e sbattono la palpebra. Nel passaggio delle spine la siepe
+di rovi al piede delle pareti è fitta e non si attraversa.
+
 Il codice: forest/zone_lanterns.gd (lanterne e tende), forest/root_eye.gd, magic/vigil.gd e
 vigil_flame.gd, magic/light_catch.gd; i dati: LANTERNS, CURTAINS, LANTERNS_OPEN, EYES.
 

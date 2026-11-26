@@ -96,7 +96,13 @@ forest/
 │                                il gesto Aprire scosta), ricordati nei flag della partita
 ├── zone_lanterns.gd             le lanterne di radice (si accendono con la luce della magia, o le
 │                                accende Selene stancandosi) e le tende di radici (il gesto, poi la luna)
-├── root_eye.gd                  un occhio nelle radici: al buio si apre e segue Lethe, la luce lo chiude
+├── root_eye.gd                  un occhio nelle radici: al buio si apre e segue Lethe, la luce lo chiude;
+│                                sta nella parete, sotto Lethe; si apre con un suono umido, sbatte
+├── zone_light.gd                la luce di Lethe (gli MP): la magia la spende, torna piano da sola, in
+│                                fretta vicino a una luce (lanterne, pozze di luna), tutta riposando,
+│                                un po' a ogni verità
+├── zone_ambience.gd             l'aria sottoterra: la polvere, le gocce che cadono (anello e plip con
+│                                l'eco), le radici che scricchiolano e la terra che cade
 └── forest_story.gd              la regia del capitolo: l'arrivo, Selene, il primo nemico, le battute,
                                  gli obiettivi passo passo, la discesa nel dungeon
 characters/selene/selene.gd      Selene, la compagna: uno spicchio di luna che segue Lethe, fa luce
@@ -121,6 +127,9 @@ items/pickup.gd                  un oggetto per terra (la mela che lascia un nem
 fx/damage_number.gd              il numero del danno: rosa sul punto debole, grigio se l'arma fa poco
 fx/emote.gd                      la nuvoletta sopra la testa: "!", "?", "...", un cuoricino
 fx/fireflies.gd                  le lucciole del bosco (blend additivo, blocchi di 2 pixel)
+fx/fire.gd                       un fuoco piccolo e vivo (le lanterne): la fiamma a blocchi in 4
+                                 fotogrammi mai nello stesso ordine, le braci, il crepitio vicino; la
+                                 vampata quando prende
 fx/world_grey.gd                 il mondo che si svuota: con più bugie che verità i colori vanno al
                                  grigio, restano solo i rossi
 prologue/
@@ -144,7 +153,10 @@ ui/
 ├── heart_hud.gd                 il riquadro in basso a sinistra: il cuore che una mano stringe a ogni
 │                                colpo (heart_hud.png, 5 stadi), i cuoricini, il livello e la barra
 │                                dell'esperienza; il battito più veloce con poco cuore, con l'ultimo
-│                                pezzo i bordi scuri. Si nasconde durante i dialoghi
+│                                pezzo i bordi scuri. Si nasconde durante i dialoghi. Sopra i cuori
+│                                la luce (gli MP, light_row.gd)
+├── light_row.gd                 la luce di Lethe: una fila di lune che si spengono con la magia e
+│                                tornano con un lampo; trema se la luce non basta
 ├── objective_banner.gd          l'obiettivo in alto a sinistra (cosa fare adesso, in una riga), col
 │                                cuore che batte; cambia scivolando, il numero si accende
 ├── heart_menu.gd                una lista di voci (Button veri: tastiera, gamepad, mouse): davanti
