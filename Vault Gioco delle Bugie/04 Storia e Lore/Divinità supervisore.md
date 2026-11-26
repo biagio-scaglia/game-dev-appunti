@@ -1,5 +1,5 @@
 ---
-tags: [lore, personaggi]
+tags: [lore, personaggi, galassia/storia]
 stato: idea incerta
 ---
 # Divinità supervisore
@@ -14,3 +14,5 @@ stato: idea incerta
 - "Eeeh ma troppi personaggi" → [[Cast e limite personaggi]]
 
 Collegato: [[Trama - bozza]]
+
+Galassia: [[🌌 La storia]]

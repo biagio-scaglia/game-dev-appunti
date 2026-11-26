@@ -1,5 +1,5 @@
 ---
-tags: [lore, luoghi]
+tags: [lore, luoghi, galassia/storia]
 stato: idea
 ---
 # Ambientazione
@@ -21,3 +21,5 @@ Mondo **fantasy**.
 - Il mondo reagisce alle bugie (luoghi che cambiano col karma)?
 
 Collegato: [[Trama - bozza]], [[Pixel art]]
+
+Galassia: [[🌌 La storia]]

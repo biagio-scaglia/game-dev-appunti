@@ -1,5 +1,5 @@
 ---
-tags: [lore, mistero]
+tags: [lore, mistero, galassia/storia]
 stato: volutamente aperto
 ---
 # Il mistero della ragazzina
@@ -29,3 +29,5 @@ Il gioco lascia indizi per tutte e tre, e non sceglie mai.
 - Struttura a **iceberg**: strati di significato sempre più profondi → [[Vibe e tono]]
 
 Collegato: [[Protagonista]], [[Trama - bozza]], [[Il Lete]]
+
+Galassia: [[🌌 La storia]]

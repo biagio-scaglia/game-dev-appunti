@@ -1,5 +1,5 @@
 ---
-tags: [gameplay, meccanica, simbolo]
+tags: [gameplay, meccanica, simbolo, galassia/storia]
 stato: bozza
 ---
 # Il Lete
@@ -42,3 +42,5 @@ che ha bevuto tutto. Più Lethe beve, più spesso compare. Nel capitolo 5 è il 
 - Il suono del Lete: calmo, bello, quasi una ninna nanna. Deve piacere → [[OST]].
 
 Collegato: [[Trama - bozza]], [[Sistema Karma]], [[Nemici e boss]], [[I gesti]]
+
+Galassia: [[🌌 La storia]]

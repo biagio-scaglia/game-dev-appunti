@@ -1,5 +1,5 @@
 ---
-tags: [storia]
+tags: [storia, galassia/storia]
 stato: bozza (seconda versione)
 ---
 # Trama - bozza
@@ -231,3 +231,5 @@ Niente comandi scritti a schermo (tolti dalla stanza). Si spiegano **quando serv
   → [[Titolo del gioco]].
 
 Collegato: [[Tema - Le bugie]], [[Titolo del gioco]], [[La stanza di Lethe]], [[Vibe e tono]], [[Il Lete]], [[I gesti]]
+
+Galassia: [[🌌 La storia]]
