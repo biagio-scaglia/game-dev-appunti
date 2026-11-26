@@ -44,7 +44,7 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 1. La zona 2, la radura dell'albero secco, e il passaggio dalla prima zona.
 2. ~~Le stanze (dai dati, come la radura), la camera per stanza, le porte.~~ **Fatto (26/11).**
 3. ~~Porta chiusa e chiave, forziere, piastra, cancello di radici.~~ **Fatto (26/11).**
-4. Buio, lanterne, occhi, il gesto Aprire.
+4. ~~Buio, lanterne, occhi, il gesto Aprire.~~ **Fatto (26/11).**
 5. Trappole, il masso, la pozza del Lete; la mappa nel menu.
 6. Il Cervo Secco (Beehave).
 7. La foglia e la fine del capitolo.
@@ -95,6 +95,34 @@ della magia: si risolve anche dicendo solo bugie (c'è un test).
 
 Si ricordano nei salvataggi (flag plate_, gate_, key_, door_, box_). Il codice: forest/zone_puzzles.gd,
 i dati in zone_roots_layout.gd (PLATES, GATES, KEYS, LOCKS, CHESTS).
+
+## In gioco (passo 4): la luce
+Si risolve anche con sole bugie (c'è un test), ma costa a qualcun altro.
+1. **Il gesto Aprire** (la stanza del masso): la pietra antica non ha un occhio inciso, ha una
+   **mano aperta che scosta qualcosa**. *"I used to open them every morning. Then later. Then not
+   at all."* Da qui Lethe apre le radici che chiudono, col tasto di parlare → [[I gesti]].
+2. **Le lanterne di radice** (la stanza delle lanterne, 3): radici intrecciate a gabbia attorno a
+   un vuoto. Si accendono con la **luce della magia** (il proiettile o le fiammelle le toccano).
+   **Senza magia le accende Selene**: *"I don't have any light left."* / *"...I do. A little."*
+   Ogni volta Selene **si stanca** per sempre (meno luce, colori più spenti) e mente: *"There. I'm
+   fine."* (la riga che mente). La prima volta, la battuta: *"I'm fine. Really."*
+3. **La tenda di radici**: la terza lanterna è dietro radici sottili che pendono come una tenda.
+   Col gesto si scosta, **scende la luna** e accende la lanterna.
+4. **Gli occhi nelle radici** (sulle pareti delle stanze buie): si aprono quando Lethe è vicina
+   e intorno è buio, la seguono con la pupilla, la luce li chiude. Non fanno male: guardano.
+5. **Tutte accese**: lontano il cancello dell'arena (ora nel varco della parete del cuore, si vede
+   arrivando) si apre. Se le ha accese la luce di Lethe, le fiamme si piegano verso di lei e
+   quattro piccole si staccano: **Vigil**, il secondo incantesimo. Obiettivi: *Read the old stone* →
+   *Light the lantern roots* → *Go where the deer sleeps*.
+6. **Tornando nella prima radura**, col gesto si aprono i rovi verso la nicchia della pietra.
+
+**Vigil (la veglia)**: quattro fiammelle di verità escono dalle mani, girano attorno a Lethe (fanno
+male a chi toccano, la seguono se si muove), poi partono una dopo l'altra verso i nemici vicini,
+piegando per seguirli; senza nemici, a ventaglio dove guarda. Ispirazione di movimento: le spade
+evocate di Vergil (DMC3); qui sono fiamme piccole, viola e bianche → [[Verità = Magia, Bugia = Spada]].
+
+Il codice: forest/zone_lanterns.gd (lanterne e tende), forest/root_eye.gd, magic/vigil.gd e
+vigil_flame.gd, magic/light_catch.gd; i dati: LANTERNS, CURTAINS, LANTERNS_OPEN, EYES.
 
 Collegato: [[Trama - bozza]], [[I gesti]], [[Nemici e boss]], [[Entità compagna]]
 

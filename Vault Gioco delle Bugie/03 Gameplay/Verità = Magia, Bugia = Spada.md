@@ -21,6 +21,9 @@ Nel prologo Lethe **non ha né magia né spada**: nella stanza i tasti non fanno
 incantesimi ed equipaggiamento non ancora trovati sono **"???"**. Addosso ha solo il vestito nero.
 - La **spada** arriva con la scheggia dello specchio, alla fine del prologo → [[Trama - bozza]].
 - La **magia** (*Truth Spark*) arriva con la prima verità detta nella foresta.
+- La **veglia** (*Vigil*, quattro fiammelle che girano attorno e poi partono) arriva accendendo
+  con la propria luce le lanterne del dungeon. Chi ha sempre mentito le accende con Selene, che si
+  stanca, e la veglia non la impara → [[Il dungeon delle radici]].
 - Gli altri incantesimi e l'equipaggiamento si trovano lungo la strada ([[Cose da fare]]).
 
 Collegato: [[Sistema Karma]], [[Tema - Le bugie]], [[La spada di vetro]]

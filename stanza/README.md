@@ -70,7 +70,9 @@ forest/
 │                                stanza la prima volta; la cornice d'argento dove ci si riposa;
 │                                i meccanismi (zone_puzzles.gd): la piastra con l'impronta, il cancello
 │                                di radici, la chiave e la porta della camera di Lethe, la scatola da
-│                                scarpe col filo rosso
+│                                scarpe col filo rosso; il passo 4 (zone_lanterns.gd): le lanterne di
+│                                radice, la tenda di radici, il gesto Aprire dalla pietra antica, gli
+│                                occhi nelle radici; le lanterne accese aprono l'arena
 ├── zone_wake.tscn               la prima zona della foresta (40x24 celle, 2x2 schermi), dove Lethe
 │                                cade dallo specchio: bosco fitto intorno, il sentiero, il primo
 │                                ruscello del Lete col ponte, i rovi sul ramo a nord, lo specchio.
@@ -90,12 +92,16 @@ forest/
 │                                risveglio, il segreto della decima morte
 ├── zone_dressing.gd             l'allestimento: luci e collisioni delle cose (dal JSON), raggi di
 │                                luna, lucciole, le cose con cui si parla
-├── zone_puzzles.gd              i meccanismi (piastre, cancelli, chiavi, porte, scatole), ricordati
-│                                nei flag della partita
+├── zone_puzzles.gd              i meccanismi (piastre, cancelli, chiavi, porte, scatole, i rovi che
+│                                il gesto Aprire scosta), ricordati nei flag della partita
+├── zone_lanterns.gd             le lanterne di radice (si accendono con la luce della magia, o le
+│                                accende Selene stancandosi) e le tende di radici (il gesto, poi la luna)
+├── root_eye.gd                  un occhio nelle radici: al buio si apre e segue Lethe, la luce lo chiude
 └── forest_story.gd              la regia del capitolo: l'arrivo, Selene, il primo nemico, le battute,
                                  gli obiettivi passo passo, la discesa nel dungeon
 characters/selene/selene.gd      Selene, la compagna: uno spicchio di luna che segue Lethe, fa luce
-                                 e dice battute brevi sopra la testa (bark)
+                                 e dice battute brevi sopra la testa (bark); si stanca quando fa luce
+                                 al posto di Lethe (meno luce, colori più spenti, si salva)
 enemies/
 ├── enemy.gd                     la base dei nemici: vita, debolezze (spada/magia), il lampo bianco e
 │                                la spinta quando li colpisci, la morte che si scioglie in ombra, il
@@ -229,6 +235,9 @@ characters/protagonista/
 magic/
 ├── magic_frames.gd              animazioni di carica (8), proiettile (4), impatto (9), ognuna col suo ritmo
 ├── projectile.gd / .tscn        vola con una scia di scintille e una luce viola, esplode su muri e mobili
+├── vigil.gd, vigil_flame.gd     la veglia, il secondo incantesimo: quattro fiammelle girano attorno a
+│                                Lethe, poi partono una dopo l'altra verso i nemici vicini (o a ventaglio)
+├── light_catch.gd               le luci della magia accendono le cose che prendono luce (le lanterne)
 ├── charge.tscn, impact.tscn     le scene della carica e dell'impatto (con one_shot_effect.gd)
 └── one_shot_effect.gd           carica e impatto: luce (sale nella carica, si spegne nell'impatto),
                                  suono, scoppio di scintille e tremolio a scelta
