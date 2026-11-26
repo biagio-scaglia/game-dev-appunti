@@ -1,6 +1,6 @@
 {
   "collapse-filter": true,
-  "search": "-path:\"99 Allegati\"",
+  "search": "-path:\"99 Allegati\" -file:\"🏠 Home\" -file:\"📝 Appunti originali (trascrizione)\" -file:\"❓ Domande aperte\"",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": true,
@@ -8,73 +8,38 @@
   "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "path:\"00 Home\"",
-      "color": {
-        "a": 1,
-        "rgb": 15919561
-      }
-    },
-    {
-      "query": "path:\"02 Concept\"",
-      "color": {
-        "a": 1,
-        "rgb": 15119440
-      }
-    },
-    {
-      "query": "path:\"03 Gameplay\"",
-      "color": {
-        "a": 1,
-        "rgb": 14701931
-      }
-    },
-    {
-      "query": "path:\"04 Storia e Lore\"",
-      "color": {
-        "a": 1,
-        "rgb": 10189792
-      }
-    },
-    {
-      "query": "path:\"05 Personaggi\"",
+      "query": "tag:#galassia/lethe",
       "color": {
         "a": 1,
         "rgb": 6273256
       }
     },
     {
-      "query": "path:\"06 Arte e Grafica\"",
+      "query": "tag:#galassia/bugie",
+      "color": {
+        "a": 1,
+        "rgb": 14701931
+      }
+    },
+    {
+      "query": "tag:#galassia/storia",
+      "color": {
+        "a": 1,
+        "rgb": 10189792
+      }
+    },
+    {
+      "query": "tag:#galassia/gioco",
       "color": {
         "a": 1,
         "rgb": 7327626
       }
     },
     {
-      "query": "path:\"07 Audio\"",
+      "query": "tag:#galassia/tono",
       "color": {
         "a": 1,
-        "rgb": 15765440
-      }
-    },
-    {
-      "query": "path:\"08 Tecnico\"",
-      "color": {
-        "a": 1,
-        "rgb": 10134961
-      }
-    },
-    {
-      "query": "path:\"09 Identità\"",
-      "color": {
-        "a": 1,
-        "rgb": 15790320
-      }
-    },
-    {
-      "query": "path:\"01 Appunti originali\"",
-      "color": {
-        "a": 1,
-        "rgb": 11569754
+        "rgb": 15119440
       }
     }
   ],
@@ -84,10 +49,10 @@
   "nodeSizeMultiplier": 1,
   "lineSizeMultiplier": 1,
   "collapse-forces": true,
-  "centerStrength": 0.518713248970312,
-  "repelStrength": 12,
+  "centerStrength": 0.35,
+  "repelStrength": 14,
   "linkStrength": 1,
-  "linkDistance": 180,
+  "linkDistance": 160,
   "scale": 1,
   "close": false
 }
