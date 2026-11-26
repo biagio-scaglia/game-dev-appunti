@@ -9,6 +9,7 @@ extends Node2D
 ## Questo script monta i pezzi e tiene la zona insieme:
 ## - zone_dressing.gd: luci e collisioni delle cose, raggi di luna, lucciole, cose con cui si parla;
 ## - zone_combat.gd ("Combat"): nemici, cuore, esperienza, oggetti, morte, riposo, il segreto;
+## - zone_puzzles.gd ("Puzzles"): piastre, cancelli di radici, chiavi, porte, scatole;
 ## - forest_story.gd ("Story"): la regia del capitolo (scene, Selene, obiettivi);
 ## - qui: il buio, Lethe e la camera (per stanze nei dungeon: core/room_camera.gd), la musica,
 ##   il menu di pausa, i dialoghi, l'interfaccia, i passaggi tra le zone.
@@ -42,6 +43,7 @@ const Talk := preload("res://dialogue/talk.gd")
 const ZoneLayout := preload("zone_layout.gd")
 const ZoneDressing := preload("zone_dressing.gd")
 const ZoneCombat := preload("zone_combat.gd")
+const ZonePuzzles := preload("zone_puzzles.gd")
 const Zones := preload("zones.gd")
 const ForestStory := preload("forest_story.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
@@ -83,6 +85,8 @@ var hud: CanvasLayer
 var rooms: Node
 ## Nemici, cuore, esperienza, morte, riposo.
 var combat: Node
+## Piastre, cancelli, chiavi, porte, scatole.
+var puzzles: Node
 ## La regia del capitolo: le scene, Selene e le sue battute.
 var story: Node
 ## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
@@ -122,6 +126,10 @@ func _ready() -> void:
 	Main.pending_save = {}
 	_add_camera()
 	_add_combat()
+	puzzles = ZonePuzzles.new()
+	puzzles.name = "Puzzles"
+	add_child(puzzles)
+	puzzles.setup(self)
 	_add_music()
 	_add_menu()
 	_add_talk()
@@ -204,6 +212,7 @@ func _add_talk() -> void:
 	add_child(talk)                     # dopo il menu: il riquadro si prende l'input prima
 	talk.setup_with(self, hero, state, talk_things(), DIALOGUE)
 	talk.extra_states.append(self)
+	talk.extra_states.append(puzzles)    # i dialoghi aprono porte e scatole
 	talk.key_hint = not state.flag("talk_learned")
 	talk.talk_finished.connect(_on_talk_finished)
 	talk.talk_started.connect(func(_id: String) -> void: hud.set_shown(false))
@@ -273,9 +282,13 @@ func thing_nodes() -> Array[Sprite2D]:
 	return ZoneDressing.thing_nodes(world)
 
 
-## Le cose con cui si parla: i tile in TALKS e il ruscello del Lete.
+## Le cose con cui si parla: i tile in TALKS, il ruscello del Lete, e porte, scatole e
+## cancelli dei meccanismi.
 func talk_things() -> Array[Dictionary]:
-	return ZoneDressing.talk_things(world, layout_value("TALKS"), layout_value("LETHE"), layout_value("BRIDGE"))
+	var out := ZoneDressing.talk_things(world, layout_value("TALKS"), layout_value("LETHE"), layout_value("BRIDGE"))
+	if puzzles:
+		out.append_array(puzzles.talk_things())
+	return out
 
 
 func sync_abilities() -> void:
