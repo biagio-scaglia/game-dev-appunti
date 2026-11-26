@@ -11,8 +11,11 @@ extends Node
 ##   Ognuna una volta sola (flag "bark_<chiave>", si salva);
 ## - l'uscita della prima zona: la camera guarda avanti, verso l'albero bianco;
 ## - la radura dell'albero secco (zona "tree"): la prima volta la camera va sull'albero, la
-##   luna che ci cade sopra; Lethe lo riconosce. Il buco tra le radici porta giù (il dungeon:
-##   per ora il capitolo finisce lì).
+##   luna che ci cade sopra; Lethe lo riconosce. Il buco tra le radici porta giù;
+## - il dungeon delle radici (zona "roots"): la prima volta la discesa raccontata, Selene che
+##   fa un po' di luce; entrando in una stanza nuova il suo nome e una riga sola (il dungeon
+##   racconta la pianta che nessuno annaffia più: l'annaffiatoio mai usato, il cuore che
+##   batte ancora); il cuore delle radici cambia l'obiettivo.
 ##
 ## Sta tra gli extra_states dei dialoghi: forest.dialogue chiama selene_met() e learn_truth().
 ## `pace` accorcia le attese (test).
@@ -31,6 +34,20 @@ const FIRST_SPELL := "truth_spark"
 ## Gli obiettivi della radura dell'albero.
 const GOAL_TREE := "Reach the dead tree"
 const GOAL_ROOTS := "Go down between the roots"
+## Gli obiettivi del dungeon delle radici.
+const GOAL_HEART := "Find the heart of the roots"
+const GOAL_DEER := "Find a way past the roots"
+## Le stanze del dungeon: la riga che compare sotto il nome, la prima volta.
+const ROOM_LINES := {
+	"entrance": "The roots she never watered.",
+	"heart": "Everything dry is still holding on.",
+	"lanterns": "Light, if someone brings it.",
+	"boulder": "Some things are too heavy to move alone.",
+	"thorns": "It hurts to go forward. It hurts to stay.",
+	"buried": "What you hide, stays.",
+	"arena": "Something sleeps where the light can't reach.",
+}
+const FALL := preload("res://audio/fall_whoosh.wav")
 ## Quanto vicino deve arrivare un nemico perché parta la scena del primo nemico.
 const FIRST_ENEMY_RANGE := 150.0
 ## Le battute di Selene: chiave -> riga.
@@ -194,6 +211,11 @@ func zone_ready(_from_travel: bool) -> void:
 				enter_tree.call_deferred()
 			else:
 				zone.objective.show_text(tree_goal())
+		"roots":
+			if not state().flag("roots_arrived"):
+				enter_roots.call_deferred()
+			else:
+				zone.objective.show_text(roots_goal())
 		_:
 			if not state().flag("forest_arrived"):
 				arrive()
@@ -239,10 +261,57 @@ func on_talk(id: String) -> void:
 		zone.objective.show_text(GOAL_ROOTS)
 
 
-## Dai dialoghi (il buco tra le radici): si scende. Per ora il capitolo finisce qui.
+## Dai dialoghi (il buco tra le radici): si scende nel dungeon.
 func go_down() -> void:
 	state().set_flag("roots_entered")
-	zone.call_deferred(&"_leave")
+	_sfx(FALL, 0.8, -6.0)
+	zone.call_deferred(&"travel", "roots", "top")
+
+
+func roots_goal() -> String:
+	return GOAL_DEER if state().flag("heart_seen") else GOAL_HEART
+
+
+## La prima volta sottoterra: il nero, il tonfo, la luce che scende dal buco; Lethe si
+## guarda intorno, e il racconto. Poi il nome della prima stanza.
+func enter_roots() -> void:
+	var black := _black_layer()
+	await cut.begin()
+	cut.face(zone.hero, Vector2.DOWN)
+	await cut.wait(0.9)
+	var shake := preload("res://fx/screen_shake.gd").new()
+	shake.strength = 2.0
+	get_tree().root.add_child(shake)
+	var open := create_tween()
+	open.tween_property(black, "color:a", 0.0, 2.2 * pace).set_trans(Tween.TRANS_SINE)
+	await open.finished
+	black.get_parent().queue_free()
+	cut.emote(zone.hero, "?")
+	await cut.wait(0.6)
+	cut.face(zone.hero, Vector2.UP)
+	await cut.pan_to(zone.hero.global_position + Vector2(0, -90), 1.4)
+	await cut.wait(0.5)
+	await cut.say(DIALOGUE, "roots_arrive")
+	await cut.pan_back(1.0)
+	await cut.end()
+	state().set_flag("roots_arrived")
+	zone.objective.show_text(GOAL_HEART)
+	arrived.emit()
+
+
+## Si entra in una stanza del dungeon: la prima volta il suo nome e la sua riga.
+func on_room(id: String, room_name: String) -> void:
+	var key := "room_" + id
+	if state().flag(key):
+		return
+	state().set_flag(key)
+	zone.toast(room_name, ROOM_LINES.get(id, ""))
+
+
+## Dai dialoghi: il cuore delle radici visto.
+func saw_heart() -> void:
+	state().set_flag("heart_seen")
+	zone.objective.show_text(GOAL_DEER)
 
 
 ## Il primo nemico: si ferma tutto, la camera lo guarda, Selene avvisa. Una volta sola.
