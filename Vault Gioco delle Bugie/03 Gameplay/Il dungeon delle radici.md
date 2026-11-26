@@ -45,7 +45,7 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 2. ~~Le stanze (dai dati, come la radura), la camera per stanza, le porte.~~ **Fatto (26/11).**
 3. ~~Porta chiusa e chiave, forziere, piastra, cancello di radici.~~ **Fatto (26/11).**
 4. ~~Buio, lanterne, occhi, il gesto Aprire.~~ **Fatto (26/11).**
-5. Trappole, il masso, la pozza del Lete; la mappa nel menu.
+5. ~~Trappole, il masso~~ **fatto (26/11)**; la pozza del Lete e la mappa nel menu: da fare.
 6. Il Cervo Secco (Beehave).
 7. La foglia e la fine del capitolo.
 
@@ -126,6 +126,23 @@ crepitio che si sente avvicinandosi); nell'aria la polvere; ogni tanto una gocci
 (l'anello per terra, il plip con l'eco) e lontano una radice scricchiola e cade un filo di terra.
 Gli occhi si aprono con un suono umido e sbattono la palpebra. Nel passaggio delle spine la siepe
 di rovi al piede delle pareti è fitta e non si attraversa.
+
+## In gioco (passo 5): le trappole e il masso
+1. **Le spine di radice a tempo** (il passaggio delle spine, tra l'entrata e la chiave): una fila
+   di buchi per terra. La terra trema e spuntano le punte (si vedono e si sentono arrivare), poi
+   escono radici appuntite alte come Lethe, fanno male, si ritirano. Partono a onda: si passa
+   aspettando il varco. Selene, la prima volta: *"Wait for them to go back down."*
+2. **La terra che crolla** (la stanza del masso): una striscia di terra crepata chiude l'angolo
+   est. Ci si mette piede e **cede tutta insieme**: si cade (un pezzo di cuore) e ci si ritrova
+   dov'era prima; resta il buco. Correndo non si attraversa.
+3. **Il masso**: *"Some things are too heavy to move alone."* La prima volta Lethe spinge e non
+   si muove: *"Everything down here is too heavy."* Selene: *"Then don't push it alone. I'm small.
+   But I'm here."* Da lì si spinge insieme (la luce di Selene corre al masso), due celle per volta.
+   Selene indica la terra crepata: un masso così la riempirebbe.
+4. Spinto due volte a destra **sprofonda** nella terra che crolla e ne resta la cima: un ponte.
+   Dall'altra parte la **Moon Pearl** (una luna in più): *"It waited."*
+Si risolve anche con sole bugie. Il codice: forest/zone_traps.gd, forest/zone_boulders.gd; i dati:
+SPIKES, CRUMBLE, BOULDERS, TREASURES.
 
 Il codice: forest/zone_lanterns.gd (lanterne e tende), forest/root_eye.gd, magic/vigil.gd e
 vigil_flame.gd, magic/light_catch.gd; i dati: LANTERNS, CURTAINS, LANTERNS_OPEN, EYES.

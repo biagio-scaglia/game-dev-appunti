@@ -101,6 +101,10 @@ forest/
 ├── zone_light.gd                la luce di Lethe (gli MP): la magia la spende, torna piano da sola, in
 │                                fretta vicino a una luce (lanterne, pozze di luna), tutta riposando,
 │                                un po' a ogni verità
+├── zone_traps.gd                le trappole: le spine di radice a tempo (a onda, si vedono arrivare) e
+│                                la terra che crolla (cede tutta insieme, si cade e si torna indietro)
+├── zone_boulders.gd             i massi da spingere (la prima volta insieme a Selene); spinti sulla
+│                                terra che crolla ci sprofondano e fanno da ponte
 ├── zone_ambience.gd             l'aria sottoterra: la polvere, le gocce che cadono (anello e plip con
 │                                l'eco), le radici che scricchiolano e la terra che cade
 └── forest_story.gd              la regia del capitolo: l'arrivo, Selene, il primo nemico, le battute,
