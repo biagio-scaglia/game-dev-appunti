@@ -57,6 +57,10 @@ opening/
 │                                Un tasto chiede conferma, il secondo salta. Continue non ci passa
 └── calendar_page.gd             il foglio del calendario, disegnato in codice a blocchi di 2 pixel
 forest/
+├── zone_roots.tscn              il dungeon delle radici, sotto l'albero secco: 7 stanze più l'arena
+│                                (3x3 schermi), scavate nella terra; la camera resta sulla stanza e
+│                                scivola passando una porta (core/room_camera.gd); il nome della
+│                                stanza la prima volta; la cornice d'argento dove ci si riposa
 ├── zone_wake.tscn               la prima zona della foresta (40x24 celle, 2x2 schermi), dove Lethe
 │                                cade dallo specchio: bosco fitto intorno, il sentiero, il primo
 │                                ruscello del Lete col ponte, i rovi sul ramo a nord, lo specchio.
@@ -118,6 +122,8 @@ audio/heart_*.wav, enemy_*.wav, moth_*.wav, bramble_*.wav, firefly_bite.wav
                                  i suoni del combattimento: il cuore stretto, il battito, il cuore
                                  che si spezza, i nemici colpiti e che si sciolgono, le ali, il
                                  sussurro e la frusta del rovo, il morso della lucciola
+audio/roots_theme.wav            l'OST del dungeon: bordone sotto terra, il battito del cuore delle
+                                 radici, gocce nel buio, il lamento del titolo su un vetro lontano
 audio/forest_theme.wav           l'OST della foresta: Re dorico, arpa pizzicata, il motivo del titolo
                                  al flauto, grilli, vento e un gufo lontano (loop di 48 s)
 audio/mirror_hum.wav, sheet_rustle.wav, mirror_break.wav, fall_whoosh.wav, shard_glint.wav,
