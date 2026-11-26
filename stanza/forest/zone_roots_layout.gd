@@ -102,6 +102,10 @@ const DECOR := [
 	["mushrooms", Vector2i(37, 29)], ["mushrooms", Vector2i(3, 20)], ["mushrooms", Vector2i(57, 33)],
 	["pebbles", Vector2i(31, 33)], ["pebbles", Vector2i(14, 21)], ["pebbles", Vector2i(50, 17)],
 	["leaf_litter", Vector2i(29, 29)], ["leaf_litter", Vector2i(31, 31)],
+	# Il passaggio delle spine: rovi bassi ai lati della porta e lungo le pareti.
+	["thorns", Vector2i(7, 27)], ["thorns", Vector2i(11, 27)], ["thorns", Vector2i(2, 28)],
+	["thorns", Vector2i(18, 31)], ["thorns", Vector2i(3, 34)], ["thorns", Vector2i(16, 34)],
+	["thorns", Vector2i(12, 33)],
 ]
 ## Pochi nemici per ora (il dungeon vero arriva coi passi dopo): falene nel buio, lucciole
 ## false tra le radici che fanno luce.
