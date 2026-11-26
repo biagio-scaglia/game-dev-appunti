@@ -164,6 +164,12 @@ func test_l_obiettivo_dice_cosa_fare() -> void:
 func test_la_piastra_si_fa_notare() -> void:
 	var zone := await _zone()
 	var sprite: Sprite2D = zone.puzzles.plates["handprint"].get_meta(&"sprite")
+	# Si vede: disegnata dopo il pavimento (non sotto, come quando aveva z_index -1) e prima
+	# di Lethe, che ci sale sopra.
+	assert_eq(sprite.get_parent(), zone.decor, "sta con le cose per terra")
+	assert_eq(sprite.z_index, 0, "nessuno z_index che la mandi sotto il pavimento")
+	assert_true(zone.ground.get_index() < zone.decor.get_index(), "il pavimento viene prima")
+	assert_true(zone.decor.get_index() < zone.world.get_index(), "Lethe viene dopo")
 	var pulse: Tween = sprite.get_meta(&"pulse")
 	assert_true(pulse.is_running(), "finché non è premuta respira")
 	zone.puzzles.press("handprint", "thorns")

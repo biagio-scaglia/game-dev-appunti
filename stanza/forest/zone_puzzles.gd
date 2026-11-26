@@ -102,8 +102,9 @@ func _add_plate(id: String, cell: Vector2i, gate: String) -> void:
 	var pressed: bool = state().flag("plate_" + id)
 	var sprite := ZoneDressing.thing_sprite(zone.data, "pressure_plate_down" if pressed else "pressure_plate", cell)
 	sprite.name = "plate_" + id
-	sprite.z_index = -1                         # per terra: sotto Lethe
-	zone.world.add_child(sprite)
+	# Per terra: figlia delle piante basse, quindi sopra il pavimento e sotto Lethe. (Con
+	# z_index -1 dentro World finiva sotto il pavimento, e non si vedeva.)
+	zone.decor.add_child(sprite)
 	if not pressed:
 		ZoneDressing.build_thing(zone, sprite, zone.data)   # l'impronta brilla appena: si trova
 		var pulse := sprite.create_tween().set_loops()      # e respira piano: chiede di salirci
