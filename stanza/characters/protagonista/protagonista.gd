@@ -2,7 +2,8 @@ extends CharacterBody2D
 ## La protagonista: cammina in 8 direzioni, corre da sola se si tiene una direzione (o
 ## subito con Shift), e attacca in due modi (tasti: core/input_setup.gd).
 ## - Magia (Q): la verità. Prima la carica sulle mani, poi a metà attacco parte
-##   il proiettile verso dove guarda.
+##   l'incantesimo su Q (`spell`): il proiettile verso dove guarda (truth_spark) o le quattro
+##   fiammelle della veglia (vigil, magic/vigil.gd).
 ## - Spada di vetro dello specchio (Spazio, il tasto unico): la bugia. La lama compare dalla mano e fende verso
 ##   dove guarda; sword_stage (0 scheggia, 1 pugnale, 2 lama) cresce con le bugie.
 ## Mentre attacca o parla (`frozen`) sta ferma. L'origine del nodo è ai piedi.
@@ -18,6 +19,7 @@ const Facing := preload("facing.gd")
 const InputSetup := preload("../../core/input_setup.gd")
 const PROJECTILE := preload("res://magic/projectile.tscn")
 const CHARGE := preload("res://magic/charge.tscn")
+const Vigil := preload("res://magic/vigil.gd")
 const SWORD := preload("res://weapon/glass_sword.tscn")
 
 @export var walk_speed := 70.0
@@ -31,6 +33,8 @@ const SWORD := preload("res://weapon/glass_sword.tscn")
 ## Quanto fanno male la spada (più lo stadio) e la magia, prima delle debolezze dei nemici.
 const SWORD_DAMAGE := 2
 const MAGIC_DAMAGE := 3
+## Ogni fiammella della veglia (sono quattro).
+const VIGIL_DAMAGE := 2
 ## Dopo un colpo: per quanto non ne prende altri (e lampeggia), la spinta all'indietro.
 const INVULNERABLE_TIME := 1.1
 const KNOCKBACK := 230.0
@@ -62,6 +66,10 @@ var scripted := false
 ## Sa un incantesimo (Spazio / J) e ha la spada in mano (K).
 var can_cast := true
 var can_slash := true
+## L'incantesimo su Q (lo mette chi conosce lo stato; da sola, il primo).
+var spell := "truth_spark"
+## La veglia in corso: finché le fiammelle girano non se ne lancia un'altra.
+var vigil: Node2D
 ## Secondi di invulnerabilità che restano; la spinta di un colpo (si spegne da sola).
 var invulnerable := 0.0
 var knock := Vector2.ZERO
@@ -162,6 +170,8 @@ func update_animation(direction: Vector2, running: bool) -> void:
 
 ## Lancia la magia verso dove guarda. Ignorato se sta già attaccando.
 func cast() -> void:
+	if spell == "vigil" and is_instance_valid(vigil):
+		return
 	if _start_attack(&"cast"):
 		_spawn(CHARGE.instantiate(), hand_position())
 
@@ -224,10 +234,17 @@ func _on_frame_changed() -> void:
 	_launched = true
 	match attacking:
 		&"cast":
-			var shot := PROJECTILE.instantiate()
-			shot.direction = facing.normalized()
-			shot.damage = MAGIC_DAMAGE
-			_spawn(shot, hand_position())
+			if spell == "vigil":
+				vigil = Vigil.new()
+				vigil.caster = self
+				vigil.facing = facing
+				vigil.damage = VIGIL_DAMAGE
+				_spawn(vigil, global_position)
+			else:
+				var shot := PROJECTILE.instantiate()
+				shot.direction = facing.normalized()
+				shot.damage = MAGIC_DAMAGE
+				_spawn(shot, hand_position())
 		&"slash":
 			var sword := SWORD.instantiate()
 			sword.direction = aim if aim != Vector2.ZERO else facing.normalized()

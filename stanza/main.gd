@@ -93,6 +93,7 @@ static func resume_save(data: Dictionary) -> void:
 
 func sync_abilities() -> void:
 	hero.can_cast = state.can_cast()
+	hero.spell = state.spell
 	hero.can_slash = state.can_slash()
 	hero.sword_stage = state.sword_stage()     # la spada cresce con le bugie
 

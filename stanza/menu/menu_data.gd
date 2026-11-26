@@ -79,10 +79,13 @@ const START_EQUIPMENT := {"weapon": "", "body": "black_dress", "accessory": ""}
 const BASE_OWNED := ["black_dress"]
 
 ## Gli incantesimi. All'inizio non ne sa nessuno: si vedono tutti come "???". Il primo,
-## Truth Spark, arriva con la prima verità detta nella foresta.
+## Truth Spark, arriva con la prima verità detta nella foresta; Vigil (le quattro fiammelle)
+## accendendo con la propria luce le lanterne di radice del dungeon.
 const SPELLS := [
 	{"id": "truth_spark", "name": "Truth Spark", "mp": 0,
 		"desc": "Gather light in your hands and throw it. It lights up the dark."},
+	{"id": "vigil", "name": "Vigil", "mp": 2,
+		"desc": "Four small flames keep watch around you. Then they go where the dark is."},
 	{"id": "moonlight", "name": "Moonlight", "mp": 4,
 		"desc": "Open your hands to the moon. Everything nearby remembers the light."},
 	{"id": "mend", "name": "Mend", "mp": 3,
