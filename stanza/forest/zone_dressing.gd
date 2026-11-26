@@ -13,6 +13,7 @@ const RoomTileset := preload("res://world/room_tileset.gd")
 const RoomFx := preload("res://world/room_fx.gd")
 const MoonBeam := preload("res://fx/moon_beam.gd")
 const Fireflies := preload("res://fx/fireflies.gd")
+const ForestTileset := preload("res://world/forest/forest_tileset.gd")
 
 const TILE := 32
 ## Da quanto sopra il bordo della mappa partono i raggi di luna (nel bosco).
@@ -35,27 +36,58 @@ static func thing_rect(sprite: Sprite2D) -> Rect2:
 	return Rect2(sprite.position + sprite.offset, sprite.texture.get_size())
 
 
+## Una cosa: lo Sprite2D del tile `tile_name` con l'angolo in alto a sinistra in `cell`,
+## l'origine in basso al centro (i piedi, per l'y-sort) e il nome del tile nei metadati. La
+## usano il generatore delle scene e i meccanismi creati quando la zona parte.
+static func thing_sprite(tiles: Dictionary, tile_name: String, cell: Vector2i) -> Sprite2D:
+	var sprite := Sprite2D.new()
+	sprite.centered = false
+	set_tile(sprite, tiles, tile_name)
+	var size := sprite.texture.get_size()
+	sprite.position = Vector2(cell) * TILE + Vector2(size.x / 2.0, size.y)
+	return sprite
+
+
+## Cambia il disegno di una cosa (la porta che si apre, la scatola, la piastra), con
+## l'origine sempre ai piedi.
+static func set_tile(sprite: Sprite2D, tiles: Dictionary, tile_name: String) -> void:
+	var tile: Dictionary = tiles["tiles"][tile_name]
+	var size := Vector2(float(tile["size"][0]), float(tile["size"][1])) * TILE
+	var texture := AtlasTexture.new()
+	texture.atlas = ForestTileset.ATLAS
+	texture.region = Rect2(Vector2(float(tile["atlas"][0]), float(tile["atlas"][1])) * TILE, size)
+	sprite.texture = texture
+	sprite.offset = Vector2(-size.x / 2.0, -size.y)
+	sprite.set_meta(&"tile", tile_name)
+
+
 ## Luci e collisioni delle cose (le luci vanno in `parent`).
 static func build_things(parent: Node2D, world: Node, data: Dictionary) -> void:
 	for sprite in thing_nodes(world):
-		var tile: Dictionary = data["tiles"][sprite.get_meta(&"tile")]
-		RoomFx.attach(parent, tile, thing_rect(sprite).position)
-		if not tile["solid"]:
-			continue
-		var body := StaticBody2D.new()
-		body.collision_layer = RoomTileset.WORLD_LAYER
-		sprite.add_child(body)
-		var cells := Vector2i(int(tile["size"][0]), int(tile["size"][1]))
-		for y in cells.y:
-			for x in cells.x:
-				if not RoomTileset.is_solid_cell(tile, Vector2i(x, y)):
-					continue
-				var shape := CollisionShape2D.new()
-				var box := RectangleShape2D.new()
-				box.size = Vector2(TILE, TILE)
-				shape.shape = box
-				shape.position = sprite.offset + (Vector2(x, y) + Vector2(0.5, 0.5)) * TILE
-				body.add_child(shape)
+		build_thing(parent, sprite, data)
+
+
+## Luce e collisioni di una cosa. Ritorna il corpo delle collisioni (o null se non blocca).
+static func build_thing(parent: Node2D, sprite: Sprite2D, data: Dictionary) -> StaticBody2D:
+	var tile: Dictionary = data["tiles"][sprite.get_meta(&"tile")]
+	RoomFx.attach(parent, tile, thing_rect(sprite).position)
+	if not tile["solid"]:
+		return null
+	var body := StaticBody2D.new()
+	body.collision_layer = RoomTileset.WORLD_LAYER
+	sprite.add_child(body)
+	var cells := Vector2i(int(tile["size"][0]), int(tile["size"][1]))
+	for y in cells.y:
+		for x in cells.x:
+			if not RoomTileset.is_solid_cell(tile, Vector2i(x, y)):
+				continue
+			var shape := CollisionShape2D.new()
+			var box := RectangleShape2D.new()
+			box.size = Vector2(TILE, TILE)
+			shape.shape = box
+			shape.position = sprite.offset + (Vector2(x, y) + Vector2(0.5, 0.5)) * TILE
+			body.add_child(shape)
+	return body
 
 
 ## Le luci delle piante basse del layer `decor`.

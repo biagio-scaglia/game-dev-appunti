@@ -82,18 +82,7 @@ func _initialize() -> void:
 ## Una cosa della zona: lo Sprite2D del tile, con l'origine in basso al centro (i piedi,
 ## per l'y-sort) e il nome del tile nei metadati.
 static func thing_sprite(tiles: Dictionary, tile_name: String, cell: Vector2i) -> Sprite2D:
-	var tile: Dictionary = tiles["tiles"][tile_name]
-	var size := Vector2(float(tile["size"][0]), float(tile["size"][1])) * TILE
-	var texture := AtlasTexture.new()
-	texture.atlas = ForestTileset.ATLAS
-	texture.region = Rect2(Vector2(float(tile["atlas"][0]), float(tile["atlas"][1])) * TILE, size)
-	var sprite := Sprite2D.new()
-	sprite.texture = texture
-	sprite.centered = false
-	sprite.offset = Vector2(-size.x / 2.0, -size.y)
-	sprite.position = Vector2(cell) * TILE + Vector2(size.x / 2.0, size.y)
-	sprite.set_meta(&"tile", tile_name)
-	return sprite
+	return preload("res://forest/zone_dressing.gd").thing_sprite(tiles, tile_name, cell)
 
 
 func _paint_ground(ground: TileMapLayer) -> void:
