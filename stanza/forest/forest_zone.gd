@@ -16,6 +16,7 @@ extends Node2D
 ## - zone_ambience.gd ("Ambience"): sottoterra, la polvere nell'aria, le gocce, le radici;
 ## - zone_traps.gd ("Traps"): le spine di radice a tempo e la terra che crolla (passo 5);
 ## - zone_boulders.gd ("Boulders"): i massi da spingere (insieme a Selene);
+## - zone_boss.gd ("Boss"): il boss della zona, la scena, la barra, la fine (passo 6);
 ## - forest_story.gd ("Story"): la regia del capitolo (scene, Selene, obiettivi);
 ## - qui: il buio, Lethe e la camera (per stanze nei dungeon: core/room_camera.gd), la musica,
 ##   il menu di pausa, i dialoghi, l'interfaccia, i passaggi tra le zone.
@@ -55,6 +56,7 @@ const ZoneLight := preload("zone_light.gd")
 const ZoneAmbience := preload("zone_ambience.gd")
 const ZoneTraps := preload("zone_traps.gd")
 const ZoneBoulders := preload("zone_boulders.gd")
+const ZoneBoss := preload("zone_boss.gd")
 const Zones := preload("zones.gd")
 const ForestStory := preload("forest_story.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
@@ -105,6 +107,8 @@ var light: Node
 ## Le trappole (spine, terra che crolla) e i massi.
 var traps: Node
 var boulders: Node
+## Il boss (il Cervo Secco).
+var boss: Node
 ## La regia del capitolo: le scene, Selene e le sue battute.
 var story: Node
 ## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
@@ -172,6 +176,10 @@ func _ready() -> void:
 	for exit in exits():
 		exit.body_entered.connect(_on_exit.bind(exit))
 	_add_story()
+	boss = ZoneBoss.new()
+	boss.name = "Boss"
+	add_child(boss)
+	boss.setup(self)                            # dopo la regia: la scena usa il suo regista
 	if is_underground():
 		var ambience := ZoneAmbience.new()
 		ambience.name = "Ambience"

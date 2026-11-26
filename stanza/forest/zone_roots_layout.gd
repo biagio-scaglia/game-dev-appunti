@@ -104,6 +104,11 @@ const CRUMBLE := [
 	Vector2i(55, 21), Vector2i(56, 21), Vector2i(55, 22), Vector2i(56, 22),
 ]
 const BOULDERS := [["stone", Vector2i(51, 17)]]
+## Il passo 6 (forest/zone_boss.gd): il Cervo Secco dorme in mezzo all'arena; entrando, le
+## radici richiudono l'entrata (BOSS_GATE: le celle in alto dei cancelli, alti due).
+const BOSS := ["dry_deer", Vector2i(30, 5)]
+const BOSS_ROOM := "arena"
+const BOSS_GATE := [Vector2i(28, 10), Vector2i(29, 10), Vector2i(30, 10)]
 ## I tesori per terra (zone_puzzles.gd): [oggetto, cella].
 const TREASURES := [["moon_pearl", Vector2i(57, 18)]]
 

@@ -400,3 +400,53 @@ A pearl. Like a piece of the moon that fell down here, and stayed.
 Lethe: ...It waited.
 do take_treasure("moon_pearl")
 => END
+
+# Il Cervo Secco (passo 6): la bugia con un corpo. La prima volta.
+~ deer_wake
+Something huge is sleeping between the roots. White as the dead tree, and as dry.
+There is a hole in its chest, and a light inside it, beating slowly.
+It opens one eye.
+Dry Deer: It hasn't been that long. [#wrong]
+Dry Deer: [shiver]It hasn't been that long.[/shiver] [#wrong]
+Lethe: ...That's what I kept saying.
+if selene_met()
+	Selene: It's the tree, Lethe. What's left of it.
+	Selene: It won't let you pass. Not while it believes that.
+=> END
+
+# Di nuovo (Lethe era caduta).
+~ deer_again
+The Dry Deer lifts its head. The light in its chest beats faster.
+Dry Deer: It hasn't been that long. [#wrong]
+=> END
+
+# La fine con la magia: la verità lo libera.
+~ deer_freed
+The light in its chest grows until the bark can't hold it anymore.
+Lethe: It has been a long time.
+Lethe: I stopped watering it. I stopped everything. And it kept waiting anyway.
+The Dry Deer lowers its head. Not to charge. Like a bow.
+It comes apart into light, slowly, the way snow does.
+if selene_met()
+	Selene: You told it the truth.
+	Selene: ...It was waiting for that.
+=> END
+
+# La fine con la spada: la bugia lo rompe.
+~ deer_broken
+The glass goes through the bark like it was nothing. The Dry Deer cracks from the antlers down.
+Dry Deer: It hasn't... been...
+It breaks. Dry bark and dead leaves, everywhere. Then nothing.
+Lethe: ...Not that long. Right?
+if selene_met()
+	Selene: ...
+=> END
+
+# La foglia dove stava il cervo.
+~ leaf
+Where it stood, something small and green is lying in the dirt. A leaf. Alive.
+Lethe: ...From the tree?
+do take_treasure("leaf")
+if selene_met()
+	Selene: Take it back up. To the tree.
+=> END

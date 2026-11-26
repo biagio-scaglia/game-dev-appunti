@@ -72,8 +72,13 @@ func _sfx(stream: AudioStream, pitch := 1.0, db := 0.0) -> void:
 
 # --- I nemici -------------------------------------------------------------------------------
 
+## I nemici della zona (non i boss: quelli li tiene zone_boss.gd, non si rimettono al risveglio).
 func enemies() -> Array:
-	return get_tree().get_nodes_in_group(&"enemies").filter(func(e): return zone.is_ancestor_of(e))
+	return get_tree().get_nodes_in_group(&"enemies").filter(_is_ours)
+
+
+func _is_ours(e: Node) -> bool:
+	return zone.is_ancestor_of(e) and not e.is_in_group(&"bosses")
 
 
 func spawn_enemies() -> void:

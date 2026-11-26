@@ -13,7 +13,8 @@ extends RefCounted
 ## stanze), DARKNESS e THEME (il buio e la musica).
 ## I meccanismi: PLATES, GATES, KEYS, LOCKS, CHESTS (zone_puzzles.gd); LANTERNS, CURTAINS,
 ## LANTERNS_OPEN (zone_lanterns.gd); EYES, gli occhi nelle radici (zone_dressing.gd);
-## SPIKES, CRUMBLE (zone_traps.gd); BOULDERS (zone_boulders.gd); TREASURES (zone_puzzles.gd).
+## SPIKES, CRUMBLE (zone_traps.gd); BOULDERS (zone_boulders.gd); TREASURES (zone_puzzles.gd);
+## BOSS, BOSS_ROOM, BOSS_GATE (zone_boss.gd).
 
 const GRASS := ""
 ## Se due materiali si toccano nella stessa cella, vince il primo (il bosco copre tutto,

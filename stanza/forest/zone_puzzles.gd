@@ -283,15 +283,23 @@ func give(item: String) -> void:
 # --- I tesori ----------------------------------------------------------------------------------
 
 func _add_treasure(id: String, cell: Vector2i) -> void:
+	add_treasure(id, (Vector2(cell) + Vector2(0.5, 0.8)) * TILE)
+
+
+## Un tesoro per terra in un punto (pixel): la foglia dove stava il cervo.
+func add_treasure(id: String, at: Vector2) -> void:
+	if treasures.has(id):
+		return
 	var item: Area2D = Pickup.new()
 	item.id = id
 	item.name = "treasure_" + id
-	item.position = (Vector2(cell) + Vector2(0.5, 0.8)) * TILE
+	item.position = at
 	item.auto_pick = false
 	item.expires = false
 	item.glow = Color(0.75, 0.82, 1.0)
 	zone.world.add_child(item)
 	treasures[id] = item
+	_refresh_talk()
 
 
 ## Dai dialoghi: il tesoro si raccoglie, sparisce da terra e fa il suo effetto.

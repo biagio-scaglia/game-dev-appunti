@@ -44,6 +44,8 @@ const GOAL_ROOTS := "Go down between the roots"
 ## Gli obiettivi del dungeon delle radici.
 const GOAL_HEART := "Find the heart of the roots"
 const GOAL_DEER := "Go where the deer sleeps"
+## Il passo 6, dopo il cervo: la foglia all'albero (il passo 7).
+const GOAL_LEAF := "Bring the leaf to the dead tree"
 ## Dopo il cuore, i meccanismi uno alla volta (zone_puzzles.gd): così si sa sempre cosa fare.
 const GOAL_THORNS := "Open the thorn passage"
 const GOAL_KEY := "Look behind the thorns"
@@ -315,6 +317,8 @@ func roots_goal() -> String:
 		return GOAL_DOOR
 	if not s.flag("lanterns_lit"):
 		return GOAL_LANTERNS if knows_open() else GOAL_STONE
+	if s.flag("deer_defeated"):
+		return GOAL_LEAF
 	return GOAL_DEER
 
 
