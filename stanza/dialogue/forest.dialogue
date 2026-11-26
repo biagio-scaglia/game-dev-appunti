@@ -228,3 +228,80 @@ if seen("watering_can") == 0
 else
 	The price sticker. She never peeled it off.
 => END
+
+# --- I meccanismi del dungeon (forest/zone_puzzles.gd) ---------------------------------------
+
+# La piastra nelle lanterne: Lethe ci sale sopra.
+~ plate_handprint
+A flat stone in the floor, with a handprint pressed into it. Small. A child's hand.
+It sinks under her feet with a click. Somewhere close, roots pull back.
+Lethe: ...My hands were that small, once.
+if selene_met()
+	Selene: The roots moved for you. They remember you.
+=> END
+
+~ thorns_gate
+Roots, woven tight across the passage. They shiver when she comes close.
+Lethe: They're not dead. They're waiting.
+if selene_met()
+	Selene: That flat stone back there... it looked like a hand.
+=> END
+
+# La chiave per terra, nel passaggio delle spine: ci si parla e si raccoglie.
+~ old_key
+Something glints in the dirt, half buried under the roots. A key. Old, and warm from the earth.
+do take_key("old_key")
+Lethe knows it before she even picks it up.
+Lethe: ...This is mine. The key to my room.
+Lethe: I keep it on the inside. So nobody can- So I can stay in.
+if selene_met()
+	Selene: Then you know which door it opens.
+=> END
+
+# La chiave, presa senza dialogo (per sicurezza: di solito si raccoglie parlandoci).
+~ old_key_found
+An old key, warm from the earth. Lethe knows it before she even looks.
+Lethe: ...This is mine. The key to my room.
+Lethe: I keep it on the inside. So nobody can- So I can stay in.
+if selene_met()
+	Selene: Then you know which door it opens.
+=> END
+
+~ bedroom_door
+if door_open("bedroom")
+	The door stands open. Her own door, down here, and the dark behind it.
+elif has_key("old_key")
+	A door. Painted wood, a brass handle, roots grown all over it.
+	It's her door. Her bedroom door. The scratch near the handle is still there.
+	Lethe: ...It's locked. From the inside.
+	- Use the key.
+		Lethe: I locked it. Every night. Then every day.
+		Lethe: ...I never thought I'd be the one outside.
+		do open_door("bedroom")
+	- Not yet.
+		Lethe: Not yet.
+else
+	A door. Painted wood, a brass handle, roots grown all over it.
+	It's her door. Her bedroom door, here under the tree.
+	Lethe: Locked. ...Of course it's locked.
+	if selene_met()
+		Selene: There's a key somewhere. There always is.
+=> END
+
+~ shoebox
+if box_open("shoebox")
+	The shoebox is empty now. Only the drawings are left, and the other bracelet.
+else
+	A shoebox, half buried under the roots. The one that lived under her bed.
+	Lethe: I put things in here. Things I didn't want to look at anymore.
+	- Open it.
+		Drawings. A ticket for a concert she never went to.
+		Two friendship bracelets, the red thread coming loose. One was never given.
+		Lethe: We made them together. Two each. I never gave her hers.
+		Lethe: She stopped writing after a while. ...I stopped answering first.
+		if selene_met()
+			Selene: You can keep the thread. It's still strong.
+		do open_box("shoebox")
+	- Leave it buried.
+		Lethe: ...Leave it.
+=> END
