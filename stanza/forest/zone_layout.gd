@@ -11,6 +11,8 @@ extends RefCounted
 ## non d'erba), EARTH_BLOCKS (la terra, che blocca), CARVE (dove si scava: stanze e porte,
 ## tornano pavimento), WALL_FACES (la parete in cima alle stanze), ROOMS (la camera per
 ## stanze), DARKNESS e THEME (il buio e la musica).
+## I meccanismi: PLATES, GATES, KEYS, LOCKS, CHESTS (zone_puzzles.gd); LANTERNS, CURTAINS,
+## LANTERNS_OPEN (zone_lanterns.gd); EYES, gli occhi nelle radici (zone_dressing.gd).
 
 const GRASS := ""
 ## Se due materiali si toccano nella stessa cella, vince il primo (il bosco copre tutto,

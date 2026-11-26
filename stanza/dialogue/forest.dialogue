@@ -66,18 +66,34 @@ if selene_met()
 
 ~ brambles
 Thorns, grown thick across the path. [shiver]Something glints behind them.[/shiver]
-Lethe: I can't get through. ...Not like this.
-if selene_met() and seen("brambles") == 0
-	Selene: They grew shut. Like curtains nobody opens.
-	Selene: Maybe someday you'll know how to open them.
+if knows_open()
+	Lethe: ...Open.
+	She pushes the branches aside, slowly, the way you open curtains in the morning.
+	do open_brambles()
+	if selene_met()
+		Selene: You remembered how.
+else
+	Lethe: I can't get through. ...Not like this.
+	if selene_met() and seen("brambles") == 0
+		Selene: They grew shut. Like curtains nobody opens.
+		Selene: Maybe someday you'll know how to open them.
 => END
 
 ~ old_stone
 An old stone with a mark carved in it. It glows, a little.
-Lethe: An eye. Or a moon.
-if selene_met()
-	Selene: ...Someone was here before you.
-	Selene: They didn't go back.
+if stone_teaches()
+	Not an eye. A hand, open, pushing something aside.
+	Lethe: ...Curtains.
+	Lethe: I used to open them every morning. Then later. Then not at all.
+	She puts her hand on the mark. It's warm.
+	do learn_open()
+	if selene_met()
+		Selene: The roots that keep things shut... now they'll listen to you.
+else
+	Lethe: An eye. Or a moon.
+	if selene_met()
+		Selene: ...Someone was here before you.
+		Selene: They didn't go back.
 => END
 
 # Il primo nemico (forest_story.gd, first_enemy): tutto si ferma, la camera lo guarda.
@@ -203,10 +219,59 @@ else
 	Slow. Steady. Still beating.
 => END
 
-~ root_gate
+~ arena_gate
 Roots, grown into a wall across the passage. Thick as arms.
 Behind them, something big breathes in its sleep.
 Lethe: Not yet. I can't open this. ...Not like this.
+if selene_met()
+	Selene: They lean away from the dark. Toward light.
+	Selene: The lanterns, in the lantern room. Maybe if they were lit...
+=> END
+
+# Le lanterne di radice (passo 4): si accendono con la luce di Lethe; senza, le accende Selene.
+~ root_lantern
+Roots, woven shut around nothing. A lantern, cold.
+if has_light()
+	Lethe: It's waiting for light.
+	if selene_met() and seen("root_lantern") == 0
+		Selene: Yours. Throw it.
+elif selene_met()
+	Lethe: I don't have any light left.
+	Selene: ...I do. A little.
+	do selene_light_lantern()
+	The lantern takes the light. Selene looks smaller, for a moment.
+	Selene: There. I'm fine. [#wrong]
+else
+	Lethe: It's waiting for light. I don't have any.
+=> END
+
+# La tenda di radici: si apre col gesto Aprire, e la luna accende la lanterna dietro.
+~ root_curtain
+Thin roots hang from the ceiling, thick and still, like a curtain someone forgot to open.
+Behind them, a cold draft. And something shaped like a lantern.
+if knows_open()
+	Lethe: ...Open.
+	She pushes the roots aside. Moonlight falls through, from somewhere very far above.
+	do open_curtain()
+else
+	Lethe: I can't- ...Not like this.
+	if selene_met()
+		Selene: The old stone, in the stone room. It was waiting for someone.
+=> END
+
+# Le tre lanterne accese: il cancello dell'arena si apre, lontano. Con la luce di Lethe, la veglia.
+~ lanterns_lit
+Three lanterns. The roots lean toward the light, all together.
+Far away, something made of wood breathes out, and gives.
+if has_light()
+	The lanterns lean toward Lethe too. Their flames bend, and four small ones come loose.
+	Lethe: ...They're warm.
+	do learn_vigil()
+	if selene_met()
+		Selene: Four little flames. They'll keep watch with you.
+elif selene_met()
+	Selene: ...See? We didn't need it.
+	Selene: The way to the deer is open.
 => END
 
 ~ watering_can

@@ -7,9 +7,11 @@ extends Node2D
 ## tile nei metadati), "Spawn" e le uscite.
 ##
 ## Questo script monta i pezzi e tiene la zona insieme:
-## - zone_dressing.gd: luci e collisioni delle cose, raggi di luna, lucciole, cose con cui si parla;
+## - zone_dressing.gd: luci e collisioni delle cose, raggi di luna, lucciole, occhi nelle radici,
+##   cose con cui si parla;
 ## - zone_combat.gd ("Combat"): nemici, cuore, esperienza, oggetti, morte, riposo, il segreto;
-## - zone_puzzles.gd ("Puzzles"): piastre, cancelli di radici, chiavi, porte, scatole;
+## - zone_puzzles.gd ("Puzzles"): piastre, cancelli di radici, chiavi, porte, scatole, rovi;
+## - zone_lanterns.gd ("Lanterns"): le lanterne di radice e le tende di radici (passo 4);
 ## - forest_story.gd ("Story"): la regia del capitolo (scene, Selene, obiettivi);
 ## - qui: il buio, Lethe e la camera (per stanze nei dungeon: core/room_camera.gd), la musica,
 ##   il menu di pausa, i dialoghi, l'interfaccia, i passaggi tra le zone.
@@ -44,6 +46,7 @@ const ZoneLayout := preload("zone_layout.gd")
 const ZoneDressing := preload("zone_dressing.gd")
 const ZoneCombat := preload("zone_combat.gd")
 const ZonePuzzles := preload("zone_puzzles.gd")
+const ZoneLanterns := preload("zone_lanterns.gd")
 const Zones := preload("zones.gd")
 const ForestStory := preload("forest_story.gd")
 const HERO := preload("res://characters/protagonista/protagonista.tscn")
@@ -85,8 +88,10 @@ var hud: CanvasLayer
 var rooms: Node
 ## Nemici, cuore, esperienza, morte, riposo.
 var combat: Node
-## Piastre, cancelli, chiavi, porte, scatole.
+## Piastre, cancelli, chiavi, porte, scatole, rovi.
 var puzzles: Node
+## Lanterne di radice e tende di radici.
+var lanterns: Node
 ## La regia del capitolo: le scene, Selene e le sue battute.
 var story: Node
 ## Selene, la compagna (dopo che è scesa dalla luna: la crea la regia).
@@ -130,6 +135,11 @@ func _ready() -> void:
 	puzzles.name = "Puzzles"
 	add_child(puzzles)
 	puzzles.setup(self)
+	lanterns = ZoneLanterns.new()
+	lanterns.name = "Lanterns"
+	add_child(lanterns)
+	lanterns.setup(self)                        # dopo i meccanismi: tutte accese, apre un loro cancello
+	ZoneDressing.add_eyes(self, layout_value("EYES"), hero)
 	_add_music()
 	_add_menu()
 	_add_talk()
@@ -213,6 +223,7 @@ func _add_talk() -> void:
 	talk.setup_with(self, hero, state, talk_things(), DIALOGUE)
 	talk.extra_states.append(self)
 	talk.extra_states.append(puzzles)    # i dialoghi aprono porte e scatole
+	talk.extra_states.append(lanterns)   # e Selene accende le lanterne, il gesto apre le tende
 	talk.key_hint = not state.flag("talk_learned")
 	talk.talk_finished.connect(_on_talk_finished)
 	talk.talk_started.connect(func(_id: String) -> void: hud.set_shown(false))
@@ -288,11 +299,14 @@ func talk_things() -> Array[Dictionary]:
 	var out := ZoneDressing.talk_things(world, layout_value("TALKS"), layout_value("LETHE"), layout_value("BRIDGE"))
 	if puzzles:
 		out.append_array(puzzles.talk_things())
+	if lanterns:
+		out.append_array(lanterns.talk_things())
 	return out
 
 
 func sync_abilities() -> void:
 	hero.can_cast = state.can_cast()
+	hero.spell = state.spell
 	hero.can_slash = state.can_slash()
 	hero.attack_bonus = state.attack_bonus()
 	var stage: int = state.sword_stage()        # la spada cresce con le bugie

@@ -15,9 +15,13 @@ extends Node
 ## - il dungeon delle radici (zona "roots"): la prima volta la discesa raccontata, Selene che
 ##   fa un po' di luce; entrando in una stanza nuova il suo nome e una riga sola (il dungeon
 ##   racconta la pianta che nessuno annaffia più: l'annaffiatoio mai usato, il cuore che
-##   batte ancora); il cuore delle radici cambia l'obiettivo.
+##   batte ancora); il cuore delle radici cambia l'obiettivo;
+## - il passo 4 del dungeon: la pietra antica insegna il gesto Aprire (learn_open); le tre
+##   lanterne di radice accese aprono l'arena, e se le ha accese la luce di Lethe le fiammelle
+##   vengono da lei (learn_vigil: la veglia, il secondo incantesimo).
 ##
-## Sta tra gli extra_states dei dialoghi: forest.dialogue chiama selene_met() e learn_truth().
+## Sta tra gli extra_states dei dialoghi: forest.dialogue chiama selene_met(), learn_truth(),
+## has_light(), knows_open(), stone_teaches(), learn_open(), learn_vigil().
 ## `pace` accorcia le attese (test).
 
 const Cutscene := preload("res://core/cutscene.gd")
@@ -29,18 +33,24 @@ const InputSetup := preload("res://core/input_setup.gd")
 const DIALOGUE := preload("res://dialogue/forest.dialogue")
 const GLINT := preload("res://audio/shard_glint.wav")
 
-## L'incantesimo della prima verità.
+## L'incantesimo della prima verità, e quello delle lanterne.
 const FIRST_SPELL := "truth_spark"
+const LANTERN_SPELL := "vigil"
+## Il gesto del capitolo 1 (vault: "I gesti"): si ricorda nel flag.
+const GESTURE_OPEN := "gesture_open"
 ## Gli obiettivi della radura dell'albero.
 const GOAL_TREE := "Reach the dead tree"
 const GOAL_ROOTS := "Go down between the roots"
 ## Gli obiettivi del dungeon delle radici.
 const GOAL_HEART := "Find the heart of the roots"
-const GOAL_DEER := "Find a way past the roots"
+const GOAL_DEER := "Go where the deer sleeps"
 ## Dopo il cuore, i meccanismi uno alla volta (zone_puzzles.gd): così si sa sempre cosa fare.
 const GOAL_THORNS := "Open the thorn passage"
 const GOAL_KEY := "Look behind the thorns"
 const GOAL_DOOR := "Find the door the key opens"
+## Il passo 4: la pietra antica (il gesto), poi le lanterne.
+const GOAL_STONE := "Read the old stone"
+const GOAL_LANTERNS := "Light the lantern roots"
 ## Le stanze del dungeon: la riga che compare sotto il nome, la prima volta.
 const ROOM_LINES := {
 	"entrance": "The roots she never watered.",
@@ -63,6 +73,8 @@ const BARKS := {
 	"apple": "When did you last eat?",
 	"lie": "...",
 	"full_apple": "Keep it for later.",
+	# La prima lanterna accesa al posto di Lethe: mente, per non pesarle.
+	"selene_tired_first": "I'm fine. Really.",
 }
 
 signal arrived
@@ -83,8 +95,11 @@ func setup(zone_node: Node2D) -> void:
 	zone.enemy_defeated.connect(func(_e: Node2D) -> void: bark("first_kill"))
 	zone.item_picked.connect(func(_id: String) -> void: bark("apple"))
 	# I meccanismi del dungeon fanno andare avanti l'obiettivo.
-	for done in [zone.puzzles.gate_opened, zone.puzzles.key_taken, zone.puzzles.door_opened]:
+	for done in [zone.puzzles.gate_opened, zone.puzzles.key_taken, zone.puzzles.door_opened,
+			zone.lanterns.curtain_opened]:
 		done.connect(func(_id: String) -> void: _update_roots_goal())
+	zone.lanterns.lantern_lit.connect(_on_lantern_lit)
+	zone.lanterns.all_lit.connect(_on_lanterns_lit)
 
 
 func state() -> RefCounted:
@@ -98,6 +113,7 @@ func spawn_selene() -> Node2D:
 		var s := Selene.new()
 		s.name = "Selene"
 		s.target = zone.hero
+		s.tired = int(state().flags.get("selene_tired", 0))    # le lanterne accese al posto suo
 		zone.add_child(s)
 		zone.selene = s
 	return zone.selene
@@ -287,6 +303,8 @@ func roots_goal() -> String:
 		return GOAL_KEY
 	if not s.flag("door_bedroom"):
 		return GOAL_DOOR
+	if not s.flag("lanterns_lit"):
+		return GOAL_LANTERNS if knows_open() else GOAL_STONE
 	return GOAL_DEER
 
 
@@ -392,3 +410,63 @@ func _black_layer() -> ColorRect:
 func _sfx(stream: AudioStream, pitch: float, db: float) -> void:
 	if zone.sound:
 		Sfx.play(zone, stream, pitch, db)
+
+
+# --- Il passo 4: il gesto, le lanterne, la veglia ---------------------------------------------
+
+## Per i dialoghi: Lethe ha la magia (la luce) adesso?
+func has_light() -> bool:
+	return state().can_cast()
+
+
+## Per i dialoghi: sa il gesto Aprire?
+func knows_open() -> bool:
+	return state().flag(GESTURE_OPEN)
+
+
+## Per i dialoghi: la pietra antica del dungeon insegna il gesto (quella della radura no: è
+## solo un segno, e chi l'ha incisa).
+func stone_teaches() -> bool:
+	return zone.zone_id == "roots" and not knows_open()
+
+
+## Dai dialoghi (la pietra antica): il gesto Aprire. Si usa col tasto di parlare davanti alle
+## radici che chiudono (le tende, i rovi della radura).
+func learn_open() -> void:
+	if knows_open():
+		return
+	state().set_flag(GESTURE_OPEN)
+	_sfx(GLINT, 1.1, -4.0)
+	zone.toast("Open", "%s  near roots that keep things shut" % InputSetup.LABELS[&"action"])
+	_update_roots_goal()
+
+
+## Dai dialoghi (le lanterne tutte accese con la sua luce): le quattro fiammelle. Va subito
+## su Q (si cambia dal menu, Spells).
+func learn_vigil() -> void:
+	if state().knows(LANTERN_SPELL):
+		return
+	state().learn(LANTERN_SPELL)
+	state().spell = LANTERN_SPELL
+	zone.sync_abilities()
+	if zone.selene:
+		zone.selene.glow_up()
+	_sfx(GLINT, 1.5, -4.0)
+	zone.toast(String(MenuData.spell(LANTERN_SPELL).get("name", "Vigil")),
+		"%s  Four small flames keep watch" % InputSetup.LABELS[&"cast"])
+
+
+func _on_lantern_lit(_id: String, by: String) -> void:
+	if by == "selene":
+		bark("selene_tired_first")
+	_update_roots_goal()
+
+
+## Tutte accese: il cancello dell'arena si è aperto (lontano), e il racconto.
+func _on_lanterns_lit() -> void:
+	_update_roots_goal()
+	if not zone.talk.is_talking():
+		zone.talk.say(DIALOGUE, "lanterns_lit")
+	else:
+		zone.talk.talk_finished.connect(func(_id: String) -> void: zone.talk.say(DIALOGUE, "lanterns_lit"),
+			CONNECT_ONE_SHOT)

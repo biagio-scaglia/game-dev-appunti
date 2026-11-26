@@ -109,7 +109,7 @@ func test_la_cornice_d_argento() -> void:
 func test_il_cancello_e_il_cuore() -> void:
 	var zone := await _zone()
 	var ids: Array = zone.talk.things.map(func(t): return t["id"])
-	for id in ["silver_frame", "root_heart", "root_gate", "watering_can", "old_stone"]:
+	for id in ["silver_frame", "root_heart", "arena_gate", "watering_can", "old_stone"]:
 		assert_true(id in ids, "si parla con %s" % id)
 	var hero: CharacterBody2D = zone.hero
 	hero.global_position = Vector2(29.5 * TILE, 15.5 * TILE)    # sotto il cancello, nella stanza del cuore

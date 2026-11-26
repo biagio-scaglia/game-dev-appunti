@@ -114,7 +114,8 @@ func test_la_scatola_e_il_filo_rosso() -> void:
 func test_si_ricordano_dopo_un_salvataggio() -> void:
 	var zone := await _zone({"plate_handprint": true, "gate_thorns": true, "key_old_key": true,
 		"door_bedroom": true, "box_shoebox": true})
-	assert_true(zone.puzzles.gates.is_empty(), "il cancello non c'è più")
+	assert_false(zone.puzzles.gates.has("thorns"), "il cancello delle spine non c'è più")
+	assert_true(zone.puzzles.gates.has("arena"), "quello dell'arena sì: lo aprono le lanterne")
 	assert_eq(zone.puzzles.doors["bedroom"].get_meta(&"tile"), "bedroom_door_open", "la porta resta aperta")
 	assert_eq(zone.puzzles.boxes["shoebox"].get_meta(&"tile"), "shoebox_open", "la scatola resta aperta")
 	assert_false(zone.world.has_node("key_old_key"), "la chiave non torna per terra")
@@ -128,13 +129,13 @@ func test_si_parla_con_porta_scatola_e_cancello() -> void:
 		assert_true(id in ids, "si parla con %s" % id)
 	var gate_rect := Rect2(Vector2(8, 23) * TILE, Vector2(3, 1) * TILE)
 	var root_gates := func() -> Array:
-		return zone.talk.things.filter(func(t): return t["id"] == "root_gate" and t["rect"].intersects(gate_rect))
+		return zone.talk.things.filter(func(t): return t["id"] == "arena_gate" and t["rect"].intersects(gate_rect))
 	assert_true(root_gates.call().is_empty(), "le spine non parlano con la voce del cancello dell'arena")
 	zone.puzzles.open_gate("thorns")
 	ids = zone.talk.things.map(func(t): return t["id"])
 	assert_false("thorns_gate" in ids, "aperto il cancello, non c'è più")
 	assert_true(root_gates.call().is_empty(), "e il passaggio aperto non dice più che è chiuso")
-	assert_true("root_gate" in ids, "il cancello dell'arena invece sì")
+	assert_true("arena_gate" in ids, "il cancello dell'arena invece sì")
 
 
 func test_la_chiave_aspetta() -> void:
@@ -158,7 +159,16 @@ func test_l_obiettivo_dice_cosa_fare() -> void:
 	zone.state.set_flag("key_old_key")
 	zone.talk.talk("bedroom_door")
 	await _drive(zone.talk, 0)
-	assert_eq(zone.objective.text, story.GOAL_DEER, "aperta la porta: un modo per passare le radici")
+	assert_eq(zone.objective.text, story.GOAL_STONE, "aperta la porta: la pietra antica (il gesto)")
+	zone.talk.talk("old_stone")
+	await _drive(zone.talk)
+	assert_eq(zone.objective.text, story.GOAL_LANTERNS, "col gesto: le lanterne")
+	for id in ["west", "middle", "east"]:
+		zone.state.set_flag("lantern_" + id)
+	zone.lanterns.light("west", "lethe")          # già accese: non cambia niente
+	zone.state.set_flag("lanterns_lit")
+	zone.story._update_roots_goal()
+	assert_eq(zone.objective.text, story.GOAL_DEER, "accese: verso il cervo")
 
 
 func test_la_piastra_si_fa_notare() -> void:

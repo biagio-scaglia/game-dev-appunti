@@ -74,21 +74,35 @@ const WALL_FACES := [
 ## Piastre: [id, cella, cancello che apre]. Cancelli: [id, celle in alto (il cancello è alto due)]. Chiavi: [id, cella].
 ## Porte: [id, chiave, cella in alto a sinistra]. Scatole: [id, cella, oggetto dentro].
 const PLATES := [["handprint", Vector2i(14, 20), "thorns"]]
-const GATES := [["thorns", [Vector2i(8, 22), Vector2i(9, 22), Vector2i(10, 22)]]]
+const GATES := [
+	["thorns", [Vector2i(8, 22), Vector2i(9, 22), Vector2i(10, 22)]],
+	# Il cancello dell'arena (alto due celle, come la parete) sta nel varco della parete del
+	# cuore: si vede arrivando. Lo aprono le lanterne (LANTERNS_OPEN).
+	["arena", [Vector2i(28, 13), Vector2i(29, 13), Vector2i(30, 13)]],
+]
 const KEYS := [["old_key", Vector2i(4, 30)]]
 const LOCKS := [["bedroom", "old_key", Vector2i(49, 22)]]
 const CHESTS := [["shoebox", Vector2i(50, 30), "heart_thread"]]
 
+## Il passo 4 (forest/zone_lanterns.gd): le lanterne di radice lungo la parete delle lanterne,
+## la terza dietro una tenda di radici (si apre col gesto Aprire, la luna la accende). Tutte
+## accese aprono il cancello dell'arena. Lanterne: [id, cella]. Tende: [id, cella, lanterna].
+const LANTERNS := [["west", Vector2i(4, 14)], ["middle", Vector2i(10, 14)], ["east", Vector2i(15, 14)]]
+const CURTAINS := [["east", Vector2i(15, 14), "east"]]
+const LANTERNS_OPEN := "arena"
+## Gli occhi nelle radici (forest/root_eye.gd): sulle pareti delle stanze buie.
+const EYES := [
+	Vector2i(7, 13), Vector2i(13, 14), Vector2i(5, 25), Vector2i(15, 26), Vector2i(1, 30),
+	Vector2i(44, 25), Vector2i(56, 26), Vector2i(23, 14),
+]
+
 ## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
-const TALKS := ["silver_frame", "root_heart", "root_gate", "watering_can", "old_stone"]
+const TALKS := ["silver_frame", "root_heart", "watering_can", "old_stone"]
 const THINGS := [
 	# Sotto l'albero: il riposo (la cornice d'argento), le radici da cui si è scesi.
 	["silver_frame", Vector2i(35, 27)],
-	# Il cuore delle radici, e il cancello verso l'arena.
+	# Il cuore delle radici (il cancello verso l'arena è in GATES).
 	["root_heart", Vector2i(28, 15)],
-	# Il cancello (alto due celle, come la parete) sta nel varco della parete del cuore: si vede
-	# arrivando. Dietro, il corridoio verso l'arena.
-	["root_gate", Vector2i(28, 13)], ["root_gate", Vector2i(29, 13)], ["root_gate", Vector2i(30, 13)],
 	# Le lanterne: l'annaffiatoio mai usato.
 	["watering_can", Vector2i(5, 19)],
 	# La stanza del masso: la pietra antica col segno (il gesto Aprire).
