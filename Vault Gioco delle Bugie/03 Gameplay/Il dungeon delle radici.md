@@ -43,7 +43,7 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
 ## I passi
 1. La zona 2, la radura dell'albero secco, e il passaggio dalla prima zona.
 2. ~~Le stanze (dai dati, come la radura), la camera per stanza, le porte.~~ **Fatto (26/11).**
-3. Porta chiusa e chiave, forziere, piastra, cancello di radici.
+3. ~~Porta chiusa e chiave, forziere, piastra, cancello di radici.~~ **Fatto (26/11).**
 4. Buio, lanterne, occhi, il gesto Aprire.
 5. Trappole, il masso, la pozza del Lete; la mappa nel menu.
 6. Il Cervo Secco (Beehave).
@@ -74,5 +74,26 @@ Per andare avanti serve **luce** (la verità) e il gesto **Aprire** → [[I gest
   stanze, gocce nel buio, le prime note del lamento del titolo su un vetro lontano.
 - Il dungeon è una zona come le radure (zone_roots_layout.gd): terra e pavimento di radici
   nell'autotile, si dipinge nell'editor come il bosco.
+
+## In gioco (passo 3): i meccanismi raccontano
+Ogni meccanismo è un pezzo della camera di Lethe, cresciuto tra le radici. Nessuno ha bisogno
+della magia: si risolve anche dicendo solo bugie (c'è un test).
+1. **La piastra** (le lanterne): una pietra piatta con l'**impronta di una mano piccola**, da
+   bambina, che brilla appena. Ci sali sopra, scatta, e le radici che chiudono il passaggio
+   verso le spine **si ritirano**. *"My hands were that small, once."* Selene: *"The roots moved
+   for you. They remember you."*
+2. **La chiave** (il passaggio delle spine): è **la chiave della sua camera**. *"I keep it on the
+   inside. So nobody can- So I can stay in."*
+3. **La porta chiusa** (tra il masso e le cose sepolte): è **la porta della sua camera**, quaggiù,
+   coperta di radici, col graffio vicino alla maniglia. *"It's locked. From the inside."* Con la
+   chiave: *"I locked it. Every night. Then every day. ...I never thought I'd be the one outside."*
+4. **La scatola** (le cose sepolte): la **scatola da scarpe di sotto il letto**, le cose da non
+   guardare. Disegni, il biglietto di un concerto mai visto, **due braccialetti dell'amicizia, uno
+   mai regalato**. *"She stopped writing after a while. ...I stopped answering first."* Dentro il
+   **filo rosso** (Heart Thread): il cuore regge una stretta in più. (Nessun trauma: un'amica
+   persa piano, per silenzio. Come tutto il resto.)
+
+Si ricordano nei salvataggi (flag plate_, gate_, key_, door_, box_). Il codice: forest/zone_puzzles.gd,
+i dati in zone_roots_layout.gd (PLATES, GATES, KEYS, LOCKS, CHESTS).
 
 Collegato: [[Trama - bozza]], [[I gesti]], [[Nemici e boss]], [[Entità compagna]]
