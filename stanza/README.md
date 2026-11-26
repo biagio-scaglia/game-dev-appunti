@@ -60,7 +60,10 @@ forest/
 ├── zone_roots.tscn              il dungeon delle radici, sotto l'albero secco: 7 stanze più l'arena
 │                                (3x3 schermi), scavate nella terra; la camera resta sulla stanza e
 │                                scivola passando una porta (core/room_camera.gd); il nome della
-│                                stanza la prima volta; la cornice d'argento dove ci si riposa
+│                                stanza la prima volta; la cornice d'argento dove ci si riposa;
+│                                i meccanismi (zone_puzzles.gd): la piastra con l'impronta, il cancello
+│                                di radici, la chiave e la porta della camera di Lethe, la scatola da
+│                                scarpe col filo rosso
 ├── zone_wake.tscn               la prima zona della foresta (40x24 celle, 2x2 schermi), dove Lethe
 │                                cade dallo specchio: bosco fitto intorno, il sentiero, il primo
 │                                ruscello del Lete col ponte, i rovi sul ramo a nord, lo specchio.
@@ -122,6 +125,9 @@ audio/heart_*.wav, enemy_*.wav, moth_*.wav, bramble_*.wav, firefly_bite.wav
                                  i suoni del combattimento: il cuore stretto, il battito, il cuore
                                  che si spezza, i nemici colpiti e che si sciolgono, le ali, il
                                  sussurro e la frusta del rovo, il morso della lucciola
+audio/door_creak.wav, roots_retract.wav, stone_click.wav
+                                 i meccanismi: la porta che si apre dopo tanto, le radici che si
+                                 ritirano, la pietra che affonda
 audio/roots_theme.wav            l'OST del dungeon: bordone sotto terra, il battito del cuore delle
                                  radici, gocce nel buio, il lamento del titolo su un vetro lontano
 audio/forest_theme.wav           l'OST della foresta: Re dorico, arpa pizzicata, il motivo del titolo
