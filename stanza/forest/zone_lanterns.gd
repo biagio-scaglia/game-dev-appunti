@@ -18,6 +18,7 @@ const ZoneDressing := preload("zone_dressing.gd")
 const RoomFx := preload("res://world/room_fx.gd")
 const MoonBeam := preload("res://fx/moon_beam.gd")
 const LightCatch := preload("res://magic/light_catch.gd")
+const Fire := preload("res://fx/fire.gd")
 const Sfx := preload("res://core/sfx.gd")
 const GLINT := preload("res://audio/shard_glint.wav")
 const RETRACT := preload("res://audio/roots_retract.wav")
@@ -28,6 +29,8 @@ const CATCH_AT := Vector2(0, -32)
 const CATCH_RADIUS := 42.0
 ## Quanto aspetta la luna, dopo che la tenda si apre, ad accendere la lanterna.
 const MOON_DELAY := 0.7
+## Dove sta la fiamma (la base), rispetto ai piedi della lanterna.
+const FLAME_AT := Vector2(0, -29)
 
 
 ## Il punto della lanterna che prende luce: lo cercano le luci della magia.
@@ -95,7 +98,7 @@ func light(id: String, by: String) -> void:
 	if not lanterns.has(id) or is_lit(id) or (by != "moon" and hidden(id)):
 		return
 	state().set_flag("lantern_" + id)
-	_show_lit(id)
+	_show_lit(id, true)
 	_sfx(GLINT, 1.3, -6.0)
 	_refresh_talk()
 	lantern_lit.emit(id, by)
@@ -116,13 +119,26 @@ func hidden(id: String) -> bool:
 	return false
 
 
-func _show_lit(id: String) -> void:
+## Accesa: il disegno, il fuoco animato, la luce. `now`: si è accesa adesso (la vampata).
+func _show_lit(id: String, now := false) -> void:
 	var sprite: Sprite2D = lanterns[id]
 	ZoneDressing.set_tile(sprite, zone.data, "root_lantern_lit")
 	var catcher: Node2D = sprite.get_meta(&"catcher")
 	catcher.remove_from_group(LightCatch.GROUP)
 	sprite.add_to_group(&"lure")                 # le falene vanno alla luce, gli occhi si chiudono
-	RoomFx.attach(zone, zone.data["tiles"]["root_lantern_lit"], ZoneDressing.thing_rect(sprite).position)
+	sprite.add_to_group(&"light_sources")        # vicino, la luce (gli MP) torna in fretta
+	var fire := Fire.new()
+	fire.name = "Fire"
+	fire.sound = zone.sound
+	fire.position = FLAME_AT
+	sprite.add_child(fire)
+	var light := RoomFx.attach(zone, zone.data["tiles"]["root_lantern_lit"], ZoneDressing.thing_rect(sprite).position)
+	if now:
+		fire.ignite()
+		if light:                                # la vampata: la luce si gonfia e torna
+			var energy := light.energy
+			light.energy = energy * 3.0
+			light.create_tween().tween_property(light, "energy", energy, 0.9).set_trans(Tween.TRANS_SINE)
 
 
 ## Dai dialoghi, quando Lethe non ha più la magia: Selene accende la lanterna spenta più
@@ -135,6 +151,22 @@ func selene_light_lantern() -> void:
 	state().set_flag("selene_tired", int(state().flags.get("selene_tired", 0)) + 1)
 	if zone.selene:
 		zone.selene.tire()
+		_give_light(zone.selene, lanterns[id])
+
+
+## La luce che passa da Selene alla lanterna: una scia di pulviscolo che vola dall'una all'altra.
+func _give_light(from: Node2D, to: Sprite2D) -> void:
+	var mote := Node2D.new()
+	zone.add_child(mote)
+	mote.global_position = from.global_position
+	var trail := preload("res://fx/sparks.gd").trail()
+	mote.add_child(trail)
+	trail.emitting = true
+	var t := mote.create_tween()
+	t.tween_property(mote, "global_position", to.global_position + FLAME_AT, 0.5).set_trans(Tween.TRANS_SINE)
+	t.tween_callback(func() -> void: trail.emitting = false)
+	t.tween_interval(trail.lifetime)
+	t.tween_callback(mote.queue_free)
 
 
 ## La lanterna spenta (e raggiungibile) più vicina a Lethe, o "".

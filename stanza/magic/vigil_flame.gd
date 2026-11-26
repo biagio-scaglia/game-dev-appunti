@@ -12,10 +12,13 @@ const Glow := preload("res://core/glow.gd")
 const Sparks := preload("res://fx/sparks.gd")
 const LightCatch := preload("light_catch.gd")
 
-## La fiamma, 5 x 7: o bordo viola, v viola, w bianco (due fotogrammi: la punta si piega).
+## La fiamma, 5 x 7: o bordo viola, v viola, w bianco (quattro fotogrammi: la punta si piega
+## di qua e di là, e una volta si allunga).
 const SHAPES := [
 	["..o..", ".ovo.", ".ovo.", "ovwvo", "ovwvo", "ovwvo", ".ooo."],
 	[".o...", ".oo..", ".ovo.", "ovwvo", "ovwvo", "ovwvo", ".ooo."],
+	["..o..", "..o..", ".ovo.", ".ovo.", "ovwvo", "ovwvo", ".ooo."],
+	["...o.", "..oo.", ".ovo.", "ovwvo", "ovwvo", "ovwvo", ".ooo."],
 ]
 const COLORS := {"o": Color(0.5, 0.3, 0.9), "v": Color(0.8, 0.62, 1.0), "w": Color(1.0, 0.96, 1.0)}
 const PX := 2
@@ -101,7 +104,7 @@ func burn_out() -> void:
 
 
 func _draw() -> void:
-	var shape: Array = SHAPES[int(_time * 10.0) % 2]
+	var shape: Array = SHAPES[int(_time * 12.0) % SHAPES.size()]
 	var origin := Vector2(-2.5, -5.0) * PX
 	# In volo la punta resta indietro, come una cometa (la forma punta in su).
 	draw_set_transform(Vector2.ZERO, velocity.angle() - PI / 2.0 if flying else 0.0)
