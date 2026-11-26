@@ -27,7 +27,15 @@ Si combatte **in tempo reale**, come già in gioco: la magia (Spazio / J) e la
 - **La vita a cuore**: 4 strette. In alto a destra il cuore, e la mano che a ogni colpo si chiude di
   più (le dita una alla volta, poi il pollice); sotto, i puntini. Con l'ultimo pezzo i bordi dello
   schermo si scuriscono e si sente il battito. Dopo un colpo Lethe lampeggia e viene spinta via.
-- **La morte**: il cuore si spezza, nero, *"Death is a lie."* in rosso, e Lethe si risveglia davanti
+- **La morte** (*in gioco*, 26/11): la schermata del cuore spezzato, inquietante ma dentro le
+  [[Temi delicati - linee guida]] (niente dolore mostrato, la morte non è pace, qualcuno bussa):
+  il fermo immagine che perde i colori (restano i rossi), si sdoppia, il battito che si ferma; il
+  nero, un fischio; **occhi rossi** che si aprono uno alla volta e guardano (più bugie, più occhi);
+  accanto, sussurrate, **le sue bugie** e la più grande del gioco, *"Nobody would notice."*; il suo
+  cuore **stretto da una mano che non si vede** (le impronte delle dita, si schiaccia, si spacca);
+  ***DEATH IS A LIE.***; poi **qualcuno bussa**, gli occhi si chiudono tutti insieme, *"Someone is
+  knocking."* (la smentita). Un tasto la fa andare più in fretta, il bussare c'è sempre.
+  Poi Lethe si risveglia davanti
   allo specchio (*"The mirror is cold against her back. She's still here."*), col cuore intero.
   Allo specchio ci si **riposa**: il cuore torna intero e da lì si riparte. (Il risveglio nel letto
   della stanza resta l'idea per dopo.)

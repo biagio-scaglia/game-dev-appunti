@@ -167,6 +167,9 @@ ui/
 │                                dell'esperienza; il battito più veloce con poco cuore, con l'ultimo
 │                                pezzo i bordi scuri. Si nasconde durante i dialoghi. Sopra i cuori
 │                                la luce (gli MP, light_row.gd)
+├── game_over.gd                 il cuore spezzato: il fermo immagine senza colori, gli occhi rossi e le
+│                                sue bugie sussurrate, il cuore stretto da una mano invisibile che si
+│                                spacca, DEATH IS A LIE., poi qualcuno bussa
 ├── boss_bar.gd                  la vita di un boss in basso al centro: il nome, la barra a blocchi,
 │                                la scia bianca di quanto ha fatto male, il bordo viola nella seconda fase
 ├── light_row.gd                 la luce di Lethe: una fila di lune che si spengono con la magia e
