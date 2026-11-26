@@ -126,9 +126,49 @@ func test_si_parla_con_porta_scatola_e_cancello() -> void:
 	var ids: Array = zone.talk.things.map(func(t): return t["id"])
 	for id in ["bedroom_door", "shoebox", "thorns_gate"]:
 		assert_true(id in ids, "si parla con %s" % id)
+	var gate_rect := Rect2(Vector2(8, 23) * TILE, Vector2(3, 1) * TILE)
+	var root_gates := func() -> Array:
+		return zone.talk.things.filter(func(t): return t["id"] == "root_gate" and t["rect"].intersects(gate_rect))
+	assert_true(root_gates.call().is_empty(), "le spine non parlano con la voce del cancello dell'arena")
 	zone.puzzles.open_gate("thorns")
 	ids = zone.talk.things.map(func(t): return t["id"])
 	assert_false("thorns_gate" in ids, "aperto il cancello, non c'è più")
+	assert_true(root_gates.call().is_empty(), "e il passaggio aperto non dice più che è chiuso")
+	assert_true("root_gate" in ids, "il cancello dell'arena invece sì")
+
+
+func test_la_chiave_aspetta() -> void:
+	var zone := await _zone({"gate_thorns": true, "plate_handprint": true})
+	var key: Area2D = zone.world.get_node("key_old_key")
+	key._process(60.0)                           # un minuto dopo
+	assert_true(is_instance_valid(key) and not key.is_queued_for_deletion(), "la chiave non sparisce")
+	assert_true(key.visible, "e si vede")
+
+
+func test_l_obiettivo_dice_cosa_fare() -> void:
+	var zone := await _zone({"heart_seen": true})
+	var story = zone.story
+	assert_eq(zone.objective.text, story.GOAL_THORNS, "visto il cuore: il passaggio delle spine")
+	zone.puzzles.press("handprint", "thorns")
+	await _drive(zone.talk)
+	assert_eq(zone.objective.text, story.GOAL_KEY, "aperte le spine: cosa luccica là dietro")
+	zone.puzzles.take_key("old_key")
+	await _drive(zone.talk)
+	assert_eq(zone.objective.text, story.GOAL_DOOR, "presa la chiave: la porta")
+	zone.state.set_flag("key_old_key")
+	zone.talk.talk("bedroom_door")
+	await _drive(zone.talk, 0)
+	assert_eq(zone.objective.text, story.GOAL_DEER, "aperta la porta: un modo per passare le radici")
+
+
+func test_la_piastra_si_fa_notare() -> void:
+	var zone := await _zone()
+	var sprite: Sprite2D = zone.puzzles.plates["handprint"].get_meta(&"sprite")
+	var pulse: Tween = sprite.get_meta(&"pulse")
+	assert_true(pulse.is_running(), "finché non è premuta respira")
+	zone.puzzles.press("handprint", "thorns")
+	assert_false(pulse.is_valid(), "premuta, smette")
+	assert_eq(sprite.modulate, Color.WHITE, "e torna del suo colore")
 
 
 func test_anche_con_sole_bugie() -> void:

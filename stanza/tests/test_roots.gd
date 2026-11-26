@@ -116,7 +116,7 @@ func test_il_cancello_e_il_cuore() -> void:
 	assert_true(hero.test_move(hero.global_transform, Vector2(0, -3 * TILE)), "il cancello di radici chiude l'arena")
 	assert_eq(zone.story.roots_goal(), zone.story.GOAL_HEART, "prima: trova il cuore")
 	zone.story.saw_heart()
-	assert_eq(zone.objective.text, zone.story.GOAL_DEER, "visto il cuore: trova un modo per passare")
+	assert_eq(zone.objective.text, zone.story.GOAL_THORNS, "visto il cuore: apri il passaggio delle spine")
 
 
 func test_la_prima_volta_sottoterra() -> void:
