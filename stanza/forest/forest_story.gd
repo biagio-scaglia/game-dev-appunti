@@ -37,6 +37,10 @@ const GOAL_ROOTS := "Go down between the roots"
 ## Gli obiettivi del dungeon delle radici.
 const GOAL_HEART := "Find the heart of the roots"
 const GOAL_DEER := "Find a way past the roots"
+## Dopo il cuore, i meccanismi uno alla volta (zone_puzzles.gd): così si sa sempre cosa fare.
+const GOAL_THORNS := "Open the thorn passage"
+const GOAL_KEY := "Look behind the thorns"
+const GOAL_DOOR := "Find the door the key opens"
 ## Le stanze del dungeon: la riga che compare sotto il nome, la prima volta.
 const ROOM_LINES := {
 	"entrance": "The roots she never watered.",
@@ -78,6 +82,9 @@ func setup(zone_node: Node2D) -> void:
 	zone.leveled_up.connect(func(_lv: int) -> void: bark("level"))
 	zone.enemy_defeated.connect(func(_e: Node2D) -> void: bark("first_kill"))
 	zone.item_picked.connect(func(_id: String) -> void: bark("apple"))
+	# I meccanismi del dungeon fanno andare avanti l'obiettivo.
+	for done in [zone.puzzles.gate_opened, zone.puzzles.key_taken, zone.puzzles.door_opened]:
+		done.connect(func(_id: String) -> void: _update_roots_goal())
 
 
 func state() -> RefCounted:
@@ -268,8 +275,24 @@ func go_down() -> void:
 	zone.call_deferred(&"travel", "roots", "top")
 
 
+## L'obiettivo nel dungeon: il cuore, poi la piastra che apre le spine, la chiave dietro le
+## spine, la porta della camera; aperta quella, un modo per passare le radici dell'arena.
 func roots_goal() -> String:
-	return GOAL_DEER if state().flag("heart_seen") else GOAL_HEART
+	var s := state()
+	if not s.flag("heart_seen"):
+		return GOAL_HEART
+	if not s.flag("gate_thorns"):
+		return GOAL_THORNS
+	if not s.flag("key_old_key"):
+		return GOAL_KEY
+	if not s.flag("door_bedroom"):
+		return GOAL_DOOR
+	return GOAL_DEER
+
+
+func _update_roots_goal() -> void:
+	if zone.zone_id == "roots" and state().flag("roots_arrived"):
+		zone.objective.show_text(roots_goal())
 
 
 ## La prima volta sottoterra: il nero, il tonfo, la luce che scende dal buco; Lethe si
@@ -311,7 +334,7 @@ func on_room(id: String, room_name: String) -> void:
 ## Dai dialoghi: il cuore delle radici visto.
 func saw_heart() -> void:
 	state().set_flag("heart_seen")
-	zone.objective.show_text(GOAL_DEER)
+	zone.objective.show_text(roots_goal())
 
 
 ## Il primo nemico: si ferma tutto, la camera lo guarda, Selene avvisa. Una volta sola.
