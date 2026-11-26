@@ -636,6 +636,97 @@
       "layer": "decor",
       "solid": false
     },
+    "bedroom_door": {
+      "atlas": [
+        9,
+        14
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": true,
+      "solid_cells": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    "bedroom_door_open": {
+      "atlas": [
+        3,
+        15
+      ],
+      "size": [
+        1,
+        2
+      ],
+      "layer": "object",
+      "solid": false
+    },
+    "shoebox": {
+      "atlas": [
+        6,
+        15
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "shoebox_open": {
+      "atlas": [
+        7,
+        15
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "object",
+      "solid": true
+    },
+    "pressure_plate": {
+      "atlas": [
+        4,
+        15
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false,
+      "light": {
+        "offset": [
+          16,
+          16
+        ],
+        "color": [
+          0.85,
+          0.8,
+          1.0
+        ],
+        "energy": 0.5,
+        "radius": 40
+      }
+    },
+    "pressure_plate_down": {
+      "atlas": [
+        5,
+        15
+      ],
+      "size": [
+        1,
+        1
+      ],
+      "layer": "decor",
+      "solid": false
+    },
     "root_wall": {
       "atlas": [
         1,
