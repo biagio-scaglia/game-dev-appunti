@@ -55,15 +55,29 @@ const CARVE := [
 	[38, 16, 42, 19],      # porta: cuore <-> masso
 	[28, 22, 31, 25],      # porta: cuore <-> sotto l'albero
 	[8, 22, 11, 25],       # porta: lanterne <-> spine
-	[48, 22, 51, 25],      # porta: masso <-> cose sepolte
+	[49, 22, 50, 25],      # porta: masso <-> cose sepolte (stretta: c'è la porta della camera)
 ]
 ## La parete in cima alle stanze (root_wall, alta 2 celle): [riga, prima colonna, ultima colonna].
 ## Si salta dove c'è una porta in alto.
 const WALL_FACES := [
 	[1, 22, 37],
 	[13, 2, 17], [13, 22, 27], [13, 31, 37], [13, 42, 57],
-	[25, 2, 7], [25, 12, 17], [25, 22, 27], [25, 31, 37], [25, 42, 47], [25, 52, 57],
+	[25, 2, 7], [25, 12, 17], [25, 22, 27], [25, 31, 37], [25, 42, 48], [25, 50, 57],
 ]
+
+## I meccanismi (forest/zone_puzzles.gd, li crea quando la zona parte e ricorda cosa è aperto):
+## - la piastra con l'impronta di una mano piccola, nelle lanterne: apre il cancello di radici
+##   verso il passaggio delle spine;
+## - la chiave della camera di Lethe, nel passaggio delle spine;
+## - la porta della sua camera, tra la stanza del masso e le cose sepolte (si apre con la chiave);
+## - la scatola da scarpe di sotto il letto, nelle cose sepolte: dentro il filo rosso.
+## Piastre: [id, cella, cancello che apre]. Cancelli: [id, celle]. Chiavi: [id, cella].
+## Porte: [id, chiave, cella in alto a sinistra]. Scatole: [id, cella, oggetto dentro].
+const PLATES := [["handprint", Vector2i(14, 20), "thorns"]]
+const GATES := [["thorns", [Vector2i(8, 23), Vector2i(9, 23), Vector2i(10, 23)]]]
+const KEYS := [["old_key", Vector2i(4, 30)]]
+const LOCKS := [["bedroom", "old_key", Vector2i(49, 22)]]
+const CHESTS := [["shoebox", Vector2i(50, 30), "heart_thread"]]
 
 ## Le cose con cui si parla (i cue di forest.dialogue che sono tile).
 const TALKS := ["silver_frame", "root_heart", "root_gate", "watering_can", "old_stone"]
