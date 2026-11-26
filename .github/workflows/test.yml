@@ -1,4 +1,5 @@
-# I test del gioco (stanza/tests, più di 200) a ogni push e pull request.
+# I test del gioco (stanza/tests) e dell'intro dello studio (intro-studio/tests) a ogni push
+# e pull request.
 # Scarica Godot (in cache dopo la prima volta), importa il progetto (un checkout nuovo non ha
 # la cartella .godot) e lancia il runner: esce con 1 se almeno un test fallisce, e il job
 # diventa rosso. Il log completo resta tra gli artefatti del job.
@@ -57,6 +58,22 @@ jobs:
           grep -E "FAIL|SCRIPT ERROR" -A3 test.log || echo "Nessun test fallito."
           tail -n 3 test.log
 
+      # L'intro dello studio è un progetto a sé (si copia nei giochi): ha i suoi test.
+      - name: Importa intro-studio
+        if: always()
+        working-directory: intro-studio
+        timeout-minutes: 5
+        run: '"$GODOT" --headless --path . --import > import.log 2>&1 || (cat import.log; exit 1)'
+
+      - name: Test intro-studio
+        if: always()
+        working-directory: intro-studio
+        timeout-minutes: 5
+        run: |
+          "$GODOT" --headless --audio-driver Dummy --path . -s res://tests/run_tests.gd > test.log 2>&1 \
+            || (grep -E "FAIL|SCRIPT ERROR" -A3 test.log; tail -n 3 test.log; exit 1)
+          tail -n 1 test.log
+
       - name: Log completo
         if: always()
         uses: actions/upload-artifact@v4
@@ -65,3 +82,6 @@ jobs:
           path: |
             stanza/test.log
             stanza/import.log
+            intro-studio/test.log
+            intro-studio/import.log
+
