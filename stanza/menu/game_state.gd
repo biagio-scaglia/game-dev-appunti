@@ -276,4 +276,3 @@ static func _list(data: Dictionary, key: String) -> Array:
 static func _dict(data: Dictionary, key: String) -> Dictionary:
 	var value = data.get(key, {})
 	return value if value is Dictionary else {}
-

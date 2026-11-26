@@ -87,4 +87,3 @@ Il progetto non ha ancora una licenza: finché non c'è, il codice e gli asset o
 proprietà dell'autore (si possono leggere e studiare qui, non riusare in altri progetti). Le parti di
 terzi hanno le loro: Dialogue Manager (MIT, in `stanza/addons/dialogue_manager/`), Kenney Pixel (CC0), i
 template dei personaggi di Eris Esra (vedi sopra: non si ridistribuiscono come asset a sé).
-

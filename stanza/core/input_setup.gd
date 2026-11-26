@@ -82,4 +82,3 @@ static func ensure_actions() -> void:
 			motion.axis = JOY_AXES[action][0]
 			motion.axis_value = JOY_AXES[action][1]
 			InputMap.action_add_event(action, motion)
-
