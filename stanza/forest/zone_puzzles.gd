@@ -74,6 +74,7 @@ func _sfx(stream: AudioStream, pitch := 1.0, db := 0.0) -> void:
 func _thing(tile_name: String, cell: Vector2i) -> Sprite2D:
 	var sprite := ZoneDressing.thing_sprite(zone.data, tile_name, cell)
 	sprite.name = "%s_%d_%d" % [tile_name, cell.x, cell.y]
+	sprite.set_meta(&"puzzle", true)            # ci si parla da qui (talk_things), non dal tile
 	zone.world.add_child(sprite)
 	ZoneDressing.build_thing(zone, sprite, zone.data)
 	return sprite
@@ -105,6 +106,10 @@ func _add_plate(id: String, cell: Vector2i, gate: String) -> void:
 	zone.world.add_child(sprite)
 	if not pressed:
 		ZoneDressing.build_thing(zone, sprite, zone.data)   # l'impronta brilla appena: si trova
+		var pulse := sprite.create_tween().set_loops()      # e respira piano: chiede di salirci
+		pulse.tween_property(sprite, "modulate", Color(1.7, 1.55, 1.9), 1.1).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(sprite, "modulate", Color.WHITE, 1.1).set_trans(Tween.TRANS_SINE)
+		sprite.set_meta(&"pulse", pulse)
 	var area := Area2D.new()
 	area.collision_layer = 0
 	area.collision_mask = 2                     # la protagonista
@@ -133,7 +138,11 @@ func press(id: String, gate: String) -> void:
 	if is_pressed(id):
 		return
 	state().set_flag("plate_" + id)
-	ZoneDressing.set_tile(plates[id].get_meta(&"sprite"), zone.data, "pressure_plate_down")
+	var sprite: Sprite2D = plates[id].get_meta(&"sprite")
+	if sprite.has_meta(&"pulse"):
+		(sprite.get_meta(&"pulse") as Tween).kill()
+		sprite.modulate = Color.WHITE
+	ZoneDressing.set_tile(sprite, zone.data, "pressure_plate_down")
 	_sfx(CLICK, 1.0, -2.0)
 	open_gate(gate)
 	if not zone.talk.is_talking():
@@ -171,6 +180,8 @@ func _add_key(id: String, cell: Vector2i) -> void:
 	item.name = "key_" + id
 	item.position = (Vector2(cell) + Vector2(0.5, 0.8)) * TILE
 	item.auto_pick = false                      # si raccoglie parlandoci
+	item.expires = false                        # e aspetta: non sparisce come una mela
+	item.glow = Color(1.0, 0.82, 0.45)
 	zone.world.add_child(item)
 	keys[id] = item
 

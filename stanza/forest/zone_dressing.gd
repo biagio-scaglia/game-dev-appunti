@@ -136,12 +136,14 @@ static func add_fireflies(parent: Node2D, points: Array) -> void:
 
 
 ## Le cose con cui si parla: i tile in `talks` e il ruscello del Lete (sopra e sotto il
-## ponte: sul ponte non si guarda l'acqua a ogni passo).
+## ponte: sul ponte non si guarda l'acqua a ogni passo). Le cose dei meccanismi (meta
+## "puzzle": i cancelli, le porte) le dice zone_puzzles.gd, col loro cue e solo finché sono
+## chiuse.
 static func talk_things(world: Node, talks: Array, lethe: Array, bridge: Array) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for sprite in thing_nodes(world):
 		var tile_name: String = sprite.get_meta(&"tile")
-		if tile_name in talks:
+		if tile_name in talks and not sprite.has_meta(&"puzzle"):
 			out.append({"id": tile_name, "rect": thing_rect(sprite)})
 	var bridge_row: int = bridge[0] if not bridge.is_empty() else -1
 	for r in lethe:
