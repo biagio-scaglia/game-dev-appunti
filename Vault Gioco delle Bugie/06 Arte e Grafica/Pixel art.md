@@ -1,5 +1,5 @@
 ---
-tags: [arte]
+tags: [arte, galassia/tono]
 stato: deciso
 ---
 # Pixel art
@@ -27,3 +27,5 @@ stato: deciso
 
 ## Idea sparsa
 - "Biagio mangia un lecca-lecca": sprite / easter egg? 🍭
+
+Galassia: [[🌌 Il tono]]

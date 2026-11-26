@@ -1,5 +1,5 @@
 ---
-tags: [audio, musica]
+tags: [audio, musica, galassia/tono]
 stato: ricerca
 ---
 # OST
@@ -27,3 +27,5 @@ stato: ricerca
 - [ ] Definire strumenti e scale
 
 Collegato: [[📚 Riferimenti e ispirazioni]]
+
+Galassia: [[🌌 Il tono]]

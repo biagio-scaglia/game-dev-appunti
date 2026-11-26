@@ -1,5 +1,5 @@
 ---
-tags: [riferimenti]
+tags: [riferimenti, galassia/tono]
 ---
 # 📚 Riferimenti e ispirazioni
 
@@ -35,3 +35,5 @@ una cornice d'argento con un'ala. Si prendono **i motivi e il colore**, non il p
   l'Heart Thread, l'icona del File 3, e in grande la *Cornice* del capitolo 3. → [[La mano che stringe il cuore]]
 - **Il Riflesso.** La Lethe che ha bevuto tutto: senza colori, occhi rossi, viso vuoto e calmo. Si
   annuncia nei vetri della spada, ogni tanto. → [[Nemici e boss]], [[La spada di vetro]]
+
+Galassia: [[🌌 Il tono]]

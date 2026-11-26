@@ -1,5 +1,5 @@
 ---
-tags: [concept, tono, responsabilità]
+tags: [concept, tono, responsabilità, galassia/tono]
 stato: da rispettare sempre
 ---
 # Temi delicati - linee guida
@@ -34,3 +34,5 @@ Queste regole valgono per testi, immagini, musica e finali → [[Vibe e tono]].
 - Controllare i numeri d'aiuto prima dell'uscita (cambiano).
 
 Collegato: [[Tema - Le bugie]], [[Vibe e tono]], [[Trama - bozza]], [[Route e finali]]
+
+Galassia: [[🌌 Il tono]]

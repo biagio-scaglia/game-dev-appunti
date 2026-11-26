@@ -1,5 +1,5 @@
 ---
-tags: [concept, tono]
+tags: [concept, tono, galassia/tono]
 stato: da definire
 ---
 # Vibe e tono
@@ -16,3 +16,5 @@ stato: da definire
 - Studiare qualcosa di **psicologia** per dare spessore (vedi [[❓ Domande aperte]])
 
 Collegato: [[Tema - Le bugie]], [[OST]]
+
+Galassia: [[🌌 Il tono]]
